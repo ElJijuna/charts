@@ -1,0 +1,16 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+    "extends": ["super-configs/biome/react-native"],
+    "files": {
+        "ignoreUnknown": true,
+        "includes": [
+            "!**/lib",
+            "!**/coverage",
+            "!**/docs",
+            "!**/node_modules",
+            "!package.json",
+            "!package-lock.json",
+            "!CHANGELOG.md"
+        ]
+    }
+}

@@ -1,0 +1,33 @@
+import type { StyleProp, ViewStyle } from 'react-native';
+import type { ChartThemeOverride } from '../theme/types';
+import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '../types/data';
+
+export interface ChartAxisConfig<TValue = unknown> {
+  tickCount?: number;
+  formatLabel?: (value: TValue) => string;
+  lineColor?: string;
+  labelColor?: string;
+}
+
+export interface ChartAxesConfig {
+  x?: ChartAxisConfig;
+  y?: ChartAxisConfig;
+}
+
+export interface LineChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  series: readonly ChartSeries<TDatum, TYKey>[];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
