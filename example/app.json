@@ -1,0 +1,17 @@
+{
+    "expo": {
+        "name": "Real Native Charts",
+        "slug": "real-native-charts-example",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "dev.realnative.charts.example"
+        },
+        "android": {
+            "package": "dev.realnative.charts.example"
+        }
+    }
+}

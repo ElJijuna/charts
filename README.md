@@ -31,3 +31,13 @@ export function RevenueChart() {
   );
 }
 ```
+
+## Example app
+
+The Expo development app consumes the package directly from `src` through Metro:
+
+```sh
+npm run example
+npm run example:ios
+npm run example:android
+```

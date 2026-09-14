@@ -1,4 +1,6 @@
 node_modules/
+example/node_modules/
+.expo/
 lib/
 coverage/
 docs/api/
