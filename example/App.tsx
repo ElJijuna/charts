@@ -1,4 +1,4 @@
-import { LineChart } from '@real-native/charts';
+import { BarChart, LineChart } from '@real-native/charts';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -57,6 +57,25 @@ export function App() {
             xKey="month"
           />
         </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Grouped comparison</Text>
+          <BarChart
+            accessibilityLabel="Monthly revenue comparison as grouped bars"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            data={revenue}
+            height={300}
+            series={[
+              { key: 'current', label: 'Current period', color: colors.primary },
+              { key: 'previous', label: 'Previous period', color: colors.secondary },
+            ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
       </ScrollView>
     </GestureHandlerRootView>
   );
@@ -104,5 +123,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 24,
     elevation: 3,
+    marginBottom: 20,
+  },
+  cardTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
   },
 });

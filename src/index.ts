@@ -5,8 +5,14 @@
  * @packageDocumentation
  */
 
+export { BarChart } from './cartesian/BarChart';
 export { LineChart } from './cartesian/LineChart';
-export type { ChartAxesConfig, ChartAxisConfig, LineChartProps } from './cartesian/types';
+export type {
+  BarChartProps,
+  ChartAxesConfig,
+  ChartAxisConfig,
+  LineChartProps,
+} from './cartesian/types';
 export { defaultChartTheme } from './theme/defaultTheme';
 export type { ChartTheme, ChartThemeOverride } from './theme/types';
 export type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from './types/data';

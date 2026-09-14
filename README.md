@@ -13,7 +13,7 @@ Follow the Reanimated and Skia installation instructions for your React Native o
 ## Usage
 
 ```tsx
-import { LineChart } from '@real-native/charts';
+import { BarChart, LineChart } from '@real-native/charts';
 
 const data = [
   { month: 1, revenue: 12 },
@@ -30,6 +30,19 @@ export function RevenueChart() {
     />
   );
 }
+```
+
+`BarChart` shares the same data, series, axes, theme, and animation configuration:
+
+```tsx
+<BarChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue', color: '#6750a4' }]}
+  groupPadding={0.25}
+  barPadding={0.1}
+  cornerRadius={6}
+/>
 ```
 
 ## Example app
