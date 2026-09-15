@@ -1,11 +1,11 @@
 import { type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { CartesianChart, Line } from 'victory-native';
+import { Area, CartesianChart } from 'victory-native';
 
 import { resolveSeries } from '../core/resolveSeries';
 import { resolveChartTheme } from '../theme/resolveTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
-import type { LineChartProps } from './types';
+import type { AreaChartProps, AreaChartSeries } from './types';
 
 const styles = StyleSheet.create({
   root: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function LineChart<
+export function AreaChart<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -26,14 +26,16 @@ export function LineChart<
   theme: themeOverride,
   height = 240,
   padding = 16,
+  curve = 'natural',
+  connectMissingData = false,
   animate = true,
   style,
-  accessibilityLabel = 'Line chart',
+  accessibilityLabel = 'Area chart',
   testID,
-}: LineChartProps<TDatum, TXKey, TYKey>): ReactElement {
+}: AreaChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
   const resolvedSeries = useMemo(
-    () => resolveSeries<TDatum, TYKey>(series, theme),
+    () => resolveSeries<TDatum, TYKey, AreaChartSeries<TDatum, TYKey>>(series, theme),
     [series, theme],
   );
   const yKeys = useMemo(() => resolvedSeries.map(({ key }) => key), [resolvedSeries]);
@@ -60,14 +62,17 @@ export function LineChart<
           labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
         }}
       >
-        {({ points }) => (
+        {({ points, chartBounds }) => (
           <>
             {resolvedSeries.map((item) => (
-              <Line
+              <Area
                 key={String(item.key)}
                 points={points[item.key]}
+                y0={chartBounds.bottom}
                 color={item.color}
-                strokeWidth={item.strokeWidth}
+                opacity={item.fillOpacity ?? 0.24}
+                curveType={curve}
+                connectMissingData={connectMissingData}
                 animate={animate ? { type: 'timing', duration: 300 } : undefined}
               />
             ))}

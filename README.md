@@ -45,6 +45,18 @@ export function RevenueChart() {
 />
 ```
 
+`AreaChart` adds curve selection, fill opacity, and missing-data handling:
+
+```tsx
+<AreaChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue', color: '#6750a4', fillOpacity: 0.28 }]}
+  curve="monotoneX"
+  connectMissingData
+/>
+```
+
 ## Example app
 
 The Expo development app consumes the package directly from `src` through Metro:

@@ -35,7 +35,10 @@ export function BarChart<
   testID,
 }: BarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
-  const resolvedSeries = useMemo(() => resolveSeries(series, theme), [series, theme]);
+  const resolvedSeries = useMemo(
+    () => resolveSeries<TDatum, TYKey>(series, theme),
+    [series, theme],
+  );
   const yKeys = useMemo(() => resolvedSeries.map(({ key }) => key), [resolvedSeries]);
   const chartData = useMemo(() => [...data], [data]);
 

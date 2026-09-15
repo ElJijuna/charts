@@ -1,4 +1,5 @@
 import type { StyleProp, ViewStyle } from 'react-native';
+import type { CurveType } from 'victory-native';
 import type { ChartThemeOverride } from '../theme/types';
 import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '../types/data';
 
@@ -47,6 +48,33 @@ export interface BarChartProps<
   groupPadding?: number;
   barPadding?: number;
   cornerRadius?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
+export interface AreaChartSeries<
+  TDatum extends ChartDatum,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> extends ChartSeries<TDatum, TYKey> {
+  fillOpacity?: number;
+}
+
+export interface AreaChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  series: readonly AreaChartSeries<TDatum, TYKey>[];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  curve?: CurveType;
+  connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;

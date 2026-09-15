@@ -1,4 +1,4 @@
-import { BarChart, LineChart } from '@real-native/charts';
+import { AreaChart, BarChart, LineChart } from '@real-native/charts';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -72,6 +72,23 @@ export function App() {
               { key: 'current', label: 'Current period', color: colors.primary },
               { key: 'previous', label: 'Previous period', color: colors.secondary },
             ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Growth area</Text>
+          <AreaChart
+            accessibilityLabel="Monthly revenue growth area"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            curve="monotoneX"
+            data={revenue}
+            height={300}
+            series={[{ key: 'current', color: colors.primary, fillOpacity: 0.28 }]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
           />
