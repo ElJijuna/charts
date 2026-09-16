@@ -32,6 +32,8 @@ describe('LineChart', () => {
       <LineChart
         accessibilityLabel="Monthly revenue"
         animate={false}
+        connectMissingData
+        curve="monotoneX"
         data={[{ month: 1, revenue: 12 }]}
         height={320}
         padding={24}
@@ -50,7 +52,13 @@ describe('LineChart', () => {
     expect(screen.getByLabelText('Monthly revenue')).toBeTruthy();
     expect(mockCartesianSpy).toHaveBeenCalledWith(expect.objectContaining({ padding: 24 }));
     expect(mockLineSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ animate: undefined, color: '#123456', strokeWidth: 4 }),
+      expect.objectContaining({
+        animate: undefined,
+        color: '#123456',
+        connectMissingData: true,
+        curveType: 'monotoneX',
+        strokeWidth: 4,
+      }),
     );
   });
 
@@ -86,6 +94,8 @@ describe('LineChart', () => {
       expect.objectContaining({
         animate: { duration: 300, type: 'timing' },
         color: '#6750a4',
+        connectMissingData: false,
+        curveType: 'natural',
         strokeWidth: 3,
       }),
     );

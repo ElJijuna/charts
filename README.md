@@ -27,6 +27,7 @@ export function RevenueChart() {
       data={data}
       xKey="month"
       series={[{ key: 'revenue', label: 'Revenue', color: '#6750a4' }]}
+      curve="monotoneX"
     />
   );
 }

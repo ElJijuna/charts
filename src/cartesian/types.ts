@@ -27,6 +27,8 @@ export interface LineChartProps<
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
+  curve?: CurveType;
+  connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;

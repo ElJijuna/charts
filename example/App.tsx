@@ -77,6 +77,7 @@ export function App() {
               x: { tickCount: revenue.length, formatLabel: String },
               y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
             }}
+            curve="monotoneX"
             data={revenue}
             height={300}
             series={[

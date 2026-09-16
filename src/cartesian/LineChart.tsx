@@ -26,6 +26,8 @@ export function LineChart<
   theme: themeOverride,
   height = 240,
   padding = 16,
+  curve = 'natural',
+  connectMissingData = false,
   animate = true,
   style,
   accessibilityLabel = 'Line chart',
@@ -68,6 +70,8 @@ export function LineChart<
                 points={points[item.key]}
                 color={item.color}
                 strokeWidth={item.strokeWidth}
+                curveType={curve}
+                connectMissingData={connectMissingData}
                 animate={animate ? { type: 'timing', duration: 300 } : undefined}
               />
             ))}
