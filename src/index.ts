@@ -8,6 +8,7 @@
 export { AreaChart } from './cartesian/AreaChart';
 export { AreaRangeChart } from './cartesian/AreaRangeChart';
 export { BarChart } from './cartesian/BarChart';
+export { BubbleChart } from './cartesian/BubbleChart';
 export { CandlestickChart } from './cartesian/CandlestickChart';
 export { ComboChart } from './cartesian/ComboChart';
 export { HistogramChart } from './cartesian/HistogramChart';
@@ -23,6 +24,7 @@ export type {
   AreaChartSeries,
   AreaRangeChartProps,
   BarChartProps,
+  BubbleChartProps,
   CandlestickChartColors,
   CandlestickChartProps,
   ChartAxesConfig,

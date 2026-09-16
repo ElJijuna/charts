@@ -2,6 +2,7 @@ import {
   AreaChart,
   AreaRangeChart,
   BarChart,
+  BubbleChart,
   CandlestickChart,
   ComboChart,
   GaugeChart,
@@ -46,6 +47,12 @@ const forecast = [
 const performance = revenue.map((item) => ({ ...item, target: 80 }));
 
 const orderValues = [42, 48, 51, 52, 56, 58, 58, 61, 64, 67, 71, 73, 76, 82, 91];
+
+const segments = [
+  { name: 'Startup', revenue: 38, customers: 120 },
+  { name: 'Growth', revenue: 67, customers: 260 },
+  { name: 'Enterprise', revenue: 94, customers: 80 },
+];
 
 const colors = {
   background: '#f7f2fa',
@@ -245,6 +252,24 @@ export function App() {
             ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Segment performance</Text>
+          <BubbleChart
+            accessibilityLabel="Revenue and customer volume by segment"
+            axes={{
+              x: { tickCount: segments.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            color={colors.primary}
+            data={segments}
+            height={300}
+            sizeKey="customers"
+            theme={{ backgroundColor: colors.surface }}
+            xKey="name"
+            yKey="revenue"
           />
         </View>
 

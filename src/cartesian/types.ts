@@ -266,3 +266,26 @@ export interface HistogramChartProps {
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface BubbleChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  yKey: TYKey;
+  sizeKey: TYKey;
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  color?: string;
+  minRadius?: number;
+  maxRadius?: number;
+  shape?: ScatterShape;
+  height?: number;
+  padding?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

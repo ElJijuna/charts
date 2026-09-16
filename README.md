@@ -133,6 +133,17 @@ export function RevenueChart() {
 />
 ```
 
+`BubbleChart` scales each point using a third numeric field:
+
+```tsx
+<BubbleChart
+  data={segments}
+  xKey="name"
+  yKey="revenue"
+  sizeKey="customers"
+/>
+```
+
 `CandlestickChart` renders typed open-high-low-close financial data:
 
 ```tsx
