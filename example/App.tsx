@@ -3,6 +3,7 @@ import {
   BarChart,
   CandlestickChart,
   HorizontalBarChart,
+  HorizontalStackedBarChart,
   LineChart,
   PieChart,
   ScatterChart,
@@ -105,6 +106,26 @@ export function App() {
             }}
             data={revenue}
             height={300}
+            series={[
+              { key: 'current', color: colors.primary },
+              { key: 'previous', color: colors.secondary },
+            ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Horizontal total</Text>
+          <HorizontalStackedBarChart
+            accessibilityLabel="Current and previous monthly revenue stacked horizontally"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            data={revenue}
+            height={300}
+            innerPadding={0.2}
             series={[
               { key: 'current', color: colors.primary },
               { key: 'previous', color: colors.secondary },

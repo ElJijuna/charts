@@ -69,6 +69,19 @@ export function RevenueChart() {
 />
 ```
 
+`HorizontalStackedBarChart` combines cumulative series with horizontal categories:
+
+```tsx
+<HorizontalStackedBarChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: 'revenue', color: '#6750a4' },
+    { key: 'cost', color: '#00a6a6' },
+  ]}
+/>
+```
+
 `AreaChart` adds curve selection, fill opacity, and missing-data handling:
 
 ```tsx

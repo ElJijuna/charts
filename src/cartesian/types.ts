@@ -177,3 +177,9 @@ export type HorizontalBarChartProps<
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
 > = BarChartProps<TDatum, TXKey, TYKey>;
+
+export type HorizontalStackedBarChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> = StackedBarChartProps<TDatum, TXKey, TYKey>;
