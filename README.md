@@ -97,6 +97,19 @@ export function RevenueChart() {
 />
 ```
 
+`CandlestickChart` renders typed open-high-low-close financial data:
+
+```tsx
+<CandlestickChart
+  data={prices}
+  xKey="day"
+  openKey="open"
+  highKey="high"
+  lowKey="low"
+  closeKey="close"
+/>
+```
+
 `PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
 
 ```tsx

@@ -139,3 +139,35 @@ export interface StackedAreaChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface CandlestickChartColors {
+  positive?: string;
+  negative?: string;
+  neutral?: string;
+}
+
+export interface CandlestickChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  openKey: TYKey;
+  highKey: TYKey;
+  lowKey: TYKey;
+  closeKey: TYKey;
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  colors?: CandlestickChartColors;
+  height?: number;
+  padding?: number;
+  candleWidth?: number;
+  candleRatio?: number;
+  minBodyHeight?: number;
+  wickStrokeWidth?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

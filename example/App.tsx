@@ -1,6 +1,7 @@
 import {
   AreaChart,
   BarChart,
+  CandlestickChart,
   LineChart,
   PieChart,
   ScatterChart,
@@ -18,6 +19,14 @@ const revenue = [
   { month: 'Apr', current: 76, previous: 53 },
   { month: 'May', current: 84, previous: 62 },
   { month: 'Jun', current: 96, previous: 74 },
+];
+
+const prices = [
+  { day: 'Mon', open: 42, high: 49, low: 39, close: 47 },
+  { day: 'Tue', open: 47, high: 51, low: 44, close: 46 },
+  { day: 'Wed', open: 46, high: 54, low: 45, close: 52 },
+  { day: 'Thu', open: 52, high: 55, low: 48, close: 50 },
+  { day: 'Fri', open: 50, high: 58, low: 49, close: 57 },
 ];
 
 const colors = {
@@ -159,6 +168,25 @@ export function App() {
             ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Weekly price</Text>
+          <CandlestickChart
+            accessibilityLabel="Weekly open high low and close prices"
+            axes={{
+              x: { tickCount: prices.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}` },
+            }}
+            closeKey="close"
+            data={prices}
+            height={300}
+            highKey="high"
+            lowKey="low"
+            openKey="open"
+            theme={{ backgroundColor: colors.surface }}
+            xKey="day"
           />
         </View>
 

@@ -7,6 +7,7 @@
 
 export { AreaChart } from './cartesian/AreaChart';
 export { BarChart } from './cartesian/BarChart';
+export { CandlestickChart } from './cartesian/CandlestickChart';
 export { LineChart } from './cartesian/LineChart';
 export { ScatterChart } from './cartesian/ScatterChart';
 export { StackedAreaChart } from './cartesian/StackedAreaChart';
@@ -15,6 +16,8 @@ export type {
   AreaChartProps,
   AreaChartSeries,
   BarChartProps,
+  CandlestickChartColors,
+  CandlestickChartProps,
   ChartAxesConfig,
   ChartAxisConfig,
   LineChartProps,
