@@ -1,5 +1,6 @@
 import {
   AreaChart,
+  AreaRangeChart,
   BarChart,
   CandlestickChart,
   HorizontalBarChart,
@@ -29,6 +30,13 @@ const prices = [
   { day: 'Wed', open: 46, high: 54, low: 45, close: 52 },
   { day: 'Thu', open: 52, high: 55, low: 48, close: 50 },
   { day: 'Fri', open: 50, high: 58, low: 49, close: 57 },
+];
+
+const forecast = [
+  { month: 'Jul', minimum: 82, maximum: 104 },
+  { month: 'Aug', minimum: 86, maximum: 112 },
+  { month: 'Sep', minimum: 91, maximum: 119 },
+  { month: 'Oct', minimum: 96, maximum: 126 },
 ];
 
 const colors = {
@@ -188,6 +196,25 @@ export function App() {
               { key: 'previous', color: colors.secondary, fillOpacity: 0.5 },
             ]}
             theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Revenue forecast</Text>
+          <AreaRangeChart
+            accessibilityLabel="Monthly minimum and maximum revenue forecast"
+            axes={{
+              x: { tickCount: forecast.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            color={colors.primary}
+            curve="monotoneX"
+            data={forecast}
+            height={300}
+            lowerKey="minimum"
+            theme={{ backgroundColor: colors.surface }}
+            upperKey="maximum"
             xKey="month"
           />
         </View>

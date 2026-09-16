@@ -183,3 +183,26 @@ export type HorizontalStackedBarChartProps<
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
 > = StackedBarChartProps<TDatum, TXKey, TYKey>;
+
+export interface AreaRangeChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  lowerKey: TYKey;
+  upperKey: TYKey;
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  color?: string;
+  opacity?: number;
+  height?: number;
+  padding?: number;
+  curve?: CurveType;
+  connectMissingData?: boolean;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

@@ -108,6 +108,18 @@ export function RevenueChart() {
 />
 ```
 
+`AreaRangeChart` fills the interval between lower and upper values:
+
+```tsx
+<AreaRangeChart
+  data={forecast}
+  xKey="month"
+  lowerKey="minimum"
+  upperKey="maximum"
+  curve="monotoneX"
+/>
+```
+
 `ScatterChart` renders one point set per series and supports three marker shapes:
 
 ```tsx
