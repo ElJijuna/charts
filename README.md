@@ -156,6 +156,16 @@ export function RevenueChart() {
 />
 ```
 
+`SparklineChart` renders a compact, axis-free trend for cards and lists:
+
+```tsx
+<SparklineChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue', color: '#6750a4' }]}
+/>
+```
+
 `PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
 
 ```tsx

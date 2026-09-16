@@ -14,6 +14,7 @@ export { HorizontalBarChart } from './cartesian/HorizontalBarChart';
 export { HorizontalStackedBarChart } from './cartesian/HorizontalStackedBarChart';
 export { LineChart } from './cartesian/LineChart';
 export { ScatterChart } from './cartesian/ScatterChart';
+export { SparklineChart } from './cartesian/SparklineChart';
 export { StackedAreaChart } from './cartesian/StackedAreaChart';
 export { StackedBarChart } from './cartesian/StackedBarChart';
 export type {
@@ -30,6 +31,7 @@ export type {
   HorizontalStackedBarChartProps,
   LineChartProps,
   ScatterChartProps,
+  SparklineChartProps,
   StackedAreaChartProps,
   StackedBarChartProps,
 } from './cartesian/types';

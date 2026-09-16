@@ -10,6 +10,7 @@ import {
   LineChart,
   PieChart,
   ScatterChart,
+  SparklineChart,
   StackedAreaChart,
   StackedBarChart,
 } from '@real-native/charts';
@@ -238,6 +239,17 @@ export function App() {
               { key: 'current', color: colors.primary },
               { key: 'previous', color: colors.secondary },
             ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Revenue trend</Text>
+          <SparklineChart
+            accessibilityLabel="Compact monthly revenue trend"
+            data={revenue}
+            series={[{ key: 'current', color: colors.primary, strokeWidth: 3 }]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
           />

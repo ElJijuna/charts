@@ -230,3 +230,22 @@ export interface ComboChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface SparklineChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  series: readonly ChartSeries<TDatum, TYKey>[];
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  curve?: CurveType;
+  connectMissingData?: boolean;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
