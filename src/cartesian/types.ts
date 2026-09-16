@@ -120,3 +120,22 @@ export interface StackedBarChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface StackedAreaChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  series: readonly AreaChartSeries<TDatum, TYKey>[];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  curve?: CurveType;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

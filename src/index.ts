@@ -9,6 +9,7 @@ export { AreaChart } from './cartesian/AreaChart';
 export { BarChart } from './cartesian/BarChart';
 export { LineChart } from './cartesian/LineChart';
 export { ScatterChart } from './cartesian/ScatterChart';
+export { StackedAreaChart } from './cartesian/StackedAreaChart';
 export { StackedBarChart } from './cartesian/StackedBarChart';
 export type {
   AreaChartProps,
@@ -18,6 +19,7 @@ export type {
   ChartAxisConfig,
   LineChartProps,
   ScatterChartProps,
+  StackedAreaChartProps,
   StackedBarChartProps,
 } from './cartesian/types';
 export { PieChart } from './polar/PieChart';

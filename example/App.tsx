@@ -4,6 +4,7 @@ import {
   LineChart,
   PieChart,
   ScatterChart,
+  StackedAreaChart,
   StackedBarChart,
 } from '@real-native/charts';
 import { StatusBar } from 'expo-status-bar';
@@ -116,6 +117,26 @@ export function App() {
             data={revenue}
             height={300}
             series={[{ key: 'current', color: colors.primary, fillOpacity: 0.28 }]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Revenue composition</Text>
+          <StackedAreaChart
+            accessibilityLabel="Current and previous revenue as stacked areas"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            curve="monotoneX"
+            data={revenue}
+            height={300}
+            series={[
+              { key: 'current', color: colors.primary, fillOpacity: 0.7 },
+              { key: 'previous', color: colors.secondary, fillOpacity: 0.5 },
+            ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
           />

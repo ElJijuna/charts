@@ -71,6 +71,20 @@ export function RevenueChart() {
 />
 ```
 
+`StackedAreaChart` shows how each series contributes to a cumulative total:
+
+```tsx
+<StackedAreaChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: 'revenue', fillOpacity: 0.7 },
+    { key: 'cost', fillOpacity: 0.5 },
+  ]}
+  curve="monotoneX"
+/>
+```
+
 `ScatterChart` renders one point set per series and supports three marker shapes:
 
 ```tsx
