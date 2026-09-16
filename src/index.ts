@@ -8,6 +8,7 @@
 export { AreaChart } from './cartesian/AreaChart';
 export { BarChart } from './cartesian/BarChart';
 export { LineChart } from './cartesian/LineChart';
+export { ScatterChart } from './cartesian/ScatterChart';
 export type {
   AreaChartProps,
   AreaChartSeries,
@@ -15,6 +16,7 @@ export type {
   ChartAxesConfig,
   ChartAxisConfig,
   LineChartProps,
+  ScatterChartProps,
 } from './cartesian/types';
 export { defaultChartTheme } from './theme/defaultTheme';
 export type { ChartTheme, ChartThemeOverride } from './theme/types';

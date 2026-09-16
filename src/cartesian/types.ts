@@ -1,5 +1,5 @@
 import type { StyleProp, ViewStyle } from 'react-native';
-import type { CurveType } from 'victory-native';
+import type { CurveType, ScatterShape } from 'victory-native';
 import type { ChartThemeOverride } from '../theme/types';
 import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '../types/data';
 
@@ -75,6 +75,26 @@ export interface AreaChartProps<
   padding?: number;
   curve?: CurveType;
   connectMissingData?: boolean;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
+export interface ScatterChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  series: readonly ChartSeries<TDatum, TYKey>[];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  radius?: number;
+  shape?: ScatterShape;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;

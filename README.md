@@ -57,6 +57,18 @@ export function RevenueChart() {
 />
 ```
 
+`ScatterChart` renders one point set per series and supports three marker shapes:
+
+```tsx
+<ScatterChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue', color: '#6750a4' }]}
+  radius={6}
+  shape="circle"
+/>
+```
+
 ## Example app
 
 The Expo development app consumes the package directly from `src` through Metro:
