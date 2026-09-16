@@ -1,4 +1,4 @@
-import { AreaChart, BarChart, LineChart, ScatterChart } from '@real-native/charts';
+import { AreaChart, BarChart, LineChart, PieChart, ScatterChart } from '@real-native/charts';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -111,6 +111,20 @@ export function App() {
             ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Revenue mix</Text>
+          <PieChart
+            accessibilityLabel="Revenue split between product and services"
+            data={[
+              { label: 'Product', value: 68, color: colors.primary },
+              { label: 'Services', value: 32, color: colors.secondary },
+            ]}
+            height={300}
+            innerRadius="45%"
+            theme={{ backgroundColor: colors.surface }}
           />
         </View>
       </ScrollView>

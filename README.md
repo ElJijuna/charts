@@ -69,6 +69,18 @@ export function RevenueChart() {
 />
 ```
 
+`PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
+
+```tsx
+<PieChart
+  data={[
+    { label: 'Product', value: 70 },
+    { label: 'Services', value: 30 },
+  ]}
+  innerRadius="45%"
+/>
+```
+
 ## Example app
 
 The Expo development app consumes the package directly from `src` through Metro:

@@ -18,6 +18,8 @@ export type {
   LineChartProps,
   ScatterChartProps,
 } from './cartesian/types';
+export { PieChart } from './polar/PieChart';
+export type { PieChartDatum, PieChartProps } from './polar/types';
 export { defaultChartTheme } from './theme/defaultTheme';
 export type { ChartTheme, ChartThemeOverride } from './theme/types';
 export type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from './types/data';
