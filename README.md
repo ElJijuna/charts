@@ -166,6 +166,15 @@ export function RevenueChart() {
 />
 ```
 
+`HistogramChart` groups raw numeric values into adjacent frequency bins:
+
+```tsx
+<HistogramChart
+  values={[12, 18, 18, 21, 24, 24, 24, 30]}
+  binCount={6}
+/>
+```
+
 `PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
 
 ```tsx

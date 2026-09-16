@@ -10,6 +10,7 @@ export { AreaRangeChart } from './cartesian/AreaRangeChart';
 export { BarChart } from './cartesian/BarChart';
 export { CandlestickChart } from './cartesian/CandlestickChart';
 export { ComboChart } from './cartesian/ComboChart';
+export { HistogramChart } from './cartesian/HistogramChart';
 export { HorizontalBarChart } from './cartesian/HorizontalBarChart';
 export { HorizontalStackedBarChart } from './cartesian/HorizontalStackedBarChart';
 export { LineChart } from './cartesian/LineChart';
@@ -27,6 +28,7 @@ export type {
   ChartAxesConfig,
   ChartAxisConfig,
   ComboChartProps,
+  HistogramChartProps,
   HorizontalBarChartProps,
   HorizontalStackedBarChartProps,
   LineChartProps,

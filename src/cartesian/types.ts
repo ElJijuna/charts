@@ -249,3 +249,18 @@ export interface SparklineChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface HistogramChartProps {
+  values: readonly number[];
+  binCount?: number;
+  domain?: readonly [number, number];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  color?: string;
+  height?: number;
+  padding?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

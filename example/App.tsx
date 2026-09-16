@@ -5,6 +5,7 @@ import {
   CandlestickChart,
   ComboChart,
   GaugeChart,
+  HistogramChart,
   HorizontalBarChart,
   HorizontalStackedBarChart,
   LineChart,
@@ -43,6 +44,8 @@ const forecast = [
 ];
 
 const performance = revenue.map((item) => ({ ...item, target: 80 }));
+
+const orderValues = [42, 48, 51, 52, 56, 58, 58, 61, 64, 67, 71, 73, 76, 82, 91];
 
 const colors = {
   background: '#f7f2fa',
@@ -252,6 +255,22 @@ export function App() {
             series={[{ key: 'current', color: colors.primary, strokeWidth: 3 }]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Order distribution</Text>
+          <HistogramChart
+            accessibilityLabel="Distribution of order values"
+            axes={{
+              x: { tickCount: 6, formatLabel: (value) => `$${Math.round(Number(value))}` },
+              y: { tickCount: 4, formatLabel: String },
+            }}
+            binCount={6}
+            color={colors.primary}
+            height={300}
+            theme={{ backgroundColor: colors.surface }}
+            values={orderValues}
           />
         </View>
 
