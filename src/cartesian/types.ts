@@ -289,3 +289,25 @@ export interface BubbleChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface LollipopChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  yKey: TYKey;
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  color?: string;
+  stemWidth?: number;
+  radius?: number;
+  shape?: ScatterShape;
+  height?: number;
+  padding?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}

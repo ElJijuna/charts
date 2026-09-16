@@ -10,6 +10,7 @@ import {
   HorizontalBarChart,
   HorizontalStackedBarChart,
   LineChart,
+  LollipopChart,
   PieChart,
   ScatterChart,
   SparklineChart,
@@ -297,6 +298,23 @@ export function App() {
             height={300}
             theme={{ backgroundColor: colors.surface }}
             values={orderValues}
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Monthly ranking</Text>
+          <LollipopChart
+            accessibilityLabel="Monthly revenue as lollipop markers"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            color={colors.primary}
+            data={revenue}
+            height={300}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+            yKey="current"
           />
         </View>
 

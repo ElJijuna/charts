@@ -187,6 +187,17 @@ export function RevenueChart() {
 />
 ```
 
+`LollipopChart` combines thin stems with markers for lightweight comparisons:
+
+```tsx
+<LollipopChart
+  data={data}
+  xKey="month"
+  yKey="revenue"
+  radius={6}
+/>
+```
+
 `PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
 
 ```tsx

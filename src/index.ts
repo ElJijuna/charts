@@ -15,6 +15,7 @@ export { HistogramChart } from './cartesian/HistogramChart';
 export { HorizontalBarChart } from './cartesian/HorizontalBarChart';
 export { HorizontalStackedBarChart } from './cartesian/HorizontalStackedBarChart';
 export { LineChart } from './cartesian/LineChart';
+export { LollipopChart } from './cartesian/LollipopChart';
 export { ScatterChart } from './cartesian/ScatterChart';
 export { SparklineChart } from './cartesian/SparklineChart';
 export { StackedAreaChart } from './cartesian/StackedAreaChart';
@@ -34,6 +35,7 @@ export type {
   HorizontalBarChartProps,
   HorizontalStackedBarChartProps,
   LineChartProps,
+  LollipopChartProps,
   ScatterChartProps,
   SparklineChartProps,
   StackedAreaChartProps,
