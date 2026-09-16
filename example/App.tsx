@@ -1,4 +1,11 @@
-import { AreaChart, BarChart, LineChart, PieChart, ScatterChart } from '@real-native/charts';
+import {
+  AreaChart,
+  BarChart,
+  LineChart,
+  PieChart,
+  ScatterChart,
+  StackedBarChart,
+} from '@real-native/charts';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -71,6 +78,26 @@ export function App() {
             series={[
               { key: 'current', label: 'Current period', color: colors.primary },
               { key: 'previous', label: 'Previous period', color: colors.secondary },
+            ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Combined revenue</Text>
+          <StackedBarChart
+            accessibilityLabel="Current and previous monthly revenue stacked"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            data={revenue}
+            height={300}
+            innerPadding={0.2}
+            series={[
+              { key: 'current', color: colors.primary },
+              { key: 'previous', color: colors.secondary },
             ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"

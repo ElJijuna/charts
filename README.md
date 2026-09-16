@@ -45,6 +45,20 @@ export function RevenueChart() {
 />
 ```
 
+`StackedBarChart` displays series as cumulative segments for each category:
+
+```tsx
+<StackedBarChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: 'revenue', color: '#6750a4' },
+    { key: 'cost', color: '#00a6a6' },
+  ]}
+  innerPadding={0.2}
+/>
+```
+
 `AreaChart` adds curve selection, fill opacity, and missing-data handling:
 
 ```tsx
