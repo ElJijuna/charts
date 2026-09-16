@@ -3,6 +3,7 @@ import {
   AreaRangeChart,
   BarChart,
   CandlestickChart,
+  ComboChart,
   HorizontalBarChart,
   HorizontalStackedBarChart,
   LineChart,
@@ -38,6 +39,8 @@ const forecast = [
   { month: 'Sep', minimum: 91, maximum: 119 },
   { month: 'Oct', minimum: 96, maximum: 126 },
 ];
+
+const performance = revenue.map((item) => ({ ...item, target: 80 }));
 
 const colors = {
   background: '#f7f2fa',
@@ -255,6 +258,24 @@ export function App() {
             openKey="open"
             theme={{ backgroundColor: colors.surface }}
             xKey="day"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Revenue versus target</Text>
+          <ComboChart
+            accessibilityLabel="Monthly revenue bars and target line"
+            axes={{
+              x: { tickCount: performance.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            barSeries={[{ key: 'current', color: colors.primary }]}
+            curve="monotoneX"
+            data={performance}
+            height={300}
+            lineSeries={[{ key: 'target', color: colors.secondary, strokeWidth: 3 }]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
           />
         </View>
 

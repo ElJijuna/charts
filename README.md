@@ -145,6 +145,17 @@ export function RevenueChart() {
 />
 ```
 
+`ComboChart` overlays line series on grouped bars using a shared scale:
+
+```tsx
+<ComboChart
+  data={data}
+  xKey="month"
+  barSeries={[{ key: 'revenue' }]}
+  lineSeries={[{ key: 'target', strokeWidth: 3 }]}
+/>
+```
+
 `PieChart` accepts labeled values, assigns theme colors, and can also render as a donut:
 
 ```tsx

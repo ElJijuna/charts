@@ -206,3 +206,27 @@ export interface AreaRangeChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface ComboChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> {
+  data: readonly TDatum[];
+  xKey: TXKey;
+  barSeries: readonly ChartSeries<TDatum, TYKey>[];
+  lineSeries: readonly ChartSeries<TDatum, TYKey>[];
+  axes?: ChartAxesConfig;
+  theme?: ChartThemeOverride;
+  height?: number;
+  padding?: number;
+  groupPadding?: number;
+  barPadding?: number;
+  cornerRadius?: number;
+  curve?: CurveType;
+  connectMissingData?: boolean;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
