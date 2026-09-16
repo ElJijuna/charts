@@ -4,6 +4,7 @@ import {
   BarChart,
   CandlestickChart,
   ComboChart,
+  GaugeChart,
   HorizontalBarChart,
   HorizontalStackedBarChart,
   LineChart,
@@ -290,6 +291,19 @@ export function App() {
             height={300}
             innerRadius="45%"
             theme={{ backgroundColor: colors.surface }}
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Target attainment</Text>
+          <GaugeChart
+            accessibilityLabel="Revenue target attainment at 84 percent"
+            height={220}
+            max={100}
+            theme={{ backgroundColor: colors.surface }}
+            trackColor="#e7e0ec"
+            value={84}
+            valueColor={colors.primary}
           />
         </View>
       </ScrollView>

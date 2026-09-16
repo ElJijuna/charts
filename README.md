@@ -168,6 +168,17 @@ export function RevenueChart() {
 />
 ```
 
+`GaugeChart` displays a value against a maximum as a configurable arc:
+
+```tsx
+<GaugeChart
+  value={72}
+  max={100}
+  innerRadius="70%"
+  valueColor="#6750a4"
+/>
+```
+
 ## Example app
 
 The Expo development app consumes the package directly from `src` through Metro:

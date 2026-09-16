@@ -20,3 +20,19 @@ export interface PieChartProps {
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export interface GaugeChartProps {
+  value: number;
+  max?: number;
+  theme?: ChartThemeOverride;
+  valueColor?: string;
+  trackColor?: string;
+  height?: number;
+  innerRadius?: number | string;
+  startAngle?: number;
+  circleSweepDegrees?: number;
+  animate?: boolean;
+  style?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
