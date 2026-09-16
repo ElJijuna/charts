@@ -59,6 +59,16 @@ export function RevenueChart() {
 />
 ```
 
+`HorizontalBarChart` is useful for rankings and longer category labels:
+
+```tsx
+<HorizontalBarChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue', color: '#6750a4' }]}
+/>
+```
+
 `AreaChart` adds curve selection, fill opacity, and missing-data handling:
 
 ```tsx

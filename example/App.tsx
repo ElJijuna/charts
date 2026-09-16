@@ -2,6 +2,7 @@ import {
   AreaChart,
   BarChart,
   CandlestickChart,
+  HorizontalBarChart,
   LineChart,
   PieChart,
   ScatterChart,
@@ -88,6 +89,25 @@ export function App() {
             series={[
               { key: 'current', label: 'Current period', color: colors.primary },
               { key: 'previous', label: 'Previous period', color: colors.secondary },
+            ]}
+            theme={{ backgroundColor: colors.surface }}
+            xKey="month"
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Horizontal comparison</Text>
+          <HorizontalBarChart
+            accessibilityLabel="Monthly revenue comparison as horizontal bars"
+            axes={{
+              x: { tickCount: revenue.length, formatLabel: String },
+              y: { tickCount: 5, formatLabel: (value) => `$${String(value)}k` },
+            }}
+            data={revenue}
+            height={300}
+            series={[
+              { key: 'current', color: colors.primary },
+              { key: 'previous', color: colors.secondary },
             ]}
             theme={{ backgroundColor: colors.surface }}
             xKey="month"

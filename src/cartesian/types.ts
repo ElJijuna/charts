@@ -171,3 +171,9 @@ export interface CandlestickChartProps<
   accessibilityLabel?: string;
   testID?: string;
 }
+
+export type HorizontalBarChartProps<
+  TDatum extends ChartDatum,
+  TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
+  TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
+> = BarChartProps<TDatum, TXKey, TYKey>;
