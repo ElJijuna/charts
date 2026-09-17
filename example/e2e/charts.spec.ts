@@ -1,0 +1,48 @@
+import { expect, test } from '@playwright/test';
+
+const chartIds = [
+  'line',
+  'bar',
+  'horizontal-bar',
+  'horizontal-stacked-bar',
+  'stacked-bar',
+  'area',
+  'stacked-area',
+  'area-range',
+  'scatter',
+  'bubble',
+  'sparkline',
+  'histogram',
+  'lollipop',
+  'candlestick',
+  'combo',
+  'pie',
+  'gauge',
+] as const;
+
+for (const chartId of chartIds) {
+  test(`${chartId} story renders non-empty chart output`, async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+
+    await page.goto(`/iframe.html?id=charts--${chartId}&viewMode=story`);
+
+    const story = page.getByTestId(`chart-story-${chartId}`);
+    await expect(story).toBeVisible();
+
+    const canvas = story.locator('canvas');
+    await expect(canvas).toHaveCount(1);
+    await expect(canvas).toBeVisible();
+
+    const dimensions = await canvas.evaluate((element: HTMLCanvasElement) => ({
+      height: element.height,
+      width: element.width,
+    }));
+    expect(dimensions.width, `${chartId} canvas width`).toBeGreaterThan(0);
+    expect(dimensions.height, `${chartId} canvas height`).toBeGreaterThan(0);
+
+    const renderedChart = await canvas.screenshot();
+    expect(renderedChart.byteLength, `${chartId} rendered image`).toBeGreaterThan(1_000);
+    expect(pageErrors).toEqual([]);
+  });
+}

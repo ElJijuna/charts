@@ -1,5 +1,9 @@
 node_modules/
 example/node_modules/
+example/playwright-report/
+example/storybook-static/
+example/test-results/
+example/public/canvaskit.wasm
 .expo/
 lib/
 coverage/

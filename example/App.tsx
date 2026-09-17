@@ -69,7 +69,7 @@ export function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} testID="chart-gallery">
         <View style={styles.heading}>
           <Text style={styles.eyebrow}>@real-native/charts</Text>
           <Text style={styles.title}>Revenue overview</Text>
@@ -78,7 +78,8 @@ export function App() {
           </Text>
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-line">
+          <Text style={styles.cardTitle}>Line chart</Text>
           <LineChart
             accessibilityLabel="Monthly revenue for the current and previous period"
             axes={{
@@ -102,7 +103,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-bar">
           <Text style={styles.cardTitle}>Grouped comparison</Text>
           <BarChart
             accessibilityLabel="Monthly revenue comparison as grouped bars"
@@ -121,7 +122,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-horizontal-bar">
           <Text style={styles.cardTitle}>Horizontal comparison</Text>
           <HorizontalBarChart
             accessibilityLabel="Monthly revenue comparison as horizontal bars"
@@ -140,7 +141,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-horizontal-stacked-bar">
           <Text style={styles.cardTitle}>Horizontal total</Text>
           <HorizontalStackedBarChart
             accessibilityLabel="Current and previous monthly revenue stacked horizontally"
@@ -160,7 +161,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-stacked-bar">
           <Text style={styles.cardTitle}>Combined revenue</Text>
           <StackedBarChart
             accessibilityLabel="Current and previous monthly revenue stacked"
@@ -180,7 +181,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-area">
           <Text style={styles.cardTitle}>Growth area</Text>
           <AreaChart
             accessibilityLabel="Monthly revenue growth area"
@@ -197,7 +198,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-stacked-area">
           <Text style={styles.cardTitle}>Revenue composition</Text>
           <StackedAreaChart
             accessibilityLabel="Current and previous revenue as stacked areas"
@@ -217,7 +218,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-area-range">
           <Text style={styles.cardTitle}>Revenue forecast</Text>
           <AreaRangeChart
             accessibilityLabel="Monthly minimum and maximum revenue forecast"
@@ -236,7 +237,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-scatter">
           <Text style={styles.cardTitle}>Revenue observations</Text>
           <ScatterChart
             accessibilityLabel="Monthly revenue observations"
@@ -256,7 +257,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-bubble">
           <Text style={styles.cardTitle}>Segment performance</Text>
           <BubbleChart
             accessibilityLabel="Revenue and customer volume by segment"
@@ -274,7 +275,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-sparkline">
           <Text style={styles.cardTitle}>Revenue trend</Text>
           <SparklineChart
             accessibilityLabel="Compact monthly revenue trend"
@@ -285,7 +286,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-histogram">
           <Text style={styles.cardTitle}>Order distribution</Text>
           <HistogramChart
             accessibilityLabel="Distribution of order values"
@@ -301,7 +302,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-lollipop">
           <Text style={styles.cardTitle}>Monthly ranking</Text>
           <LollipopChart
             accessibilityLabel="Monthly revenue as lollipop markers"
@@ -318,7 +319,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-candlestick">
           <Text style={styles.cardTitle}>Weekly price</Text>
           <CandlestickChart
             accessibilityLabel="Weekly open high low and close prices"
@@ -337,7 +338,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-combo">
           <Text style={styles.cardTitle}>Revenue versus target</Text>
           <ComboChart
             accessibilityLabel="Monthly revenue bars and target line"
@@ -355,7 +356,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-pie">
           <Text style={styles.cardTitle}>Revenue mix</Text>
           <PieChart
             accessibilityLabel="Revenue split between product and services"
@@ -369,7 +370,7 @@ export function App() {
           />
         </View>
 
-        <View style={styles.card}>
+        <View style={styles.card} testID="chart-gauge">
           <Text style={styles.cardTitle}>Target attainment</Text>
           <GaugeChart
             accessibilityLabel="Revenue target attainment at 84 percent"
