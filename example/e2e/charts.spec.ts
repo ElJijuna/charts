@@ -23,12 +23,19 @@ const chartIds = [
 for (const chartId of chartIds) {
   test(`${chartId} story renders non-empty chart output`, async ({ page }) => {
     const pageErrors: string[] = [];
-    page.on('pageerror', (error) => pageErrors.push(error.message));
+    let rejectOnPageError: (error: Error) => void;
+    const pageError = new Promise<never>((_, reject) => {
+      rejectOnPageError = reject;
+    });
+    page.on('pageerror', (error) => {
+      pageErrors.push(error.message);
+      rejectOnPageError(error);
+    });
 
     await page.goto(`/iframe.html?id=charts--${chartId}&viewMode=story`);
 
     const story = page.getByTestId(`chart-story-${chartId}`);
-    await expect(story).toBeVisible();
+    await Promise.race([expect(story).toBeVisible(), pageError]);
 
     const canvas = story.locator('canvas');
     await expect(canvas).toHaveCount(1);

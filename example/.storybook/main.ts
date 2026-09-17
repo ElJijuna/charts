@@ -5,8 +5,13 @@ import type { Alias, Plugin } from 'vite';
 
 const require = createRequire(import.meta.url);
 const reactNativeWebRoot = dirname(require.resolve('react-native-web/package.json'));
+const victoryNativeRoot = resolve(dirname(require.resolve('victory-native')), '..');
 
 const reactNativeAliases: Alias[] = [
+  {
+    find: /^victory-native$/,
+    replacement: resolve(victoryNativeRoot, 'src/index.ts'),
+  },
   {
     find: 'react-native/Libraries/Image/AssetRegistry',
     replacement: resolve(reactNativeWebRoot, 'dist/modules/AssetRegistry/index.js'),
@@ -70,6 +75,10 @@ const config: StorybookConfig = {
     return {
       ...viteConfig,
       plugins: [...(viteConfig.plugins ?? []), fixReactNativeAliases()],
+      optimizeDeps: {
+        ...viteConfig.optimizeDeps,
+        exclude: [...(viteConfig.optimizeDeps?.exclude ?? []), 'victory-native'],
+      },
       resolve: {
         ...viteConfig.resolve,
         alias: [...reactNativeAliases, ...preservedAliases],
