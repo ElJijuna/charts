@@ -73,8 +73,8 @@ Quality requirements must be met before publication is considered ready.
 - [ ] Repeat all workflow checks and confirm they pass.
 - [ ] Test the tarball in RN and Web consumer apps without the example's local alias to `src`.
 - [ ] Verify the declared minimum versions and publish a tested compatibility matrix.
-- [ ] Document web installation: RN Web, GestureHandlerRootView and Skia/CanvasKit loading.
-- [ ] Document native installation and configuration differences between Reanimated 3 and 4.
+- [x] Document web installation: RN Web, GestureHandlerRootView and Skia/CanvasKit loading.
+- [x] Document native installation and configuration differences between Reanimated 3 and 4.
 - [ ] Consider `prepack: npm run build` so `npm pack` does not depend on a prior manual build.
 - [ ] Choose the first version and complete its CHANGELOG notes; it currently lists `0.0.0`.
 - [ ] Choose manual release or semantic-release, avoiding two publications of the same change.
