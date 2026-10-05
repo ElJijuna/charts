@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 
 import { BarChart } from './BarChart';
 import type { HistogramChartProps } from './types';
@@ -59,7 +59,7 @@ function createHistogramBins(
   return bins;
 }
 
-export function HistogramChart({
+function HistogramChartComponent({
   values,
   binCount = 10,
   domain,
@@ -73,16 +73,25 @@ export function HistogramChart({
   accessibilityLabel = 'Histogram chart',
   testID,
 }: HistogramChartProps): ReactElement {
+  const domainStart = domain?.[0];
+  const domainEnd = domain?.[1];
   const data = useMemo(
-    () => createHistogramBins(values, binCount, domain),
-    [values, binCount, domain],
+    () =>
+      createHistogramBins(
+        values,
+        binCount,
+        domainStart !== undefined && domainEnd !== undefined ? [domainStart, domainEnd] : undefined,
+      ),
+    [values, binCount, domainStart, domainEnd],
   );
+
+  const series = useMemo(() => [{ key: 'count' as const, color }], [color]);
 
   return (
     <BarChart
       data={data}
       xKey="bin"
-      series={[{ key: 'count', color }]}
+      series={series}
       axes={axes}
       theme={theme}
       height={height}
@@ -97,3 +106,5 @@ export function HistogramChart({
     />
   );
 }
+
+export const HistogramChart = memo(HistogramChartComponent);

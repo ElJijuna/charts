@@ -1,10 +1,11 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Pie, PolarChart } from 'victory-native';
 
+import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { PieChartProps } from './types';
 
 const styles = StyleSheet.create({
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PieChart({
+function PieChartComponent({
   data,
   theme: themeOverride,
   height = 240,
@@ -26,7 +27,7 @@ export function PieChart({
   accessibilityLabel = 'Pie chart',
   testID,
 }: PieChartProps): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
   const chartData = useMemo(() => {
     const slices = data
       .map((item, index) => ({
@@ -59,7 +60,7 @@ export function PieChart({
             startAngle={startAngle}
             circleSweepDegrees={circleSweepDegrees}
           >
-            {() => <Pie.Slice animate={animate ? { type: 'timing', duration: 300 } : undefined} />}
+            {() => <Pie.Slice animate={animate ? chartAnimation : undefined} />}
           </Pie.Chart>
         </PolarChart>
       ) : (
@@ -68,3 +69,5 @@ export function PieChart({
     </View>
   );
 }
+
+export const PieChart = memo(PieChartComponent);

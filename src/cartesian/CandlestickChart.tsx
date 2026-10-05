@@ -1,10 +1,12 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { CandlestickChartProps } from './types';
 
@@ -15,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function CandlestickChart<
+function CandlestickChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -40,7 +42,8 @@ export function CandlestickChart<
   accessibilityLabel = 'Candlestick chart',
   testID,
 }: CandlestickChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(
     () => [openKey, highKey, lowKey, closeKey] as TYKey[],
     [openKey, highKey, lowKey, closeKey],
@@ -49,13 +52,12 @@ export function CandlestickChart<
     () => prepareCartesianData(data, xKey, yKeys, yKeys),
     [data, xKey, yKeys],
   );
+  const positive = colors?.positive ?? theme.colors[2] ?? '#386a20';
+  const negative = colors?.negative ?? theme.colors[3] ?? '#ba1a1a';
+  const neutral = colors?.neutral ?? theme.axisColor;
   const candleColors = useMemo(
-    () => ({
-      positive: colors?.positive ?? theme.colors[2] ?? '#386a20',
-      negative: colors?.negative ?? theme.colors[3] ?? '#ba1a1a',
-      neutral: colors?.neutral ?? theme.axisColor,
-    }),
-    [colors, theme],
+    () => ({ positive, negative, neutral }),
+    [positive, negative, neutral],
   );
 
   return (
@@ -71,14 +73,7 @@ export function CandlestickChart<
           xKey={xKey}
           yKeys={yKeys}
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points, chartBounds }) => (
             <Candlestick
@@ -92,7 +87,7 @@ export function CandlestickChart<
               candleRatio={candleRatio}
               minBodyHeight={minBodyHeight}
               wickStrokeWidth={wickStrokeWidth}
-              animate={animate ? { type: 'timing', duration: 300 } : undefined}
+              animate={animate ? chartAnimation : undefined}
             />
           )}
         </CartesianChart>
@@ -102,3 +97,8 @@ export function CandlestickChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const CandlestickChart = memo(
+  CandlestickChartComponent,
+) as unknown as typeof CandlestickChartComponent;

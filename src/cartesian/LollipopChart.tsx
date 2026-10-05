@@ -1,10 +1,12 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Bar, CartesianChart, Scatter } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { LollipopChartProps } from './types';
 
@@ -15,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function LollipopChart<
+function LollipopChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -36,13 +38,15 @@ export function LollipopChart<
   accessibilityLabel = 'Lollipop chart',
   testID,
 }: LollipopChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
+  const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
-    () => prepareCartesianData(data, xKey, [yKey]),
-    [data, xKey, yKey],
+    () => prepareCartesianData(data, xKey, yKeys),
+    [data, xKey, yKeys],
   );
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
-  const animation = animate ? { type: 'timing' as const, duration: 300 } : undefined;
+  const animation = animate ? chartAnimation : undefined;
 
   return (
     <View
@@ -55,16 +59,9 @@ export function LollipopChart<
         <CartesianChart<TDatum, TXKey, TYKey>
           data={chartData}
           xKey={xKey}
-          yKeys={[yKey]}
+          yKeys={yKeys}
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points, chartBounds }) => (
             <>
@@ -91,3 +88,8 @@ export function LollipopChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const LollipopChart = memo(
+  LollipopChartComponent,
+) as unknown as typeof LollipopChartComponent;

@@ -270,3 +270,14 @@ npm run test:e2e:dev
 ```
 
 The browser tests require Chromium (`cd example && npx playwright install chromium`).
+
+### Stable props and updates
+
+Chart components use shallow memoization. Keep `data`, `series`, palette arrays,
+styles, and formatter callbacks stable with module constants or `useMemo` /
+`useCallback` when they are reused. Update data and series immutably: replace the
+array when its contents change instead of mutating it in place.
+
+Internally, axes and theme configuration retain their references when their
+values are unchanged. Theme changes do not re-prepare Cartesian data. Histogram
+bins depend on domain endpoints rather than the domain array reference.

@@ -1,12 +1,14 @@
-import { Fragment, type ReactElement, useMemo } from 'react';
+import { memo, Fragment, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart, Line } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { resolveSeries } from '../core/resolveSeries';
 import { SinglePointMarker } from '../core/SinglePointMarker';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { ComboChartProps } from './types';
 
@@ -17,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function ComboChart<
+function ComboChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -40,17 +42,37 @@ export function ComboChart<
   accessibilityLabel = 'Combo chart',
   testID,
 }: ComboChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>([...barSeries, ...lineSeries], theme),
     [barSeries, lineSeries, theme],
   );
-  const resolvedBarSeries = resolvedSeries.slice(0, barSeries.length);
-  const resolvedLineSeries = resolvedSeries.slice(barSeries.length);
-  const yKeys = useMemo(() => resolvedSeries.map(({ key }) => key), [resolvedSeries]);
+  const resolvedBarSeries = useMemo(
+    () => resolvedSeries.slice(0, barSeries.length),
+    [resolvedSeries, barSeries.length],
+  );
+  const resolvedLineSeries = useMemo(
+    () => resolvedSeries.slice(barSeries.length),
+    [resolvedSeries, barSeries.length],
+  );
+  const yKeys = useMemo(
+    () => [...barSeries, ...lineSeries].map(({ key }) => key),
+    [barSeries, lineSeries],
+  );
   const { data: chartData, hasData } = useMemo(
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
+  );
+
+  const roundedCorners = useMemo(
+    () => ({
+      topLeft: cornerRadius,
+      topRight: cornerRadius,
+      bottomLeft: cornerRadius,
+      bottomRight: cornerRadius,
+    }),
+    [cornerRadius],
   );
 
   return (
@@ -66,14 +88,7 @@ export function ComboChart<
           xKey={xKey}
           yKeys={yKeys}
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points, chartBounds }) => (
             <>
@@ -81,19 +96,14 @@ export function ComboChart<
                 chartBounds={chartBounds}
                 betweenGroupPadding={groupPadding}
                 withinGroupPadding={barPadding}
-                roundedCorners={{
-                  topLeft: cornerRadius,
-                  topRight: cornerRadius,
-                  bottomLeft: cornerRadius,
-                  bottomRight: cornerRadius,
-                }}
+                roundedCorners={roundedCorners}
               >
                 {resolvedBarSeries.map((item) => (
                   <BarGroup.Bar
                     key={String(item.key)}
                     points={points[item.key]}
                     color={item.color}
-                    animate={animate ? { type: 'timing', duration: 300 } : undefined}
+                    animate={animate ? chartAnimation : undefined}
                   />
                 ))}
               </BarGroup>
@@ -105,7 +115,7 @@ export function ComboChart<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? { type: 'timing', duration: 300 } : undefined}
+                    animate={animate ? chartAnimation : undefined}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>
@@ -119,3 +129,6 @@ export function ComboChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const ComboChart = memo(ComboChartComponent) as unknown as typeof ComboChartComponent;

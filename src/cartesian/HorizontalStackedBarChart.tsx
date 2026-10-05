@@ -1,11 +1,13 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, HorizontalStackedBar } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { resolveSeries } from '../core/resolveSeries';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { HorizontalStackedBarChartProps } from './types';
 
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function HorizontalStackedBarChart<
+function HorizontalStackedBarChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -35,12 +37,13 @@ export function HorizontalStackedBarChart<
   accessibilityLabel = 'Horizontal stacked bar chart',
   testID,
 }: HorizontalStackedBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
   );
-  const yKeys = useMemo(() => resolvedSeries.map(({ key }) => key), [resolvedSeries]);
+  const yKeys = useMemo(() => series.map(({ key }) => key), [series]);
   const colors = useMemo(() => resolvedSeries.map(({ color }) => color), [resolvedSeries]);
   const { data: chartData, hasData } = useMemo(
     () => prepareCartesianData(data, xKey, yKeys),
@@ -61,14 +64,7 @@ export function HorizontalStackedBarChart<
           yKeys={yKeys}
           orientation="horizontal"
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points, chartBounds }) => (
             <HorizontalStackedBar
@@ -77,7 +73,7 @@ export function HorizontalStackedBarChart<
               colors={colors}
               innerPadding={innerPadding}
               barWidth={barWidth}
-              animate={animate ? { type: 'timing', duration: 300 } : undefined}
+              animate={animate ? chartAnimation : undefined}
             />
           )}
         </CartesianChart>
@@ -87,3 +83,8 @@ export function HorizontalStackedBarChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const HorizontalStackedBarChart = memo(
+  HorizontalStackedBarChartComponent,
+) as unknown as typeof HorizontalStackedBarChartComponent;

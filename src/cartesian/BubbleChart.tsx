@@ -1,10 +1,12 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, type PointsArray, Scatter } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { BubbleChartProps } from './types';
 
@@ -15,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function BubbleChart<
+function BubbleChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -37,10 +39,12 @@ export function BubbleChart<
   accessibilityLabel = 'Bubble chart',
   testID,
 }: BubbleChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
+  const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
-    () => prepareCartesianData(data, xKey, [yKey], [yKey, sizeKey]),
-    [data, xKey, yKey, sizeKey],
+    () => prepareCartesianData(data, xKey, yKeys, [yKey, sizeKey]),
+    [data, xKey, yKeys, yKey, sizeKey],
   );
   const radiusForPoint = useMemo(() => {
     const lowerRadius = Math.min(minRadius, maxRadius);
@@ -80,16 +84,9 @@ export function BubbleChart<
         <CartesianChart<TDatum, TXKey, TYKey>
           data={chartData}
           xKey={xKey}
-          yKeys={[yKey]}
+          yKeys={yKeys}
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points }) => (
             <Scatter
@@ -97,7 +94,7 @@ export function BubbleChart<
               color={color ?? theme.colors[0] ?? '#6750a4'}
               radius={radiusForPoint}
               shape={shape}
-              animate={animate ? { type: 'timing', duration: 300 } : undefined}
+              animate={animate ? chartAnimation : undefined}
             />
           )}
         </CartesianChart>
@@ -107,3 +104,6 @@ export function BubbleChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const BubbleChart = memo(BubbleChartComponent) as unknown as typeof BubbleChartComponent;

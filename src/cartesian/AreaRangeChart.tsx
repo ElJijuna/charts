@@ -1,11 +1,13 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AreaRange, CartesianChart, Line } from 'victory-native';
 
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
+import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
 import { SinglePointMarker } from '../core/SinglePointMarker';
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { AreaRangeChartProps } from './types';
 
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function AreaRangeChart<
+function AreaRangeChartComponent<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum>,
@@ -38,7 +40,8 @@ export function AreaRangeChart<
   accessibilityLabel = 'Area range chart',
   testID,
 }: AreaRangeChartProps<TDatum, TXKey, TYKey>): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
+  const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [lowerKey, upperKey] as TYKey[], [lowerKey, upperKey]);
   const { data: chartData, hasData } = useMemo(
     () => prepareCartesianData(data, xKey, yKeys, yKeys),
@@ -58,14 +61,7 @@ export function AreaRangeChart<
           xKey={xKey}
           yKeys={yKeys}
           padding={padding}
-          axisOptions={{
-            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-            formatXLabel: axes?.x?.formatLabel,
-            formatYLabel: axes?.y?.formatLabel,
-            axisSide: { x: 'bottom', y: 'left' },
-            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-          }}
+          axisOptions={axisOptions}
         >
           {({ points }) => (
             <>
@@ -76,7 +72,7 @@ export function AreaRangeChart<
                 opacity={opacity}
                 curveType={curve}
                 connectMissingData={connectMissingData}
-                animate={animate ? { type: 'timing', duration: 300 } : undefined}
+                animate={animate ? chartAnimation : undefined}
               />
               {chartData.length === 1 && (
                 <Line
@@ -102,3 +98,8 @@ export function AreaRangeChart<
     </View>
   );
 }
+
+// React.memo erases generic parameters; retain the original JSX key inference.
+export const AreaRangeChart = memo(
+  AreaRangeChartComponent,
+) as unknown as typeof AreaRangeChartComponent;

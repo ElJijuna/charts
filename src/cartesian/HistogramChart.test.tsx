@@ -2,10 +2,10 @@ import { render } from '@testing-library/react-native';
 
 import { HistogramChart } from './HistogramChart';
 
-const mockBarChartSpy = jest.fn((_props: unknown) => null);
+const mockBarChartSpy = jest.fn((_props: Record<string, unknown>) => null);
 
 jest.mock('./BarChart', () => ({
-  BarChart: (props: unknown) => {
+  BarChart: (props: Record<string, unknown>) => {
     mockBarChartSpy(props);
     return null;
   },
@@ -88,4 +88,20 @@ describe('HistogramChart', () => {
       expect.objectContaining({ data: [{ bin: 5, count: 3 }] }),
     );
   });
+});
+
+it('preserves bins and series for equivalent domains and updates color separately', async () => {
+  const values = [1, 2, 3];
+  const screen = await render(<HistogramChart values={values} domain={[0, 4]} color="red" />);
+  const initial = mockBarChartSpy.mock.calls.at(-1)?.[0];
+  await screen.rerender(
+    <HistogramChart values={values} domain={[0, 4]} color="red" testID="next" />,
+  );
+  const next = mockBarChartSpy.mock.calls.at(-1)?.[0];
+  expect(next?.data).toBe(initial?.data);
+  expect(next?.series).toBe(initial?.series);
+  await screen.rerender(<HistogramChart values={values} domain={[0, 4]} color="blue" />);
+  const changed = mockBarChartSpy.mock.calls.at(-1)?.[0];
+  expect(changed?.data).toBe(initial?.data);
+  expect(changed?.series).toEqual([{ key: 'count', color: 'blue' }]);
 });

@@ -1,10 +1,10 @@
-import { type ReactElement, useMemo } from 'react';
+import { memo, type ReactElement, useMemo } from 'react';
 
-import { resolveChartTheme } from '../theme/resolveTheme';
+import { useChartTheme } from '../theme/useChartTheme';
 import { PieChart } from './PieChart';
 import type { GaugeChartProps } from './types';
 
-export function GaugeChart({
+function GaugeChartComponent({
   value,
   max = 100,
   theme: themeOverride,
@@ -19,7 +19,7 @@ export function GaugeChart({
   accessibilityLabel = 'Gauge chart',
   testID,
 }: GaugeChartProps): ReactElement {
-  const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
+  const theme = useChartTheme(themeOverride);
   const safeMax = Number.isFinite(max) && max > 0 ? max : 1;
   const safeValue = Number.isFinite(value) ? Math.min(Math.max(value, 0), safeMax) : 0;
   const data = useMemo(
@@ -53,3 +53,5 @@ export function GaugeChart({
     />
   );
 }
+
+export const GaugeChart = memo(GaugeChartComponent);
