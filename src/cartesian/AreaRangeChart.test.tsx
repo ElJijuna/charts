@@ -10,6 +10,8 @@ const lowerPoints = [{ x: 0, xValue: 'Jan', y: 8, yValue: 8 }];
 const upperPoints = [{ x: 0, xValue: 'Jan', y: 16, yValue: 16 }];
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
+  Line: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({ points: { lower: lowerPoints, upper: upperPoints } });
