@@ -7,6 +7,7 @@ const mockAreaSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({
