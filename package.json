@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit && npm --prefix example run typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!**/node_modules\" \"!**/lib\" \"!CHANGELOG.md\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!**/node_modules\" \"!**/lib\" \"!**/.expo\" \"!**/storybook-static\" \"!**/test-results\" \"!**/playwright-report\" \"!CHANGELOG.md\"",
     "format": "biome check --write .",
     "format:check": "biome check .",
     "test": "jest",
