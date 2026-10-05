@@ -1,6 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-native-web-vite';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
+import type { StorybookConfig } from '@storybook/react-native-web-vite';
 import type { Alias, Plugin } from 'vite';
 
 const require = createRequire(import.meta.url);
@@ -31,7 +31,7 @@ const reactNativeAliases: Alias[] = [
     find: 'react-native-web/dist/cjs/exports/StyleSheet/compiler/createReactDOMStyle.js',
     replacement: resolve(
       reactNativeWebRoot,
-      'dist/cjs/exports/StyleSheet/compiler/createReactDOMStyle.js'
+      'dist/cjs/exports/StyleSheet/compiler/createReactDOMStyle.js',
     ),
   },
   {
@@ -46,11 +46,10 @@ const reactNativeAliases: Alias[] = [
 
 const fixReactNativeAliases = (): Plugin => ({
   config: (viteConfig) => {
-    const configuredAliases = viteConfig.resolve?.alias;
-    if (Array.isArray(configuredAliases)) {
-      viteConfig.resolve!.alias = configuredAliases.filter(
-        (alias) => alias.find !== 'react-native'
-      );
+    const resolveOptions = viteConfig.resolve;
+    const configuredAliases = resolveOptions?.alias;
+    if (resolveOptions && Array.isArray(configuredAliases)) {
+      resolveOptions.alias = configuredAliases.filter((alias) => alias.find !== 'react-native');
     } else if (configuredAliases) {
       delete configuredAliases['react-native'];
     }

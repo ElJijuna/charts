@@ -1,12 +1,11 @@
 import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AreaRange, CartesianChart, Line } from 'victory-native';
-
-import { useChartAxisOptions } from '../core/useChartAxisOptions';
 import { chartAnimation } from '../core/chartAnimation';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
 import { SinglePointMarker } from '../core/SinglePointMarker';
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
 import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { AreaRangeChartProps } from './types';

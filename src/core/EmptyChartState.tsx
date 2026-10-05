@@ -8,7 +8,9 @@ export function EmptyChartState() {
   );
 }
 
+const emptyLabelColor = '#6b7280';
+
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  label: { color: '#6b7280', fontSize: 12 },
+  label: { color: emptyLabelColor, fontSize: 12 },
 });

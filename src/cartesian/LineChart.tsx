@@ -1,13 +1,12 @@
-import { memo, Fragment, type ReactElement, useMemo } from 'react';
+import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
-
-import { useChartAxisOptions } from '../core/useChartAxisOptions';
 import { chartAnimation } from '../core/chartAnimation';
-import { resolveSeries } from '../core/resolveSeries';
-import { SinglePointMarker } from '../core/SinglePointMarker';
 import { EmptyChartState } from '../core/EmptyChartState';
 import { prepareCartesianData } from '../core/prepareCartesianData';
+import { resolveSeries } from '../core/resolveSeries';
+import { SinglePointMarker } from '../core/SinglePointMarker';
+import { useChartAxisOptions } from '../core/useChartAxisOptions';
 import { useChartTheme } from '../theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { LineChartProps } from './types';

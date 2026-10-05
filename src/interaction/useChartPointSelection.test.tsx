@@ -23,7 +23,9 @@ async function flushFrame() {
   await act(() => {
     const pending = [...frames.values()];
     frames.clear();
-    pending.forEach((callback) => callback(0));
+    pending.forEach((callback) => {
+      callback(0);
+    });
   });
 }
 
@@ -35,7 +37,9 @@ it('coalesces movement and skips repeated selection without extra renders', asyn
   });
   const select = result.current.selectPoint;
   await act(() => {
-    for (let index = 0; index < 100; index++) {select(index);}
+    for (let index = 0; index < 100; index++) {
+      select(index);
+    }
   });
   expect(frames.size).toBe(1);
   expect(result.current.activePoint).toBeNull();
@@ -45,7 +49,9 @@ it('coalesces movement and skips repeated selection without extra renders', asyn
   expect(renders).toHaveBeenCalledTimes(before + 1);
   expect(result.current.selectPoint).toBe(select);
   await act(() => {
-    for (let index = 0; index < 100; index++) {select(99);}
+    for (let index = 0; index < 100; index++) {
+      select(99);
+    }
   });
   expect(frames.size).toBe(0);
   expect(renders).toHaveBeenCalledTimes(before + 1);

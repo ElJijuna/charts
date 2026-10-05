@@ -335,6 +335,8 @@ export function ChartStory({ kind }: ChartStoryProps) {
   );
 }
 
+const storyBackground = '#f7f2fa';
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
@@ -344,7 +346,7 @@ const styles = StyleSheet.create({
   },
   root: {
     alignItems: 'center',
-    backgroundColor: '#f7f2fa',
+    backgroundColor: storyBackground,
     justifyContent: 'center',
     minHeight: 380,
     padding: 24,

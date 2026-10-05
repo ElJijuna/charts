@@ -18,10 +18,13 @@ for (const width of [320, 1024]) {
       await expect(view).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
       await expect(chart).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
       const bounds = await view.boundingBox();
+      if (!bounds) {
+        throw new Error('Missing bounding box: bounds');
+      }
       expect(bounds).not.toBeNull();
-      expect(bounds!.width).toBeLessThanOrEqual(360);
-      expect(bounds!.x).toBeGreaterThanOrEqual(0);
-      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+      expect(bounds.width).toBeLessThanOrEqual(360);
+      expect(bounds.x).toBeGreaterThanOrEqual(0);
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
 
       await expect(total).toHaveText('500 pts');
       const tooltip = page.getByTestId('rewards-tooltip');
@@ -32,21 +35,28 @@ for (const width of [320, 1024]) {
       await page.getByTestId('rewards-point-6').hover();
       await expect(tooltip).toHaveText('D85 pts');
       const tooltipBounds = await tooltip.boundingBox();
-      expect(tooltipBounds!.x).toBeGreaterThanOrEqual(bounds!.x);
-      expect(tooltipBounds!.x + tooltipBounds!.width).toBeLessThanOrEqual(
-        bounds!.x + bounds!.width,
-      );
+      if (!tooltipBounds) {
+        throw new Error('Missing bounding box: tooltipBounds');
+      }
+      expect(tooltipBounds.x).toBeGreaterThanOrEqual(bounds.x);
+      expect(tooltipBounds.x + tooltipBounds.width).toBeLessThanOrEqual(bounds.x + bounds.width);
       await total.hover();
       await expect(tooltip).toHaveCount(0);
       await page.getByTestId('rewards-point-2').tap();
       await expect(tooltip).toHaveText('X30 pts');
       // Drag a real touch across the overlay; release must retain the last point.
       const firstPoint = await page.getByTestId('rewards-point-0').boundingBox();
+      if (!firstPoint) {
+        throw new Error('Missing bounding box: firstPoint');
+      }
       const lastPoint = await page.getByTestId('rewards-point-6').boundingBox();
+      if (!lastPoint) {
+        throw new Error('Missing bounding box: lastPoint');
+      }
       const touch = await page.context().newCDPSession(page);
-      const y = firstPoint!.y + firstPoint!.height / 2;
-      const firstX = firstPoint!.x + firstPoint!.width / 2;
-      const lastX = lastPoint!.x + lastPoint!.width / 2;
+      const y = firstPoint.y + firstPoint.height / 2;
+      const firstX = firstPoint.x + firstPoint.width / 2;
+      const lastX = lastPoint.x + lastPoint.width / 2;
       await touch.send('Input.dispatchTouchEvent', {
         type: 'touchStart',
         touchPoints: [{ x: firstX, y }],
@@ -95,7 +105,11 @@ for (const width of [320, 1024]) {
           .poll(async () => {
             const cardBounds = await view.boundingBox();
             const tipBounds = await tooltip.boundingBox();
-            return tipBounds!.x + tipBounds!.width <= cardBounds!.x + cardBounds!.width;
+            return !!(
+              tipBounds &&
+              cardBounds &&
+              tipBounds.x + tipBounds.width <= cardBounds.x + cardBounds.width
+            );
           })
           .toBe(true);
       }

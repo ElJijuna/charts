@@ -281,12 +281,24 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
   );
 }
 
+const colors = {
+  transparent: 'transparent',
+  muted: '#6b7280',
+  text: '#111827',
+  accent: '#6d28d9',
+  selectedBackground: 'rgba(109, 40, 217, 0.09)',
+  guide: '#a78bfa',
+  tooltipBackground: '#4c1d95',
+  tooltipLabel: '#ddd6fe',
+  tooltipValue: '#ffffff',
+};
+
 const styles = StyleSheet.create({
-  root: { backgroundColor: 'transparent', gap: 16, width: '100%', maxWidth: 360 },
+  root: { backgroundColor: colors.transparent, gap: 16, width: '100%', maxWidth: 360 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  eyebrow: { color: '#6b7280', fontSize: 10, fontWeight: '600', letterSpacing: 1.4 },
-  title: { color: '#111827', fontSize: 18, fontWeight: '600', marginTop: 4 },
-  badge: { color: '#6d28d9', fontSize: 12, fontWeight: '600' },
+  eyebrow: { color: colors.muted, fontSize: 10, fontWeight: '600', letterSpacing: 1.4 },
+  title: { color: colors.text, fontSize: 18, fontWeight: '600', marginTop: 4 },
+  badge: { color: colors.accent, fontSize: 12, fontWeight: '600' },
   selector: { flexDirection: 'row', gap: 4 },
   period: {
     flex: 1,
@@ -295,14 +307,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 12,
   },
-  selectedPeriod: { backgroundColor: 'rgba(109, 40, 217, 0.09)' },
+  selectedPeriod: { backgroundColor: colors.selectedBackground },
   pressedPeriod: { opacity: 0.65 },
-  periodLabel: { color: '#6b7280', fontSize: 13, fontWeight: '500' },
-  selectedLabel: { color: '#6d28d9', fontWeight: '700' },
+  periodLabel: { color: colors.muted, fontSize: 13, fontWeight: '500' },
+  selectedLabel: { color: colors.accent, fontWeight: '700' },
   summary: { gap: 4 },
-  total: { color: '#111827', fontSize: 32, fontWeight: '700', letterSpacing: -1 },
-  unit: { color: '#6b7280', fontSize: 14, fontWeight: '500', letterSpacing: 0 },
-  caption: { color: '#6b7280', fontSize: 12 },
+  total: { color: colors.text, fontSize: 32, fontWeight: '700', letterSpacing: -1 },
+  unit: { color: colors.muted, fontSize: 14, fontWeight: '500', letterSpacing: 0 },
+  caption: { color: colors.muted, fontSize: 12 },
   chartContainer: { position: 'relative' },
   pointTarget: {
     position: 'absolute',
@@ -310,23 +322,23 @@ const styles = StyleSheet.create({
     bottom: 0,
     ...Platform.select({ web: { touchAction: 'pan-y' as const }, default: {} }),
   },
-  guide: { position: 'absolute', top: 0, bottom: 8, width: 1, backgroundColor: '#a78bfa' },
+  guide: { position: 'absolute', top: 0, bottom: 8, width: 1, backgroundColor: colors.guide },
   tooltip: {
     position: 'absolute',
     top: 0,
     width: 100,
     padding: 8,
     borderRadius: 10,
-    backgroundColor: '#4c1d95',
+    backgroundColor: colors.tooltipBackground,
     alignItems: 'center',
   },
-  tooltipLabel: { color: '#ddd6fe', fontSize: 10 },
-  tooltipValue: { color: '#ffffff', fontSize: 13, fontWeight: '700' },
+  tooltipLabel: { color: colors.tooltipLabel, fontSize: 10 },
+  tooltipValue: { color: colors.tooltipValue, fontSize: 13, fontWeight: '700' },
   labels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 8,
     marginTop: -12,
   },
-  axisLabel: { color: '#6b7280', fontSize: 10 },
+  axisLabel: { color: colors.muted, fontSize: 10 },
 });

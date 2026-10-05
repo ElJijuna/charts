@@ -41,11 +41,10 @@ export type {
   StackedAreaChartProps,
   StackedBarChartProps,
 } from './cartesian/types';
+export { useChartPointSelection } from './interaction/useChartPointSelection';
 export { GaugeChart } from './polar/GaugeChart';
 export { PieChart } from './polar/PieChart';
 export type { GaugeChartProps, PieChartDatum, PieChartProps } from './polar/types';
 export { defaultChartTheme } from './theme/defaultTheme';
 export type { ChartTheme, ChartThemeOverride } from './theme/types';
 export type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from './types/data';
-
-export { useChartPointSelection } from './interaction/useChartPointSelection';

@@ -49,7 +49,10 @@ for (const kind of kinds) {
                 new Blob([new Uint8Array(bytes)], { type: 'image/png' }),
               );
               const surface = new OffscreenCanvas(bitmap.width, bitmap.height);
-              const context = surface.getContext('2d')!;
+              const context = surface.getContext('2d');
+              if (!context) {
+                throw new Error('Unable to create a 2D canvas context');
+              }
               context.drawImage(bitmap, 0, 0);
               const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data;
               let colored = 0;
