@@ -1,6 +1,6 @@
 import { AreaChart, LineChart } from '@real-native/charts';
 import { memo, useState } from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export interface RewardsStoryProps {
@@ -84,16 +84,11 @@ const RewardsPlot = memo(function RewardsPlot({
   );
 });
 
-function RewardsInteraction({ period }: { period: Period }) {
+function RewardsInteraction({ period, chartWidth }: { period: Period; chartWidth: number }) {
   const [activePoint, setActivePoint] = useState<number | null>(null);
-  const [chartWidth, setChartWidth] = useState(0);
   const selected = rewards[period];
   return (
-    <View
-      pointerEvents="box-none"
-      onLayout={({ nativeEvent }) => setChartWidth(nativeEvent.layout.width)}
-      style={StyleSheet.absoluteFill}
-    >
+    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
       <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
         {selected.values.map((points, index) => {
           const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
@@ -157,13 +152,14 @@ function RewardsInteraction({ period }: { period: Period }) {
 
 export function RewardsStory({ variant }: RewardsStoryProps) {
   const [period, setPeriod] = useState<Period>('week');
-  const { width } = useWindowDimensions();
+  const [containerWidth, setContainerWidth] = useState(0);
   const selected = rewards[period];
   const { total } = preparedRewards[period];
 
   return (
     <GestureHandlerRootView
-      style={[styles.root, { width: Math.min(360, width - 32) }]}
+      onLayout={({ nativeEvent }) => setContainerWidth(nativeEvent.layout.width)}
+      style={styles.root}
       testID="rewards-view"
     >
       <View style={styles.header}>
@@ -212,7 +208,7 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
 
       <View style={styles.chartContainer}>
         <RewardsPlot period={period} variant={variant} />
-        <RewardsInteraction key={period} period={period} />
+        <RewardsInteraction key={period} period={period} chartWidth={containerWidth} />
       </View>
 
       <View accessible={false} style={styles.labels}>
@@ -227,7 +223,7 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
 }
 
 const styles = StyleSheet.create({
-  root: { backgroundColor: 'transparent', gap: 16 },
+  root: { backgroundColor: 'transparent', gap: 16, width: '100%', maxWidth: 360 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   eyebrow: { color: '#6b7280', fontSize: 10, fontWeight: '600', letterSpacing: 1.4 },
   title: { color: '#111827', fontSize: 18, fontWeight: '600', marginTop: 4 },

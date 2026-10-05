@@ -58,6 +58,25 @@ for (const width of [320, 1024]) {
       await page.getByRole('button', { name: 'Semana', exact: true }).click();
       await expect(total).toHaveText('500 pts');
       expect(errors).toEqual([]);
+
+      // Keep the viewport fixed: the chart must follow its parent card.
+      const host = page.getByTestId('rewards-host');
+      for (const containerWidth of [240, 280]) {
+        await host.evaluate((element, nextWidth) => {
+          element.style.width = `${nextWidth}px`;
+        }, containerWidth);
+        await expect(view).toHaveCSS('width', `${containerWidth - 32}px`);
+        await expect(chart).toHaveCSS('width', `${containerWidth - 32}px`);
+        await page.getByTestId('rewards-point-6').hover();
+        await expect(tooltip).toHaveText('D85 pts');
+        await expect
+          .poll(async () => {
+            const cardBounds = await view.boundingBox();
+            const tipBounds = await tooltip.boundingBox();
+            return tipBounds!.x + tipBounds!.width <= cardBounds!.x + cardBounds!.width;
+          })
+          .toBe(true);
+      }
     });
   }
 }
