@@ -1,145 +1,147 @@
-# Roadmap de @real-native/charts
+# Roadmap for @real-native/charts
 
-Actualizado: 2026-10-04. `[x]` indica completado; `[ ]` indica pendiente.
-La librería tiene prioridad. Los elementos de **Stories** son secundarios salvo
-cuando sirven para verificar una corrección de la librería.
+Updated: 2026-10-04. `[x]` means completed; `[ ]` means pending.
+The library takes priority. **Stories** items are secondary unless they help
+verify a library fix.
 
-## Completado: librería
+## Completed: library
 
-- [x] Ofrecer 17 tipos de gráficos con primitivas de RN, Victory Native y Skia.
-- [x] Exportar builds CommonJS y ESM, tipos TypeScript y fuentes para Metro.
-- [x] Conservar la inferencia de claves genéricas de los componentes al usar `React.memo`.
-- [x] Estabilizar datos preparados, claves de series, tema y opciones de ejes.
-- [x] Evitar volver a preparar datos cartesianos cuando cambia el tema.
-- [x] Compartir la configuración de animación y estabilizar esquinas y colores de velas.
-- [x] Estabilizar las divisiones de series de Combo y la serie interna de Histogram.
-- [x] Calcular los bins de Histogram según los extremos del dominio, no su referencia.
-- [x] Evitar renders con props estables, sin comparaciones profundas de datasets.
-- [x] Manejar datos vacíos y series sin valores utilizables sin montar el renderer.
-- [x] Filtrar X inválidas y tratar Y inválidas como datos ausentes, sin mutar el dataset.
-- [x] Exigir muestras finitas completas en Bubble, Candlestick y AreaRange.
-- [x] Mostrar un único punto válido en Line, Area, Sparkline y series de línea de Combo.
-- [x] Mostrar extremos únicos de AreaRange y valores acumulados de StackedArea.
-- [x] Manejar series constantes y ceros, además de limitar configuraciones de Histogram.
-- [x] Filtrar porciones inválidas de Pie y manejar sumas que exceden el rango numérico.
-- [x] Mantener el ajuste de valores inválidos y fuera de rango de Gauge.
-- [x] Exportar el hook reutilizable `useChartPointSelection` en la API local de la librería.
-- [x] Agrupar solicitudes de selección en una actualización por frame.
-- [x] Evitar actualizar estado al seleccionar repetidamente el mismo punto.
-- [x] Cancelar trabajo pendiente de selección al desmontar el componente.
-- [x] Documentar actualizaciones inmutables, props estables y uso del hook de selección.
-- [x] Incorporar pruebas de casos extremos, estabilidad de renders y selección por frame.
+- [x] Provide 17 chart types using RN, Victory Native and Skia primitives.
+- [x] Export CommonJS and ESM builds, TypeScript types and sources for Metro.
+- [x] Preserve generic component key inference when using `React.memo`.
+- [x] Stabilize prepared data, series keys, theme and axis options.
+- [x] Avoid preparing Cartesian data again when the theme changes.
+- [x] Share animation configuration and stabilize corners and candlestick colors.
+- [x] Stabilize Combo series splits and Histogram's internal series.
+- [x] Calculate Histogram bins from domain bounds rather than the domain reference.
+- [x] Avoid renders with stable props without deep dataset comparisons.
+- [x] Handle empty data and series without usable values without mounting the renderer.
+- [x] Filter invalid X values and treat invalid Y values as missing data without mutating the dataset.
+- [x] Require complete finite samples in Bubble, Candlestick and AreaRange.
+- [x] Display a single valid point in Line, Area, Sparkline and Combo line series.
+- [x] Display isolated AreaRange endpoints and cumulative StackedArea values.
+- [x] Handle constant series and zeros, and constrain Histogram configurations.
+- [x] Filter invalid Pie slices and handle sums that exceed the numeric range.
+- [x] Preserve Gauge's handling of invalid and out-of-range values.
+- [x] Export the reusable `useChartPointSelection` hook through the library's local API.
+- [x] Batch selection requests into one update per frame.
+- [x] Avoid state updates when repeatedly selecting the same point.
+- [x] Cancel pending selection work when the component unmounts.
+- [x] Document immutable updates, stable props and selection hook usage.
+- [x] Add tests for edge cases, render stability and selection per frame.
 
-## Completado: Stories y validación web
+## Completed: Stories and web validation
 
-- [x] **Stories:** levantar, compilar y previsualizar Storybook desde la raíz.
-- [x] **Stories:** corregir carga de dependencias, transformación de worklets y CanvasKit web.
-- [x] **Stories:** mostrar recompensas con Line y Area en una tarjeta pequeña y transparente.
-- [x] **Stories:** seleccionar semana, mes y año, con totales y etiquetas de cada período.
-- [x] **Stories:** separar el gráfico del tooltip y mantener el estado en la capa de interacción.
-- [x] **Stories:** ajustar el ancho mediante `onLayout` del contenedor, sin usar el de la ventana.
-- [x] **Stories:** mostrar valores por hover, foco, toque y arrastre táctil.
-- [x] **Stories:** conservar el último valor al soltar el toque y limitar el tooltip al contenedor.
-- [x] **Stories:** estabilizar zonas de interacción y normalizar coordenadas táctiles RN/Web.
-- [x] **Stories:** permitir scroll vertical en web y reservar el arrastre horizontal para selección.
-- [x] **Stories:** cubrir los 17 gráficos con ejemplos vacíos, únicos, inválidos y constantes.
-- [x] **Validación:** 60 tests unitarios pasan en la revisión actual.
-- [x] **Validación:** los 38 flujos web existentes pasaron antes del último cambio del tooltip.
-- [x] **Validación:** los 4 flujos de Rewards pasaron tras ese cambio, en 320 y 1024 px.
-- [x] **Validación:** lint, TypeScript y builds de librería y Storybook pasan.
+- [x] **Stories:** start, build and preview Storybook from the repository root.
+- [x] **Stories:** fix dependency loading, worklet transformation and web CanvasKit.
+- [x] **Stories:** display rewards using Line and Area in a small transparent card.
+- [x] **Stories:** select week, month and year, with totals and labels for each period.
+- [x] **Stories:** separate the chart from the tooltip and keep state in the interaction layer.
+- [x] **Stories:** adjust width using the container's `onLayout` rather than the window width.
+- [x] **Stories:** display values through hover, focus, touch and touch dragging.
+- [x] **Stories:** retain the last value on touch release and constrain the tooltip to the container.
+- [x] **Stories:** stabilize interaction zones and normalize RN/Web touch coordinates.
+- [x] **Stories:** allow vertical scrolling on web and reserve horizontal dragging for selection.
+- [x] **Stories:** cover all 17 charts with empty, single-point, invalid and constant examples.
+- [x] **Validation:** 103 unit tests pass in the current review.
+- [x] **Validation:** the 38 existing web flows passed before the latest tooltip change.
+- [x] **Validation:** the 4 Rewards flows passed after that change at 320 and 1024 px.
+- [x] **Validation:** lint, TypeScript, library builds and Storybook builds pass.
 
-Estas comprobaciones web y unitarias no sustituyen ejecutar la app en iOS y Android.
+These web and unit checks do not replace running the app on iOS and Android.
 
-## Prioridad 0: cerrar la preparación de publicación
+## Priority 0: finish publication preparation
 
-El artefacto se puede empaquetar, pero el flujo automático de release no está listo.
-No se reducen los requisitos de calidad para declarar la publicación preparada.
+The artifact can be packaged, but the automated release workflow is not ready.
+Quality requirements must be met before publication is considered ready.
 
-- [x] Revisar nombre, licencia MIT, metadatos, `publishConfig.access` y exports.
-- [x] Crear y revisar un tarball real con `npm pack`, después del build.
-- [x] Verificar que todos los entry points y sus imports relativos existen dentro del tarball.
-- [x] Verificar que se incluyen tipos, fuentes y licencia, y se excluyen tests y ejemplos.
-- [x] Comprobar los tipos del tarball en consumidores ESM y CommonJS con TypeScript NodeNext.
-- [x] Comprobar en esos consumidores que una clave inexistente sigue siendo un error de tipos.
-- [x] Ejecutar `npm publish --dry-run --access public` para el artefacto actual `0.0.0`.
-- [x] Consultar el registro público: devuelve E404 para `@real-native/charts` en esta revisión.
-- [x] Instalar también `example` con `npm --prefix example ci` en CI y Release antes de typecheck.
-- [x] Excluir `.expo`, `storybook-static`, `test-results` y `playwright-report` de Biome.
-- [x] Corregir los errores de formato y reglas de Biome que permanezcan en archivos propios.
-- [x] Excluir documentos generados de Expo y resultados de pruebas de `lint:md`.
-- [ ] Elevar la cobertura de ramas al 90% exigido mediante pruebas de comportamiento útiles.
-- [ ] Repetir todas las comprobaciones de los workflows y confirmar que pasan.
-- [ ] Probar el tarball en apps consumidoras RN y Web sin el alias local a `src` del ejemplo.
-- [ ] Verificar las versiones mínimas declaradas y publicar una matriz de compatibilidad probada.
-- [ ] Documentar instalación web: RN Web, GestureHandlerRootView y carga de Skia/CanvasKit.
-- [ ] Documentar instalación nativa y diferencias de configuración de Reanimated 3 y 4.
-- [ ] Considerar `prepack: npm run build` para que `npm pack` no dependa de un build manual previo.
-- [ ] Elegir la primera versión y completar sus notas en CHANGELOG; actualmente figura `0.0.0`.
-- [ ] Decidir entre release manual y semantic-release, evitando dos publicaciones del mismo cambio.
-- [ ] Verificar que semantic-release mantiene `package-lock.json` junto con `package.json`.
-- [ ] Confirmar permisos del usuario sobre el scope `@real-native` y autenticación de publicación.
-- [ ] Verificar credenciales o configurar trusted publishing para el workflow de Release.
-- [ ] Ejecutar el dry-run de publicación con la versión final y revisar su contenido.
-- [ ] Publicar en npm y comprobar instalación de la versión publicada en apps consumidoras.
+- [x] Review the name, MIT license, metadata, `publishConfig.access` and exports.
+- [x] Create and review an actual tarball with `npm pack` after the build.
+- [x] Verify that all entry points and their relative imports exist inside the tarball.
+- [x] Verify that types, sources and the license are included, and tests and examples are excluded.
+- [x] Check tarball types in ESM and CommonJS consumers using TypeScript NodeNext.
+- [x] Check that a nonexistent key remains a type error in those consumers.
+- [x] Run `npm publish --dry-run --access public` for the current `0.0.0` artifact.
+- [x] Query the public registry: it returns E404 for `@real-native/charts` in this review.
+- [x] Install `example` with `npm --prefix example ci` in CI and Release before typecheck.
+- [x] Exclude `.expo`, `storybook-static`, `test-results` and `playwright-report` from Biome.
+- [x] Fix remaining formatting and Biome rule errors in project files.
+- [x] Exclude generated Expo documents and test results from `lint:md`.
+- [x] Raise branch coverage to the required 90% through useful behavior tests.
+  Result: 95.67% achieved.
+- [ ] Repeat all workflow checks and confirm they pass.
+- [ ] Test the tarball in RN and Web consumer apps without the example's local alias to `src`.
+- [ ] Verify the declared minimum versions and publish a tested compatibility matrix.
+- [ ] Document web installation: RN Web, GestureHandlerRootView and Skia/CanvasKit loading.
+- [ ] Document native installation and configuration differences between Reanimated 3 and 4.
+- [ ] Consider `prepack: npm run build` so `npm pack` does not depend on a prior manual build.
+- [ ] Choose the first version and complete its CHANGELOG notes; it currently lists `0.0.0`.
+- [ ] Choose manual release or semantic-release, avoiding two publications of the same change.
+- [ ] Verify that semantic-release maintains `package-lock.json` alongside `package.json`.
+- [ ] Confirm user permissions for the `@real-native` scope and publication authentication.
+- [ ] Verify credentials or configure trusted publishing for the Release workflow.
+- [ ] Run the publication dry run with the final version and review its contents.
+- [ ] Publish to npm and verify installation of the published version in consumer apps.
 
-### Resultado de la revisión actual
+### Current review results
 
-- Tarball `real-native-charts-0.0.0.tgz`: 296 archivos, 58.868 bytes comprimidos.
-- Sin dependencias runtime empaquetadas; los motores de gráficos son peer dependencies.
-- `lint`, `typecheck`, los 60 tests, `build` y el dry-run de publicación: correctos.
-- `test:coverage`: 99,21% de sentencias, 99,12% de líneas y 100% de funciones.
-- Cobertura de ramas: **87,02%**; incumple el mínimo global del 90% y falla el comando.
-- `format:check`: pasa sin errores ni advertencias, con los directorios generados excluidos.
-- `lint:md`: pasa con los documentos generados de Expo y resultados de pruebas excluidos.
-- CI y Release instalan dependencias de la raíz y de `example` antes de typecheck.
-- El E404 del registro no demuestra disponibilidad del scope ni permisos para publicar.
-- No se han comprobado credenciales ni se ha ejecutado una publicación real.
+- Tarball `real-native-charts-0.0.0.tgz`: 296 files, 58,868 compressed bytes.
+- No bundled runtime dependencies; chart engines are peer dependencies.
+- `lint`, `typecheck`, all 103 tests, `build` and the publication dry run: passing.
+- `test:coverage`: 99.47% statements, 99.41% lines and 100% functions.
+- Branch coverage: **95.67%** (354/370); exceeds 95% without modifying `jest.config.mjs`.
+- `format:check`: passes without errors or warnings, with generated directories excluded.
+- `lint:md`: passes with generated Expo documents and test results excluded.
+- CI and Release install root and `example` dependencies before typecheck.
+- The registry's E404 does not prove scope availability or permission to publish.
+- Credentials have not been checked, and no actual publication has been performed.
 
-## Prioridad 1: rendimiento con series grandes
+## Priority 1: performance with large series
 
-- [ ] Medir preparación, render, memoria e interacción con 1.000, 10.000 y 50.000 puntos.
-- [ ] Medir en Web y RN antes de introducir más memoización o cambiar algoritmos.
-- [ ] Corregir `Math.min(...sizes)` y `Math.max(...sizes)` en Bubble para arrays grandes.
-- [ ] Reducir recorridos y arrays temporales en Bubble y reutilizar sus datos ya normalizados.
-- [ ] Revisar el escalado de radios de Bubble con rangos numéricos extremos y valores repetidos.
-- [ ] Revisar asignaciones y recorridos repetidos en preparación, Histogram y gráficos apilados.
-- [ ] Evitar cálculos acumulativos repetidos para marcadores de StackedArea.
-- [ ] Evaluar simplificación opcional de puntos de Line/Area según el ancho disponible.
-- [ ] Si se simplifica, conservar extremos, huecos y datos originales para seleccionar valores.
-- [ ] Mantener el comportamiento actual por defecto y la API compatible RN/Web.
-- [ ] Medir tamaño de distribución y bundle consumidor, incluyendo el efecto de tree shaking.
-- [ ] Revisar animación con datasets grandes y ofrecer controles compatibles si las medidas lo piden.
+- [ ] Measure preparation, rendering, memory and interaction with 1,000, 10,000 and 50,000 points.
+- [ ] Measure on Web and RN before adding more memoization or changing algorithms.
+- [ ] Fix `Math.min(...sizes)` and `Math.max(...sizes)` in Bubble for large arrays.
+- [ ] Reduce passes and temporary arrays in Bubble, and reuse its normalized data.
+- [ ] Review Bubble radius scaling with extreme numeric ranges and repeated values.
+- [ ] Review allocations and repeated passes in preparation, Histogram and stacked charts.
+- [ ] Avoid repeated cumulative calculations for StackedArea markers.
+- [ ] Evaluate optional Line/Area point simplification based on the available width.
+- [ ] If simplifying, preserve extrema, gaps and original data for value selection.
+- [ ] Preserve current default behavior and RN/Web API compatibility.
+- [ ] Measure distribution and consumer bundle size, including the effects of tree shaking.
+- [ ] Review animation with large datasets and offer compatible controls if measurements warrant it.
 
-## Prioridad 1: compatibilidad y accesibilidad
+## Priority 1: compatibility and accessibility
 
-- [ ] Ejecutar gráficos y tooltip en dispositivos o simuladores iOS y Android.
-- [ ] Verificar toque, arrastre, cancelación, scroll vertical, cambio de período y resize nativo.
-- [ ] Verificar el comportamiento con Reanimated 3 y 4, y con las versiones RN/Expo soportadas.
-- [ ] Probar Safari y Firefox, además de Chromium.
-- [ ] Verificar navegación de puntos por teclado, incluidas flechas, Home, End y Escape.
-- [ ] Definir cómo anunciar el valor seleccionado a lectores de pantalla sin exceso de avisos.
-- [ ] Verificar VoiceOver, TalkBack, foco, tamaño de objetivos y contraste en fondos variables.
-- [ ] Respetar la preferencia de movimiento reducido cuando haya animaciones.
-- [ ] Evaluar una capa de tooltip reutilizable que use geometría real del gráfico.
-- [ ] Para esa capa, verificar selección con dominios no uniformes, varias series y datos ausentes.
-- [ ] Añadir ejemplos de reinicio de selección al cambiar los datos sin remontar el overlay.
+- [ ] Run charts and tooltips on iOS and Android devices or simulators.
+- [ ] Verify touch, dragging, cancellation, vertical scrolling, period changes and native resizing.
+- [ ] Verify behavior with Reanimated 3 and 4 and supported RN/Expo versions.
+- [ ] Test Safari and Firefox in addition to Chromium.
+- [ ] Verify keyboard point navigation, including arrows, Home, End and Escape.
+- [ ] Define how to announce selected values to screen readers without excessive announcements.
+- [ ] Verify VoiceOver, TalkBack, focus, target sizes and contrast on varying backgrounds.
+- [ ] Respect reduced motion preferences when animations are enabled.
+- [ ] Evaluate a reusable tooltip layer that uses actual chart geometry.
+- [ ] For that layer, verify selection with nonuniform domains, multiple series and missing data.
+- [ ] Add examples of resetting selection when data changes without remounting the overlay.
 
-## Prioridad 2: Stories y mantenimiento
+## Priority 2: Stories and maintenance
 
-- [ ] **Stories:** ejemplos de datasets grandes para repetir mediciones de rendimiento.
-- [ ] **Stories:** herramienta de diagnóstico de renders separada de la interfaz del ejemplo.
-- [ ] **Stories:** ejemplos de tooltip con varias series y dominios no uniformes.
-- [ ] **Stories:** estados de carga y vacío configurables, si se añaden a la API de la librería.
-- [ ] **Stories:** verificar fondos oscuros y contenedores más estrechos que el tooltip.
-- [ ] **Stories:** revisar división de chunks y advertencias de tamaño del build web.
-- [ ] **Mantenimiento:** integrar las pruebas web en CI cuando estén resueltos sus checks actuales.
-- [ ] **Mantenimiento:** automatizar la comprobación del tarball y los tipos consumidores.
-- [ ] **Mantenimiento:** registrar presupuesto de rendimiento y tamaño para futuras regresiones.
+- [ ] **Stories:** large dataset examples for repeatable performance measurements.
+- [ ] **Stories:** a render diagnostics tool separate from the example interface.
+- [ ] **Stories:** tooltip examples with multiple series and nonuniform domains.
+- [ ] **Stories:** configurable loading and empty states, if added to the library API.
+- [ ] **Stories:** verify dark backgrounds and containers narrower than the tooltip.
+- [ ] **Stories:** review chunk splitting and web build size warnings.
+- [ ] **Maintenance:** integrate web tests into CI once its current checks are resolved.
+- [ ] **Maintenance:** automate tarball and consumer type checks.
+- [ ] **Maintenance:** record performance and size budgets to catch future regressions.
 
-## Comandos de publicación manual
+## Manual publication commands
 
-Ejecutar desde la raíz con Node compatible con `engines`. Resolver primero los checks pendientes.
-La versión `0.1.0` es una propuesta para la primera entrega, no una modificación ya aplicada.
+Run from the repository root with a Node version compatible with `engines`.
+Resolve pending checks first.
+Version `0.1.0` is a proposal for the first release, not an applied change.
 
 ```sh
 npm ci
@@ -153,7 +155,7 @@ npm run storybook:build
 npm run test:e2e
 ```
 
-Solo si todas las comprobaciones pasan y se elige publicación manual:
+Only if all checks pass and manual publication is chosen:
 
 ```sh
 npm version 0.1.0 --no-git-tag-version
@@ -166,17 +168,17 @@ npm publish --access public
 npm view @real-native/charts version
 ```
 
-Actualizar CHANGELOG antes del build final. Revisar y guardar los cambios de versión.
-`prepublishOnly` recompila al publicar, pero no ejecuta por sí solo los checks anteriores.
-El dry-run no verifica permisos de publicación. Para el scope se necesitan permisos npm;
-la publicación interactiva requiere la autenticación y 2FA que solicite el registro.
+Update CHANGELOG before the final build. Review and save version changes.
+`prepublishOnly` rebuilds on publication but does not run the checks above by itself.
+The dry run does not verify publication permissions. The scope requires npm permissions;
+interactive publication requires the authentication and 2FA requested by the registry.
 
-Si se elige semantic-release, dejar que gestione la versión y ejecutar la publicación a
-través del workflow de Release después de corregir sus checks y configurar autenticación.
-No ejecutar en paralelo la secuencia manual sobre el mismo cambio.
+If semantic-release is chosen, let it manage the version and publish through the Release
+workflow after fixing its checks and configuring authentication.
+Do not run the manual sequence in parallel for the same change.
 
-Fuentes: [publicación de paquetes scoped][npm-scoped], [npm publish][npm-publish],
-[scripts de npm][npm-scripts], [versionado][npm-version] y [autenticación 2FA][npm-2fa].
+Sources: [publishing scoped packages][npm-scoped], [npm publish][npm-publish],
+[npm scripts][npm-scripts], [versioning][npm-version] and [2FA authentication][npm-2fa].
 
 [npm-scoped]: https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/
 [npm-publish]: https://docs.npmjs.com/cli/commands/npm-publish/

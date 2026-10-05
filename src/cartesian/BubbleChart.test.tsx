@@ -35,6 +35,32 @@ describe('BubbleChart', () => {
     mockCartesianSpy.mockClear();
   });
 
+  it('filters invalid sizes and uses the lower radius for unknown points', async () => {
+    const screen = await render(
+      <BubbleChart
+        data={[
+          { segment: 'A', revenue: 12, customers: 10 },
+          { segment: 'B', revenue: 18, customers: Number.NaN },
+          { segment: 'C', revenue: 15, customers: Number.POSITIVE_INFINITY },
+        ]}
+        sizeKey="customers"
+        xKey="segment"
+        yKey="revenue"
+        minRadius={20}
+        maxRadius={4}
+      />,
+    );
+    expect(screen.getByLabelText('Bubble chart')).toBeTruthy();
+    expect(mockCartesianSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ data: [{ segment: 'A', revenue: 12, customers: 10 }] }),
+    );
+    const props = mockScatterSpy.mock.calls[0]?.[0] as {
+      radius: (point: PointsArray[number]) => number;
+    };
+    expect(props.radius(firstPoint)).toBe(12);
+    expect(props.radius({ ...firstPoint, xValue: 'unknown' })).toBe(4);
+  });
+
   it('scales bubble radii from a third numeric field', async () => {
     const screen = await render(
       <BubbleChart
