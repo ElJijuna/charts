@@ -56,11 +56,189 @@ also works when this README is displayed outside the repository, including npm.
 
 ## Installation
 
+Use Node `>=20.19.0`. The library declares React `>=19`, React Native `>=0.79`,
+Skia `>=2.6 <3`, Victory Native `>=42 <43`, Gesture Handler `>=2` and
+Reanimated `>=3.19.1`. These peer ranges are not a tested compatibility matrix;
+choose versions supported by your React Native or Expo release.
+
+### Expo (Reanimated 4)
+
+Install the library and Victory Native, then let Expo select compatible native dependencies:
+
 ```sh
-npm install @real-native/charts victory-native @shopify/react-native-skia react-native-gesture-handler react-native-reanimated
+npm install @real-native/charts 'victory-native@^42'
+npx expo install @shopify/react-native-skia react-native-gesture-handler \
+  react-native-reanimated react-native-worklets
+npx expo install --check
 ```
 
-Follow the Reanimated and Skia installation instructions for your React Native or Expo version.
+Check that Expo's selected versions satisfy the peer ranges above. The repository example
+uses Expo 57, React Native 0.86.3, Skia 2.6.2 and Reanimated 4.5.1.
+Reanimated 4 requires the New Architecture and a compatible Worklets version.
+See [Reanimated compatibility][reanimated-compatibility].
+
+Keep `babel-preset-expo` in `babel.config.js`; it configures the Reanimated/Worklets
+plugin automatically. See [Expo's Reanimated installation][expo-reanimated].
+If maintaining custom Babel plugins, ensure the Worklets transform runs once and last.
+
+For development builds, rebuild the native app after changing native dependencies:
+
+```sh
+npx expo run:ios
+npx expo run:android
+```
+
+These commands generate native projects when needed. For an existing custom native project,
+apply the corresponding native installation steps below. Expo Go requires the native versions
+bundled with its SDK; use a development build when your dependencies differ.
+
+### React Native CLI (Reanimated 4)
+
+In an existing React Native app with the New Architecture enabled:
+
+```sh
+npm install @real-native/charts 'victory-native@^42' \
+  '@shopify/react-native-skia@^2.6' react-native-gesture-handler \
+  'react-native-reanimated@^4' react-native-worklets
+```
+
+Choose the Reanimated and Worklets pair using the [compatibility table][reanimated-compatibility].
+Merge this configuration into your existing `babel.config.js`, placing the plugin last:
+
+```js
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: ['react-native-worklets/plugin'],
+};
+```
+
+Install iOS pods, then rebuild your target app:
+
+```sh
+npx pod-install
+npm run ios
+# Or rebuild Android:
+npm run android
+```
+
+Skia, Gesture Handler and Reanimated are native dependencies; restarting JavaScript alone
+is insufficient after installing them. Follow the [Skia installation guide][skia-installation]
+and [Reanimated native setup][reanimated-installation] for platform prerequisites.
+
+### Reanimated 3 versus 4
+
+| Configuration | Reanimated 3 | Reanimated 4 |
+| --- | --- | --- |
+| Library peer range | `>=3.19.1 <4` | `>=4` within this library's declared range |
+| Separate `react-native-worklets` | Do not install for Reanimated 3 | Required; select a compatible version |
+| Babel plugin for custom/CLI builds | `react-native-reanimated/plugin` | `react-native-worklets/plugin` |
+| Plugin order | Last | Last |
+| Native architecture | Check RN/version compatibility | New Architecture required |
+
+For an app already using a supported Reanimated 3 setup, keep version 3 and use its own plugin:
+
+```js
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: ['react-native-reanimated/plugin'],
+};
+```
+
+Use one plugin matching the installed major version. This library's Reanimated 3 peer range
+is not confirmation that every RN/Skia combination works; native device validation is pending.
+Consult the [Reanimated migration guide][reanimated-migration] before switching to version 4.
+
+After a Babel change, clear Metro's cache:
+
+```sh
+# Expo:
+npx expo start --clear
+# React Native CLI:
+npm start -- --reset-cache
+```
+
+### Root view for native and web
+
+Wrap your application or chart screen with `GestureHandlerRootView` and give it room to render.
+Place the wrapper near the application root, as described in the
+[Gesture Handler root view guide][gesture-root].
+
+```tsx
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ChartScreen from './ChartScreen';
+
+const styles = StyleSheet.create({ root: { flex: 1 } });
+
+export default function App() {
+  return (
+    <GestureHandlerRootView style={styles.root}>
+      <ChartScreen />
+    </GestureHandlerRootView>
+  );
+}
+```
+
+`ChartScreen` should default-export a component containing your charts.
+On web, use the deferred import shown below instead of importing `ChartScreen` here.
+
+### Web: React Native Web and CanvasKit
+
+For an Expo web app, install the web packages and copy the WASM asset into the public directory:
+
+```sh
+npx expo install react-dom react-native-web @expo/metro-runtime
+npx setup-skia-web public
+```
+
+Run `setup-skia-web` again after upgrading Skia so the JavaScript and WASM versions match.
+The deployment must serve `public/canvaskit.wasm` as `/canvaskit.wasm` with the
+`application/wasm` content type, rather than returning the app's HTML fallback.
+For a deployment under a subpath, adjust `locateFile` to that public asset URL.
+
+Create `App.web.tsx` with a deferred chart import. This follows the loader used in
+[this repository's Storybook][storybook-loader] and Skia's [web setup][skia-web]:
+
+```tsx
+import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+const loadChartScreen = () => import('./ChartScreen');
+const skiaOptions = { locateFile: (file: string) => `/${file}` };
+const styles = StyleSheet.create({ root: { flex: 1 } });
+
+export default function App() {
+  return (
+    <GestureHandlerRootView style={styles.root}>
+      <WithSkiaWeb
+        getComponent={loadChartScreen}
+        opts={skiaOptions}
+        fallback={<ActivityIndicator accessibilityLabel="Loading charts" />}
+      />
+    </GestureHandlerRootView>
+  );
+}
+```
+
+Import `@real-native/charts` inside `ChartScreen`, after CanvasKit has loaded.
+Avoid eager imports of chart modules from the web entry point. For server-rendered apps,
+render the loader only on the client and keep chart imports out of server execution.
+
+Start Expo web:
+
+```sh
+npx expo start --web
+```
+
+For Vite, Storybook or another bundler, map `react-native` to `react-native-web`, transform
+Reanimated/Worklets with the Babel plugin matching the installed major version, and serve
+the WASM asset from the public directory. The repository's
+[Storybook configuration][storybook-config] provides a working Vite example, including
+Victory Native transpilation. Consult [Reanimated web support][reanimated-web] for other bundlers.
+
+The current web validation covers Chromium and all 17 chart types. iOS, Android, Firefox,
+Safari and consumer apps installed from the npm tarball remain separate roadmap checks.
 
 ## Usage
 
@@ -397,3 +575,14 @@ a touch clears it.
 [chart-combo]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/combo.png
 [chart-pie]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/pie.png
 [chart-gauge]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/gauge.png
+
+[expo-reanimated]: https://docs.expo.dev/versions/latest/sdk/reanimated/
+[reanimated-installation]: https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/
+[reanimated-compatibility]: https://docs.swmansion.com/react-native-reanimated/docs/guides/compatibility/
+[reanimated-migration]: https://docs.swmansion.com/react-native-reanimated/docs/guides/migration-from-3.x/
+[reanimated-web]: https://docs.swmansion.com/react-native-reanimated/docs/guides/web-support/
+[gesture-root]: https://docs.swmansion.com/react-native-gesture-handler/docs/core-components/root-view/
+[skia-installation]: https://wcandillon.github.io/react-native-skia/docs/getting-started/installation
+[skia-web]: https://wcandillon.github.io/react-native-skia/docs/getting-started/web
+[storybook-loader]: https://github.com/ElJijuna/charts/blob/main/example/stories/Charts.stories.tsx
+[storybook-config]: https://github.com/ElJijuna/charts/blob/main/example/.storybook/main.ts
