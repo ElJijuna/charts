@@ -1,5 +1,5 @@
 import { AreaChart, LineChart } from '@real-native/charts';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -42,14 +42,31 @@ const theme = {
 
 const numberFormat = new Intl.NumberFormat('es-PE');
 
-export function RewardsStory({ variant }: RewardsStoryProps) {
-  const [period, setPeriod] = useState<Period>('week');
-  const [activePoint, setActivePoint] = useState<number | null>(null);
-  const [chartWidth, setChartWidth] = useState(0);
-  const { width } = useWindowDimensions();
-  const selected = rewards[period];
+// Prepare each example period once; hover never changes these references.
+function prepareRewards(selected: (typeof rewards)[Period]) {
   const total = selected.values.reduce((sum, value) => sum + value, 0);
-  const data = selected.values.map((points, index) => ({ bucket: index, points }));
+  return {
+    total,
+    data: selected.values.map((points, bucket) => ({ bucket, points })),
+    accessibilityLabel: `${selected.caption}: ${numberFormat.format(total)} puntos. ${selected.values
+      .map((value, index) => `${selected.labels[index]}: ${value}`)
+      .join(', ')}`,
+  };
+}
+
+const preparedRewards = {
+  week: prepareRewards(rewards.week),
+  month: prepareRewards(rewards.month),
+  year: prepareRewards(rewards.year),
+};
+const lineSeries = [{ key: 'points', color: '#6d28d9', strokeWidth: 2.5 }] as const;
+const areaSeries = [{ key: 'points', color: '#6d28d9', fillOpacity: 0.2 }] as const;
+
+const RewardsPlot = memo(function RewardsPlot({
+  period,
+  variant,
+}: RewardsStoryProps & { period: Period }) {
+  const { data, accessibilityLabel } = preparedRewards[period];
   const chartProps = {
     data,
     xKey: 'bucket' as const,
@@ -57,11 +74,92 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
     padding: 8,
     curve: 'monotoneX' as const,
     theme,
-    accessibilityLabel: `${selected.caption}: ${numberFormat.format(total)} puntos. ${selected.values
-      .map((value, index) => `${selected.labels[index]}: ${value}`)
-      .join(', ')}`,
+    accessibilityLabel,
     testID: 'rewards-chart',
   };
+  return variant === 'line' ? (
+    <LineChart key={period} {...chartProps} series={lineSeries} />
+  ) : (
+    <AreaChart key={period} {...chartProps} series={areaSeries} />
+  );
+});
+
+function RewardsInteraction({ period }: { period: Period }) {
+  const [activePoint, setActivePoint] = useState<number | null>(null);
+  const [chartWidth, setChartWidth] = useState(0);
+  const selected = rewards[period];
+  return (
+    <View
+      pointerEvents="box-none"
+      onLayout={({ nativeEvent }) => setChartWidth(nativeEvent.layout.width)}
+      style={StyleSheet.absoluteFill}
+    >
+      <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+        {selected.values.map((points, index) => {
+          const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
+          const position = 8 + index * step;
+          const left = index === 0 ? 0 : position - step / 2;
+          const right = index === selected.values.length - 1 ? chartWidth : position + step / 2;
+          return (
+            <Pressable
+              key={`${period}-${index}`}
+              accessibilityRole="button"
+              accessibilityLabel={`${selected.labels[index]}: ${numberFormat.format(points)} puntos`}
+              onHoverIn={() => setActivePoint(index)}
+              onHoverOut={() => setActivePoint(null)}
+              onPress={() => setActivePoint(index)}
+              onFocus={() => setActivePoint(index)}
+              onBlur={() => setActivePoint(null)}
+              style={[styles.pointTarget, { left, width: right - left }]}
+              testID={`rewards-point-${index}`}
+            />
+          );
+        })}
+      </View>
+      {activePoint !== null && (
+        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+          <View
+            style={[
+              styles.guide,
+              {
+                left:
+                  8 + (activePoint * Math.max(0, chartWidth - 16)) / (selected.values.length - 1),
+              },
+            ]}
+          />
+          <View
+            style={[
+              styles.tooltip,
+              {
+                left: Math.max(
+                  0,
+                  Math.min(
+                    chartWidth - 100,
+                    8 +
+                      (activePoint * Math.max(0, chartWidth - 16)) / (selected.values.length - 1) -
+                      50,
+                  ),
+                ),
+              },
+            ]}
+            testID="rewards-tooltip"
+          >
+            <Text style={styles.tooltipLabel}>{selected.labels[activePoint]}</Text>
+            <Text style={styles.tooltipValue}>
+              {numberFormat.format(selected.values[activePoint] ?? 0)} pts
+            </Text>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+}
+
+export function RewardsStory({ variant }: RewardsStoryProps) {
+  const [period, setPeriod] = useState<Period>('week');
+  const { width } = useWindowDimensions();
+  const selected = rewards[period];
+  const { total } = preparedRewards[period];
 
   return (
     <GestureHandlerRootView
@@ -88,7 +186,6 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
             accessibilityState={{ selected: period === key }}
             aria-selected={period === key}
             onPress={() => {
-              setActivePoint(null);
               setPeriod(key);
             }}
             style={({ pressed }) => [
@@ -113,81 +210,9 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
         </Text>
       </View>
 
-      <View
-        onLayout={({ nativeEvent }) => setChartWidth(nativeEvent.layout.width)}
-        style={styles.chartContainer}
-      >
-        {variant === 'line' ? (
-          <LineChart
-            key={period}
-            {...chartProps}
-            series={[{ key: 'points', color: '#6d28d9', strokeWidth: 2.5 }]}
-          />
-        ) : (
-          <AreaChart
-            key={period}
-            {...chartProps}
-            series={[{ key: 'points', color: '#6d28d9', fillOpacity: 0.2 }]}
-          />
-        )}
-        <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-          {selected.values.map((points, index) => {
-            const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
-            const position = 8 + index * step;
-            const left = index === 0 ? 0 : position - step / 2;
-            const right = index === selected.values.length - 1 ? chartWidth : position + step / 2;
-            return (
-              <Pressable
-                key={`${period}-${index}`}
-                accessibilityRole="button"
-                accessibilityLabel={`${selected.labels[index]}: ${numberFormat.format(points)} puntos`}
-                onHoverIn={() => setActivePoint(index)}
-                onHoverOut={() => setActivePoint(null)}
-                onPress={() => setActivePoint(index)}
-                onFocus={() => setActivePoint(index)}
-                onBlur={() => setActivePoint(null)}
-                style={[styles.pointTarget, { left, width: right - left }]}
-                testID={`rewards-point-${index}`}
-              />
-            );
-          })}
-        </View>
-        {activePoint !== null && (
-          <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-            <View
-              style={[
-                styles.guide,
-                {
-                  left:
-                    8 + (activePoint * Math.max(0, chartWidth - 16)) / (selected.values.length - 1),
-                },
-              ]}
-            />
-            <View
-              style={[
-                styles.tooltip,
-                {
-                  left: Math.max(
-                    0,
-                    Math.min(
-                      chartWidth - 100,
-                      8 +
-                        (activePoint * Math.max(0, chartWidth - 16)) /
-                          (selected.values.length - 1) -
-                        50,
-                    ),
-                  ),
-                },
-              ]}
-              testID="rewards-tooltip"
-            >
-              <Text style={styles.tooltipLabel}>{selected.labels[activePoint]}</Text>
-              <Text style={styles.tooltipValue}>
-                {numberFormat.format(selected.values[activePoint] ?? 0)} pts
-              </Text>
-            </View>
-          </View>
-        )}
+      <View style={styles.chartContainer}>
+        <RewardsPlot period={period} variant={variant} />
+        <RewardsInteraction key={period} period={period} />
       </View>
 
       <View accessible={false} style={styles.labels}>
