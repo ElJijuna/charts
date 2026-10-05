@@ -40,6 +40,28 @@ for (const width of [320, 1024]) {
       await expect(tooltip).toHaveCount(0);
       await page.getByTestId('rewards-point-2').tap();
       await expect(tooltip).toHaveText('X30 pts');
+      // Drag a real touch across the overlay; release must retain the last point.
+      const firstPoint = await page.getByTestId('rewards-point-0').boundingBox();
+      const lastPoint = await page.getByTestId('rewards-point-6').boundingBox();
+      const touch = await page.context().newCDPSession(page);
+      const y = firstPoint!.y + firstPoint!.height / 2;
+      const firstX = firstPoint!.x + firstPoint!.width / 2;
+      const lastX = lastPoint!.x + lastPoint!.width / 2;
+      await touch.send('Input.dispatchTouchEvent', {
+        type: 'touchStart',
+        touchPoints: [{ x: firstX, y }],
+      });
+      await expect(tooltip).toHaveText('L40 pts');
+      for (let step = 1; step <= 6; step++) {
+        await touch.send('Input.dispatchTouchEvent', {
+          type: 'touchMove',
+          touchPoints: [{ x: firstX + ((lastX - firstX) * step) / 6, y }],
+        });
+      }
+      await expect(tooltip).toHaveText('D85 pts');
+      await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      await touch.detach();
+      await expect(tooltip).toHaveText('D85 pts');
       const week = await canvas.screenshot();
       await page.getByRole('button', { name: 'Mes', exact: true }).click();
       await expect(total).toHaveText('1,650 pts');

@@ -1,6 +1,13 @@
-import { AreaChart, LineChart } from '@real-native/charts';
-import { memo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { AreaChart, LineChart, useChartPointSelection } from '@real-native/charts';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  type GestureResponderEvent,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export interface RewardsStoryProps {
@@ -85,31 +92,83 @@ const RewardsPlot = memo(function RewardsPlot({
 });
 
 function RewardsInteraction({ period, chartWidth }: { period: Period; chartWidth: number }) {
-  const [activePoint, setActivePoint] = useState<number | null>(null);
+  const { activePoint, selectPoint, clearPoint } = useChartPointSelection();
   const selected = rewards[period];
+  const touchOrigin = useRef(0);
+  const touchStartX = useRef(0);
+  const dragged = useRef(false);
+  const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
+  const targets = useMemo(
+    () =>
+      selected.values.map((points, index) => {
+        const position = 8 + index * step;
+        const left = index === 0 ? 0 : position - step / 2;
+        const right = index === selected.values.length - 1 ? chartWidth : position + step / 2;
+        return {
+          index,
+          label: `${selected.labels[index]}: ${numberFormat.format(points)} puntos`,
+          style: [styles.pointTarget, { left, width: right - left }],
+          select: () => selectPoint(index),
+          press: () => {
+            if (!dragged.current) {
+              selectPoint(index);
+            }
+          },
+          pressStart: ({ nativeEvent }: GestureResponderEvent) => {
+            touchOrigin.current = nativeEvent.pageX - nativeEvent.locationX - left;
+            touchStartX.current = nativeEvent.pageX;
+            dragged.current = false;
+            selectPoint(index);
+          },
+        };
+      }),
+    [chartWidth, selected, selectPoint, step],
+  );
+  const moveTouch = useCallback(
+    ({ nativeEvent }: GestureResponderEvent) => {
+      // Web touch events expose coordinates on touches, while RN puts them on nativeEvent.
+      const pageX = nativeEvent.pageX ?? nativeEvent.touches[0]?.pageX;
+      if (!Number.isFinite(pageX)) {
+        return;
+      }
+      if (Math.abs(pageX - touchStartX.current) > 3) {
+        dragged.current = true;
+      }
+      if (step > 0) {
+        const index = Math.round((pageX - touchOrigin.current - 8) / step);
+        selectPoint(Math.max(0, Math.min(selected.values.length - 1, index)));
+      }
+    },
+    [selected.values.length, selectPoint, step],
+  );
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
       <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-        {selected.values.map((points, index) => {
-          const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
-          const position = 8 + index * step;
-          const left = index === 0 ? 0 : position - step / 2;
-          const right = index === selected.values.length - 1 ? chartWidth : position + step / 2;
-          return (
-            <Pressable
-              key={`${period}-${index}`}
-              accessibilityRole="button"
-              accessibilityLabel={`${selected.labels[index]}: ${numberFormat.format(points)} puntos`}
-              onHoverIn={() => setActivePoint(index)}
-              onHoverOut={() => setActivePoint(null)}
-              onPress={() => setActivePoint(index)}
-              onFocus={() => setActivePoint(index)}
-              onBlur={() => setActivePoint(null)}
-              style={[styles.pointTarget, { left, width: right - left }]}
-              testID={`rewards-point-${index}`}
-            />
-          );
-        })}
+        {targets.map(({ index, label, style, select, press, pressStart }) => (
+          <Pressable
+            key={`${period}-${index}`}
+            accessibilityRole="button"
+            accessibilityLabel={label}
+            onHoverIn={select}
+            onHoverOut={clearPoint}
+            onPress={press}
+            onFocus={() => {
+              dragged.current = false;
+              select();
+            }}
+            onBlur={clearPoint}
+            onPressIn={pressStart}
+            onTouchMove={moveTouch}
+            onTouchEnd={() =>
+              queueMicrotask(() => {
+                dragged.current = false;
+              })
+            }
+            onTouchCancel={clearPoint}
+            style={style}
+            testID={`rewards-point-${index}`}
+          />
+        ))}
       </View>
       {activePoint !== null && (
         <View pointerEvents="none" style={StyleSheet.absoluteFill}>
@@ -245,7 +304,12 @@ const styles = StyleSheet.create({
   unit: { color: '#6b7280', fontSize: 14, fontWeight: '500', letterSpacing: 0 },
   caption: { color: '#6b7280', fontSize: 12 },
   chartContainer: { position: 'relative' },
-  pointTarget: { position: 'absolute', top: 0, bottom: 0 },
+  pointTarget: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    ...Platform.select({ web: { touchAction: 'pan-y' as const }, default: {} }),
+  },
   guide: { position: 'absolute', top: 0, bottom: 8, width: 1, backgroundColor: '#a78bfa' },
   tooltip: {
     position: 'absolute',

@@ -47,3 +47,5 @@ export type { GaugeChartProps, PieChartDatum, PieChartProps } from './polar/type
 export { defaultChartTheme } from './theme/defaultTheme';
 export type { ChartTheme, ChartThemeOverride } from './theme/types';
 export type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from './types/data';
+
+export { useChartPointSelection } from './interaction/useChartPointSelection';

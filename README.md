@@ -281,3 +281,17 @@ array when its contents change instead of mutating it in place.
 Internally, axes and theme configuration retain their references when their
 values are unchanged. Theme changes do not re-prepare Cartesian data. Histogram
 bins depend on domain endpoints rather than the domain array reference.
+
+### Tooltip selection
+
+`useChartPointSelection()` provides `activePoint`, `selectPoint(index)` and
+`clearPoint()`. Render it inside the tooltip overlay so pointer movement updates
+only that overlay. Requests within a frame are coalesced to the latest index;
+reselecting the same index does not update React state. Pending work is cancelled
+on unmount. This hook uses React and `requestAnimationFrame` on RN and Web.
+
+The caller maps coordinates to a point index, renders the tooltip, and clears the
+selection when data changes (or remounts the overlay with a data/period key).
+The Rewards stories demonstrate hover, focus, tap and touch drag for evenly spaced
+buckets. Selection on tap/drag release persists; leaving a hover target or cancelling
+a touch clears it.
