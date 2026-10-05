@@ -9,6 +9,7 @@ const mockCartesianSpy = jest.fn((_props: unknown) => null);
 const currentPoints = [{ x: 0, xValue: 'Jan', y: 12, yValue: 12 }];
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({ points: { current: currentPoints } });
