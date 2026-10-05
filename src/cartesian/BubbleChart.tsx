@@ -2,6 +2,8 @@ import { type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, type PointsArray, Scatter } from 'victory-native';
 
+import { EmptyChartState } from '../core/EmptyChartState';
+import { prepareCartesianData } from '../core/prepareCartesianData';
 import { resolveChartTheme } from '../theme/resolveTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { BubbleChartProps } from './types';
@@ -36,7 +38,10 @@ export function BubbleChart<
   testID,
 }: BubbleChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useMemo(() => resolveChartTheme(themeOverride), [themeOverride]);
-  const chartData = useMemo(() => [...data], [data]);
+  const { data: chartData, hasData } = useMemo(
+    () => prepareCartesianData(data, xKey, [yKey], [yKey, sizeKey]),
+    [data, xKey, yKey, sizeKey],
+  );
   const radiusForPoint = useMemo(() => {
     const lowerRadius = Math.min(minRadius, maxRadius);
     const upperRadius = Math.max(minRadius, maxRadius);
@@ -67,34 +72,38 @@ export function BubbleChart<
   return (
     <View
       accessible
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
-      <CartesianChart<TDatum, TXKey, TYKey>
-        data={chartData}
-        xKey={xKey}
-        yKeys={[yKey]}
-        padding={padding}
-        axisOptions={{
-          tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-          formatXLabel: axes?.x?.formatLabel,
-          formatYLabel: axes?.y?.formatLabel,
-          axisSide: { x: 'bottom', y: 'left' },
-          lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-          labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-        }}
-      >
-        {({ points }) => (
-          <Scatter
-            points={points[yKey]}
-            color={color ?? theme.colors[0] ?? '#6750a4'}
-            radius={radiusForPoint}
-            shape={shape}
-            animate={animate ? { type: 'timing', duration: 300 } : undefined}
-          />
-        )}
-      </CartesianChart>
+      {hasData ? (
+        <CartesianChart<TDatum, TXKey, TYKey>
+          data={chartData}
+          xKey={xKey}
+          yKeys={[yKey]}
+          padding={padding}
+          axisOptions={{
+            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
+            formatXLabel: axes?.x?.formatLabel,
+            formatYLabel: axes?.y?.formatLabel,
+            axisSide: { x: 'bottom', y: 'left' },
+            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
+            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
+          }}
+        >
+          {({ points }) => (
+            <Scatter
+              points={points[yKey]}
+              color={color ?? theme.colors[0] ?? '#6750a4'}
+              radius={radiusForPoint}
+              shape={shape}
+              animate={animate ? { type: 'timing', duration: 300 } : undefined}
+            />
+          )}
+        </CartesianChart>
+      ) : (
+        <EmptyChartState />
+      )}
     </View>
   );
 }
