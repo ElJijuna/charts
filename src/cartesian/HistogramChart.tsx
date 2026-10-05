@@ -14,14 +14,23 @@ function createHistogramBins(
   domain?: readonly [number, number],
 ): HistogramBin[] {
   const finiteValues = values.filter(Number.isFinite);
-  const binCount = Math.max(1, Math.floor(requestedBinCount));
+  const binCount = Number.isFinite(requestedBinCount)
+    ? Math.max(1, Math.min(1_000, Math.floor(requestedBinCount)))
+    : 10;
+  const safeDomain = domain?.every(Number.isFinite) ? domain : undefined;
 
-  if (finiteValues.length === 0 && !domain) {
+  if (finiteValues.length === 0 && !safeDomain) {
     return [];
   }
 
-  const first = domain?.[0] ?? Math.min(...finiteValues);
-  const second = domain?.[1] ?? Math.max(...finiteValues);
+  let dataMin = Number.POSITIVE_INFINITY;
+  let dataMax = Number.NEGATIVE_INFINITY;
+  for (const value of finiteValues) {
+    dataMin = Math.min(dataMin, value);
+    dataMax = Math.max(dataMax, value);
+  }
+  const first = safeDomain?.[0] ?? dataMin;
+  const second = safeDomain?.[1] ?? dataMax;
   const minimum = Math.min(first, second);
   const maximum = Math.max(first, second);
   const valuesInDomain = finiteValues.filter((value) => value >= minimum && value <= maximum);
@@ -30,14 +39,17 @@ function createHistogramBins(
     return [{ bin: minimum, count: valuesInDomain.length }];
   }
 
-  const width = (maximum - minimum) / binCount;
   const bins = Array.from({ length: binCount }, (_, index) => ({
-    bin: minimum + width * (index + 0.5),
+    bin: minimum * (1 - (index + 0.5) / binCount) + maximum * ((index + 0.5) / binCount),
     count: 0,
   }));
 
+  const span = maximum - minimum;
   for (const value of valuesInDomain) {
-    const index = Math.min(Math.floor((value - minimum) / width), binCount - 1);
+    const ratio = Number.isFinite(span)
+      ? (value - minimum) / span
+      : (value / 2 - minimum / 2) / (maximum / 2 - minimum / 2);
+    const index = Math.min(Math.floor(ratio * binCount), binCount - 1);
     const bin = bins[index];
     if (bin) {
       bin.count += 1;

@@ -16,6 +16,22 @@ describe('HistogramChart', () => {
     mockBarChartSpy.mockClear();
   });
 
+  it('handles invalid configuration and very large datasets without spread overflow', async () => {
+    await render(
+      <HistogramChart
+        binCount={Number.NaN}
+        domain={[Number.NaN, 10]}
+        values={Array.from({ length: 150_000 }, (_, index) => index % 2)}
+      />,
+    );
+    const props = mockBarChartSpy.mock.calls.at(-1)?.[0];
+    expect(props).toEqual(
+      expect.objectContaining({
+        data: expect.arrayContaining([expect.objectContaining({ count: 75_000 })]),
+      }),
+    );
+  });
+
   it('bins finite values across a custom domain', async () => {
     await render(
       <HistogramChart
