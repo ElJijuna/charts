@@ -7,6 +7,7 @@ const mockLineSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({
@@ -25,6 +26,25 @@ describe('LineChart', () => {
   beforeEach(() => {
     mockCartesianSpy.mockClear();
     mockLineSpy.mockClear();
+  });
+
+  it('keeps layout and metadata without mounting the renderer for unusable data', async () => {
+    const emptyData: { month: number; revenue: number }[] = [];
+    const screen = await render(
+      <LineChart data={emptyData} xKey="month" series={[{ key: 'revenue' }]} testID="empty" />,
+    );
+    expect(screen.getByText('No data')).toBeTruthy();
+    expect(screen.getByTestId('empty')).toBeTruthy();
+    expect(mockCartesianSpy).not.toHaveBeenCalled();
+    await screen.rerender(
+      <LineChart
+        data={[{ month: 1, revenue: Number.NaN }]}
+        xKey="month"
+        series={[{ key: 'revenue' }]}
+      />,
+    );
+    expect(screen.getByText('No data')).toBeTruthy();
+    expect(mockCartesianSpy).not.toHaveBeenCalled();
   });
 
   it('renders a configured series with accessible chart metadata', async () => {
