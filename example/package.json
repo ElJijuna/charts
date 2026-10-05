@@ -34,9 +34,10 @@
         "@playwright/test": "^1.63.0",
         "@storybook/react-native-web-vite": "^10.6.0",
         "@types/react": "~19.2.4",
+        "@typescript/native": "npm:typescript@^7.0.2",
         "babel-preset-expo": "~57.0.0",
         "storybook": "^10.6.0",
-        "typescript": "~6.0.3",
+        "typescript": "npm:@typescript/typescript6@^6.0.2",
         "vite": "^7.3.6",
         "vite-plugin-rnw": "^0.0.12"
     }

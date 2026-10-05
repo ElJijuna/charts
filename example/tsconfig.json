@@ -1,7 +1,7 @@
 {
     "extends": "expo/tsconfig.base",
     "compilerOptions": {
-        "moduleSuffixes": [".native", ".web", ""],
+        "moduleSuffixes": [".native", ""],
         "strict": true,
         "paths": {
             "@real-native/charts": ["../src/index.ts"],
