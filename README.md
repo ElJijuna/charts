@@ -221,6 +221,25 @@ export function RevenueChart() {
 />
 ```
 
+## Data edge cases
+
+- Empty datasets, empty series, and datasets without usable values display `No data`
+  inside the existing chart layout. The renderer is not mounted.
+- Cartesian X values must be strings or finite numbers. Rows with invalid X values
+  are discarded. Invalid Y values (`NaN`, infinity, or nonnumeric values) become
+  missing values; they are never converted to zero. `connectMissingData` retains
+  its existing behavior.
+- Bubbles, candlesticks, and area ranges require complete finite numeric samples.
+- A lone valid sample in line, area, and sparkline charts is shown as a marker.
+  Single area ranges show their endpoints; stacked areas mark cumulative values.
+  Constant series, including zero, retain their values and use Victory's expanded scales.
+- Pie charts ignore nonpositive and nonfinite slice values. An all-zero pie displays
+  `No data`. Gauge continues to clamp values to its valid range.
+- Histograms ignore nonfinite observations and invalid domains. Invalid bin counts
+  default to 10; finite counts are clamped to 1–1,000 to bound allocations.
+
+Explore these cases under **Examples / Edge Cases** in Storybook.
+
 ## Example app
 
 The Expo development app consumes the package directly from `src` through Metro:
