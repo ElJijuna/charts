@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-native';
-import { useChartPointSelection } from './useChartPointSelection';
+import { useChartPointSelection } from '@/interaction/useChartPointSelection';
 
 let nextFrame = 0;
 const frames = new Map<number, (timestamp: number) => void>();

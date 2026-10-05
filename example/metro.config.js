@@ -18,6 +18,17 @@ config.resolver.blockList = [
   ),
 ];
 
+config.resolver.resolveRequest = (context, moduleName, platform) =>
+  context.resolveRequest(
+    context,
+    moduleName === name
+      ? path.join(root, 'src/index.ts')
+      : moduleName.startsWith('@/')
+        ? path.join(root, 'src', moduleName.slice(2))
+        : moduleName,
+    platform,
+  );
+
 config.resolver.extraNodeModules = {
   [name]: root,
   ...Object.fromEntries(

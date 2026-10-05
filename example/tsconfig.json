@@ -4,7 +4,8 @@
         "moduleSuffixes": [".native", ".web", ""],
         "strict": true,
         "paths": {
-            "@real-native/charts": ["../src/index.ts"]
+            "@real-native/charts": ["../src/index.ts"],
+            "@/*": ["../src/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],

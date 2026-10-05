@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { AreaRangeChart } from './AreaRangeChart';
+import { AreaRangeChart } from '@/cartesian/AreaRangeChart';
 
 const mockAreaRangeSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

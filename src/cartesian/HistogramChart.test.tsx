@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react-native';
 
-import { HistogramChart } from './HistogramChart';
+import { HistogramChart } from '@/cartesian/HistogramChart';
 
 const mockBarChartSpy = jest.fn((_props: Record<string, unknown>) => null);
 
-jest.mock('./BarChart', () => ({
+jest.mock('@/cartesian/BarChart', () => ({
   BarChart: (props: Record<string, unknown>) => {
     mockBarChartSpy(props);
     return null;

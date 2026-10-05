@@ -19,6 +19,7 @@ const reactNativeWebRoot = dirname(require.resolve('react-native-web/package.jso
 const victoryNativeRoot = resolve(dirname(require.resolve('victory-native')), '..');
 
 const reactNativeAliases: Alias[] = [
+  { find: '@', replacement: resolve(import.meta.dirname, '../../src') },
   {
     find: /^victory-native$/,
     replacement: resolve(victoryNativeRoot, 'src/index.ts'),

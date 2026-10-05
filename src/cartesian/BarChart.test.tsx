@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { BarChart } from './BarChart';
+import { BarChart } from '@/cartesian/BarChart';
 
 const mockBarSpy = jest.fn((_props: unknown) => null);
 const mockBarGroupSpy = jest.fn((_props: unknown) => null);

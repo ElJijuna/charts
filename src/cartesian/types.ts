@@ -1,7 +1,7 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
-import type { ChartThemeOverride } from '../theme/types';
-import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '../types/data';
+import type { ChartThemeOverride } from '@/theme/types';
+import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '@/types/data';
 
 export interface ChartAxisConfig<TValue = unknown> {
   tickCount?: number;

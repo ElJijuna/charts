@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { LineChart } from './LineChart';
+import { LineChart } from '@/cartesian/LineChart';
 
 const mockLineSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

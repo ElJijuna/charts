@@ -1,4 +1,4 @@
-import type { ChartTheme } from './types';
+import type { ChartTheme } from '@/theme/types';
 
 export const defaultChartTheme: ChartTheme = {
   colors: ['#6750a4', '#00639b', '#386a20', '#ba1a1a', '#7d5260'],

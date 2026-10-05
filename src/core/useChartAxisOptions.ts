@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { ChartAxesConfig } from '../cartesian/types';
-import type { ChartTheme } from '../theme/types';
+import type { ChartAxesConfig } from '@/cartesian/types';
+import type { ChartTheme } from '@/theme/types';
 
 export function useChartAxisOptions(axes: ChartAxesConfig | undefined, theme: ChartTheme) {
   const xTickCount = axes?.x?.tickCount ?? 5;

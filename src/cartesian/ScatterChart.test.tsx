@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { ScatterChart } from './ScatterChart';
+import { ScatterChart } from '@/cartesian/ScatterChart';
 
 const mockScatterSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

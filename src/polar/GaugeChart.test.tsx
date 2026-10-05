@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react-native';
 
-import { GaugeChart } from './GaugeChart';
+import { GaugeChart } from '@/polar/GaugeChart';
 
 const mockPieChartSpy = jest.fn((_props: unknown) => null);
 
-jest.mock('./PieChart', () => ({
+jest.mock('@/polar/PieChart', () => ({
   PieChart: (props: unknown) => {
     mockPieChartSpy(props);
     return null;

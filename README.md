@@ -242,6 +242,11 @@ Explore these cases under **Examples / Edge Cases** in Storybook.
 
 ## Example app
 
+Internal library imports use `@/` to refer to `src/`. TypeScript, Jest, Metro and
+Storybook resolve this alias during development. `npm run build` rewrites it to
+relative paths in CommonJS, ESM, declarations and the native sources in `lib/native`.
+Published packages use those native sources, so consumers need no alias configuration.
+
 The Expo development app consumes the package directly from `src` through Metro:
 
 ```sh

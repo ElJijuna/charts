@@ -1,4 +1,4 @@
-import type { ChartDatum } from '../types/data';
+import type { ChartDatum } from '@/types/data';
 
 /** Keep missing values as gaps; never coerce strings or invent zero values. */
 export function prepareCartesianData<TDatum extends ChartDatum>(

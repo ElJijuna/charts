@@ -5,11 +5,11 @@
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
   "types": "./lib/typescript/commonjs/index.d.ts",
-  "react-native": "./src/index.ts",
+  "react-native": "./lib/native/index.ts",
   "source": "./src/index.ts",
   "exports": {
     ".": {
-      "react-native": "./src/index.ts",
+      "react-native": "./lib/native/index.ts",
       "import": {
         "types": "./lib/typescript/module/index.d.ts",
         "default": "./lib/module/index.js"
@@ -35,7 +35,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "bob build",
+    "build": "bob build && node scripts/resolve-build-aliases.mjs",
     "typecheck": "tsc --noEmit && npm --prefix example run typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -93,8 +93,8 @@
     "@biomejs/biome": "^2.4.16",
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
-    "@react-native/jest-preset": "0.87.1",
     "@react-native/babel-preset": "0.87.1",
+    "@react-native/jest-preset": "0.87.1",
     "@react-native/typescript-config": "0.87.1",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.1",
@@ -118,6 +118,7 @@
     "react-native-worklets": "^0.12.2",
     "semantic-release": "^24.2.0",
     "super-configs": "^1.25.1",
+    "tsc-alias": "^1.9.7",
     "typedoc": "^0.28.0",
     "typescript": "^5.9.0",
     "victory-native": "^42.0.1"

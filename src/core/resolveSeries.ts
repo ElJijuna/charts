@@ -1,5 +1,5 @@
-import type { ChartTheme } from '../theme/types';
-import type { ChartDatum, ChartSeries, ChartYKey } from '../types/data';
+import type { ChartTheme } from '@/theme/types';
+import type { ChartDatum, ChartSeries, ChartYKey } from '@/types/data';
 
 export type ResolvedChartSeries<
   TDatum extends ChartDatum,

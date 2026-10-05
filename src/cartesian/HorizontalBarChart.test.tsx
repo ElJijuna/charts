@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { HorizontalBarChart } from './HorizontalBarChart';
+import { HorizontalBarChart } from '@/cartesian/HorizontalBarChart';
 
 const mockBarSpy = jest.fn((_props: unknown) => null);
 const mockBarGroupSpy = jest.fn((_props: unknown) => null);

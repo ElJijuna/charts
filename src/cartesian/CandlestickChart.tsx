@@ -1,13 +1,13 @@
 import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
-import { chartAnimation } from '../core/chartAnimation';
-import { EmptyChartState } from '../core/EmptyChartState';
-import { prepareCartesianData } from '../core/prepareCartesianData';
-import { useChartAxisOptions } from '../core/useChartAxisOptions';
-import { useChartTheme } from '../theme/useChartTheme';
-import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
-import type { CandlestickChartProps } from './types';
+import type { CandlestickChartProps } from '@/cartesian/types';
+import { chartAnimation } from '@/core/chartAnimation';
+import { EmptyChartState } from '@/core/EmptyChartState';
+import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { useChartTheme } from '@/theme/useChartTheme';
+import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
 const styles = StyleSheet.create({
   root: {

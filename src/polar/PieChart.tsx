@@ -2,11 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Pie, PolarChart } from 'victory-native';
 
-import { chartAnimation } from '../core/chartAnimation';
-import { EmptyChartState } from '../core/EmptyChartState';
-
-import { useChartTheme } from '../theme/useChartTheme';
-import type { PieChartProps } from './types';
+import { chartAnimation } from '@/core/chartAnimation';
+import { EmptyChartState } from '@/core/EmptyChartState';
+import type { PieChartProps } from '@/polar/types';
+import { useChartTheme } from '@/theme/useChartTheme';
 
 const styles = StyleSheet.create({
   root: {

@@ -6,7 +6,10 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
-        "types": ["jest", "node"]
+        "types": ["jest", "node"],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     },
     "include": ["src", "*.config.ts", "*.config.mjs"],
     "exclude": ["node_modules", "lib", "coverage", "docs"]

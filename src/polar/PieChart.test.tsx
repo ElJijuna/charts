@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { PieChart } from './PieChart';
+import { PieChart } from '@/polar/PieChart';
 
 const mockPolarSpy = jest.fn((_props: unknown) => null);
 const mockPieChartSpy = jest.fn((_props: unknown) => null);

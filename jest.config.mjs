@@ -4,6 +4,10 @@ import base from 'super-configs/jest/react-native';
 export default {
   ...base,
   verbose: false,
+  moduleNameMapper: {
+    ...base.moduleNameMapper,
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
   collectCoverageFrom: [

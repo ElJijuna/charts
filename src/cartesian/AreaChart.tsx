@@ -1,15 +1,15 @@
 import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Area, CartesianChart } from 'victory-native';
-import { chartAnimation } from '../core/chartAnimation';
-import { EmptyChartState } from '../core/EmptyChartState';
-import { prepareCartesianData } from '../core/prepareCartesianData';
-import { resolveSeries } from '../core/resolveSeries';
-import { SinglePointMarker } from '../core/SinglePointMarker';
-import { useChartAxisOptions } from '../core/useChartAxisOptions';
-import { useChartTheme } from '../theme/useChartTheme';
-import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
-import type { AreaChartProps, AreaChartSeries } from './types';
+import type { AreaChartProps, AreaChartSeries } from '@/cartesian/types';
+import { chartAnimation } from '@/core/chartAnimation';
+import { EmptyChartState } from '@/core/EmptyChartState';
+import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { resolveSeries } from '@/core/resolveSeries';
+import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { useChartTheme } from '@/theme/useChartTheme';
+import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
 const styles = StyleSheet.create({
   root: {

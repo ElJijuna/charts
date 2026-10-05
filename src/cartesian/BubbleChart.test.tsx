@@ -2,7 +2,7 @@ import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 import type { PointsArray } from 'victory-native';
 
-import { BubbleChart } from './BubbleChart';
+import { BubbleChart } from '@/cartesian/BubbleChart';
 
 const mockScatterSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

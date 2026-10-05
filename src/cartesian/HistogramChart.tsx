@@ -1,7 +1,7 @@
 import { memo, type ReactElement, useMemo } from 'react';
 
-import { BarChart } from './BarChart';
-import type { HistogramChartProps } from './types';
+import { BarChart } from '@/cartesian/BarChart';
+import type { HistogramChartProps } from '@/cartesian/types';
 
 interface HistogramBin extends Record<string, unknown> {
   bin: number;

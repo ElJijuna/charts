@@ -1,5 +1,5 @@
-import { defaultChartTheme } from './defaultTheme';
-import { resolveChartTheme } from './resolveTheme';
+import { defaultChartTheme } from '@/theme/defaultTheme';
+import { resolveChartTheme } from '@/theme/resolveTheme';
 
 describe('resolveChartTheme', () => {
   it('returns the default theme', () => {

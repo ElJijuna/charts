@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { HorizontalStackedBarChart } from './HorizontalStackedBarChart';
+import { HorizontalStackedBarChart } from '@/cartesian/HorizontalStackedBarChart';
 
 const mockStackedBarSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

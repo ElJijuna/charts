@@ -1,8 +1,7 @@
 import { memo, type ReactElement, useMemo } from 'react';
-
-import { useChartTheme } from '../theme/useChartTheme';
-import { PieChart } from './PieChart';
-import type { GaugeChartProps } from './types';
+import { PieChart } from '@/polar/PieChart';
+import type { GaugeChartProps } from '@/polar/types';
+import { useChartTheme } from '@/theme/useChartTheme';
 
 function GaugeChartComponent({
   value,

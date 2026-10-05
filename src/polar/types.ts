@@ -1,6 +1,6 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 
-import type { ChartThemeOverride } from '../theme/types';
+import type { ChartThemeOverride } from '@/theme/types';
 
 export interface PieChartDatum {
   label: string;

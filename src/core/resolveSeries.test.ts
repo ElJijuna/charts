@@ -1,5 +1,5 @@
-import { defaultChartTheme } from '../theme/defaultTheme';
-import { resolveSeries } from './resolveSeries';
+import { resolveSeries } from '@/core/resolveSeries';
+import { defaultChartTheme } from '@/theme/defaultTheme';
 
 describe('resolveSeries', () => {
   it('assigns theme defaults and preserves explicit values', () => {

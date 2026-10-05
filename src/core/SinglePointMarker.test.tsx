@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react-native';
 
-import { SinglePointMarker } from './SinglePointMarker';
+import { SinglePointMarker } from '@/core/SinglePointMarker';
 
 const mockScatter = jest.fn((_props: unknown) => null);
 jest.mock('victory-native', () => ({ Scatter: (props: unknown) => mockScatter(props) }));

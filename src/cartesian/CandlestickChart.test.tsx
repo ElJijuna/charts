@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
-import { CandlestickChart } from './CandlestickChart';
+import { CandlestickChart } from '@/cartesian/CandlestickChart';
 
 const mockCandlestickSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);

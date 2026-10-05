@@ -1,4 +1,4 @@
-import { prepareCartesianData } from './prepareCartesianData';
+import { prepareCartesianData } from '@/core/prepareCartesianData';
 
 describe('prepareCartesianData', () => {
   it('preserves valid values, zero, negatives and caller objects', () => {
