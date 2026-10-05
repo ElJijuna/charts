@@ -63,7 +63,7 @@ No se reducen los requisitos de calidad para declarar la publicación preparada.
 - [x] Comprobar en esos consumidores que una clave inexistente sigue siendo un error de tipos.
 - [x] Ejecutar `npm publish --dry-run --access public` para el artefacto actual `0.0.0`.
 - [x] Consultar el registro público: devuelve E404 para `@real-native/charts` en esta revisión.
-- [ ] Instalar también `example` con `npm --prefix example ci` en CI y Release antes de typecheck.
+- [x] Instalar también `example` con `npm --prefix example ci` en CI y Release antes de typecheck.
 - [ ] Excluir `.expo`, `storybook-static`, `test-results` y `playwright-report` de Biome.
 - [ ] Corregir los errores de formato y reglas de Biome que permanezcan en archivos propios.
 - [ ] Excluir documentos generados de Expo y resultados de pruebas de `lint:md`.
@@ -91,7 +91,7 @@ No se reducen los requisitos de calidad para declarar la publicación preparada.
 - Cobertura de ramas: **87,02%**; incumple el mínimo global del 90% y falla el comando.
 - `format:check`: falla, incluye archivos generados y detecta diferencias en archivos propios.
 - `lint:md`: falla por `example/.expo/README.md`, que es un archivo generado.
-- CI y Release solo instalan dependencias de la raíz, aunque typecheck también comprueba `example`.
+- CI y Release instalan dependencias de la raíz y de `example` antes de typecheck.
 - El E404 del registro no demuestra disponibilidad del scope ni permisos para publicar.
 - No se han comprobado credenciales ni se ha ejecutado una publicación real.
 
