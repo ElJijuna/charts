@@ -1,3 +1,8 @@
+## <small>1.0.1 (2026-10-05)</small>
+
+* Merge pull request #2 from ElJijuna/feature/updates ([e3de6c7](https://github.com/ElJijuna/charts/commit/e3de6c7)), closes [#2](https://github.com/ElJijuna/charts/issues/2)
+* fix: update installation instructions for Expo and React Native CLI, and mark web installation docum ([2ad5c9d](https://github.com/ElJijuna/charts/commit/2ad5c9d))
+
 ## 1.0.0 (2026-10-05)
 
 * 1.0.0 ([2fd16e3](https://github.com/ElJijuna/charts/commit/2fd16e3))
