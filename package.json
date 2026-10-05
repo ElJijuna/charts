@@ -49,6 +49,11 @@
     "example": "npm --prefix example start",
     "example:android": "npm --prefix example run android",
     "example:ios": "npm --prefix example run ios",
+    "storybook": "npm --prefix example run storybook --",
+    "storybook:build": "npm --prefix example run storybook:build --",
+    "storybook:preview": "npm --prefix example run storybook:preview --",
+    "test:e2e": "npm --prefix example run test:e2e",
+    "test:e2e:dev": "npm --prefix example run test:e2e:dev",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

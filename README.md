@@ -230,3 +230,24 @@ npm run example
 npm run example:ios
 npm run example:android
 ```
+
+## Storybook
+
+Install the example dependencies once, then start Storybook from the repository root:
+
+```sh
+npm --prefix example install
+npm run storybook
+```
+
+Open <http://localhost:6006> to explore all 17 charts. The example installation
+also copies the CanvasKit WASM files required by Skia on web.
+
+```sh
+npm run storybook:build
+npm run storybook:preview
+npm run test:e2e
+npm run test:e2e:dev
+```
+
+The browser tests require Chromium (`cd example && npx playwright install chromium`).

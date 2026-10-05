@@ -4,7 +4,16 @@ export default createEslintConfig({
   language: 'ts',
   reactNative: true,
   testFramework: 'jest',
-  ignores: ['lib/**', 'coverage/**', 'docs/**', 'node_modules/**', 'example/node_modules/**'],
+  ignores: [
+    'lib/**',
+    'coverage/**',
+    'docs/**',
+    'node_modules/**',
+    'example/node_modules/**',
+    'example/storybook-static/**',
+    'example/test-results/**',
+    'example/playwright-report/**',
+  ],
   overrides: [
     {
       name: 'real-native-charts/stories',

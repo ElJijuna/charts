@@ -4,6 +4,17 @@ import { dirname, resolve } from 'node:path';
 import type { Alias, Plugin } from 'vite';
 
 const require = createRequire(import.meta.url);
+
+// Vite adds query strings to dependency IDs. Worklets uses Babel's filename
+// both to read source maps and to select its TypeScript transform.
+const normalizeBabelFilename = () => ({
+  name: 'normalize-vite-babel-filename',
+  pre(file: { opts: { filename?: string } }) {
+    if (file.opts.filename) {
+      [file.opts.filename] = file.opts.filename.split('?');
+    }
+  },
+});
 const reactNativeWebRoot = dirname(require.resolve('react-native-web/package.json'));
 const victoryNativeRoot = resolve(dirname(require.resolve('victory-native')), '..');
 
@@ -57,7 +68,7 @@ const config: StorybookConfig = {
       modulesToTranspile: ['victory-native'],
       pluginReactOptions: {
         babel: {
-          plugins: ['react-native-worklets/plugin'],
+          plugins: [normalizeBabelFilename, 'react-native-worklets/plugin'],
         },
       },
     },
@@ -77,6 +88,20 @@ const config: StorybookConfig = {
       plugins: [...(viteConfig.plugins ?? []), fixReactNativeAliases()],
       optimizeDeps: {
         ...viteConfig.optimizeDeps,
+        // Skia is loaded lazily after CanvasKit. Prebundle its CommonJS
+        // renderer dependencies so named imports also work in development.
+        include: [
+          ...(viteConfig.optimizeDeps?.include ?? []),
+          'react-native-reanimated',
+          'react-native-worklets',
+          'react-native-gesture-handler',
+          'react-fast-compare',
+          'its-fine',
+          'react-reconciler',
+          'react-reconciler/constants',
+          'scheduler',
+          'canvaskit-wasm/bin/full/canvaskit.js',
+        ],
         exclude: [...(viteConfig.optimizeDeps?.exclude ?? []), 'victory-native'],
       },
       resolve: {

@@ -14,6 +14,7 @@
         "storybook:preview": "vite preview --host 127.0.0.1 --port 6006 --outDir storybook-static",
         "web": "expo start --web",
         "test:e2e": "npm run storybook:build && playwright test",
+        "test:e2e:dev": "playwright test --config playwright.dev.config.ts",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
