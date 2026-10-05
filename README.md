@@ -294,6 +294,12 @@ Explore these cases under **Examples / Edge Cases** in Storybook.
 
 ## Example app
 
+Type checking and declaration builds use TypeScript 7.0.2 through the
+`@typescript/native` npm alias. The `typescript` dependency aliases
+`@typescript/typescript6` for tools that require the JavaScript compiler API,
+including ESLint, Bob's declaration processing and TypeDoc. Both the library
+and the Expo example use this setup; `tsc --version` reports 7.0.2.
+
 Internal library imports use `@/` to refer to `src/`. TypeScript, Jest, Metro and
 Storybook resolve this alias during development. `npm run build` rewrites it to
 relative paths in CommonJS, ESM, declarations and the native sources in `lib/native`.
@@ -368,7 +374,7 @@ a touch clears it.
 [badge-web]: https://img.shields.io/badge/web_charts-100%25_in_Chromium-brightgreen?logo=googlechrome
 [badge-rn]: https://img.shields.io/badge/React_Native-20232A?logo=react&logoColor=61DAFB
 [badge-expo]: https://img.shields.io/badge/Expo-000020?logo=expo&logoColor=white
-[badge-ts]: https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white
+[badge-ts]: https://img.shields.io/badge/TypeScript-7.0-3178C6?logo=typescript&logoColor=white
 [badge-victory]: https://img.shields.io/badge/Victory_Native-6750A4
 [badge-skia]: https://img.shields.io/badge/Skia-386A20
 [badge-reanimated]: https://img.shields.io/badge/Reanimated-7667FF

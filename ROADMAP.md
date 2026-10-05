@@ -8,6 +8,7 @@ verify a library fix.
 
 - [x] Provide 17 chart types using RN, Victory Native and Skia primitives.
 - [x] Export CommonJS and ESM builds, TypeScript types and sources for Metro.
+- [x] Use TypeScript 7 for type checking and declaration builds in the library and example.
 - [x] Preserve generic component key inference when using `React.memo`.
 - [x] Stabilize prepared data, series keys, theme and axis options.
 - [x] Avoid preparing Cartesian data again when the theme changes.
