@@ -11,10 +11,12 @@ const previousPoints = [{ x: 0, xValue: 'Jan', y: 9, yValue: 9 }];
 const chartBounds = { bottom: 200, left: 0, right: 300, top: 0 };
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({
       chartBounds,
+      yScale: (value: number) => value,
       points: { current: currentPoints, previous: previousPoints },
     });
   },
