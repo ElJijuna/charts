@@ -2,6 +2,8 @@ import { type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
 
+import { EmptyChartState } from '../core/EmptyChartState';
+import { prepareCartesianData } from '../core/prepareCartesianData';
 import { resolveChartTheme } from '../theme/resolveTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { CandlestickChartProps } from './types';
@@ -43,7 +45,10 @@ export function CandlestickChart<
     () => [openKey, highKey, lowKey, closeKey] as TYKey[],
     [openKey, highKey, lowKey, closeKey],
   );
-  const chartData = useMemo(() => [...data], [data]);
+  const { data: chartData, hasData } = useMemo(
+    () => prepareCartesianData(data, xKey, yKeys, yKeys),
+    [data, xKey, yKeys],
+  );
   const candleColors = useMemo(
     () => ({
       positive: colors?.positive ?? theme.colors[2] ?? '#386a20',
@@ -56,40 +61,44 @@ export function CandlestickChart<
   return (
     <View
       accessible
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
-      <CartesianChart<TDatum, TXKey, TYKey>
-        data={chartData}
-        xKey={xKey}
-        yKeys={yKeys}
-        padding={padding}
-        axisOptions={{
-          tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-          formatXLabel: axes?.x?.formatLabel,
-          formatYLabel: axes?.y?.formatLabel,
-          axisSide: { x: 'bottom', y: 'left' },
-          lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-          labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-        }}
-      >
-        {({ points, chartBounds }) => (
-          <Candlestick
-            openPoints={points[openKey]}
-            highPoints={points[highKey]}
-            lowPoints={points[lowKey]}
-            closePoints={points[closeKey]}
-            chartBounds={chartBounds}
-            candleColors={candleColors}
-            candleWidth={candleWidth}
-            candleRatio={candleRatio}
-            minBodyHeight={minBodyHeight}
-            wickStrokeWidth={wickStrokeWidth}
-            animate={animate ? { type: 'timing', duration: 300 } : undefined}
-          />
-        )}
-      </CartesianChart>
+      {hasData ? (
+        <CartesianChart<TDatum, TXKey, TYKey>
+          data={chartData}
+          xKey={xKey}
+          yKeys={yKeys}
+          padding={padding}
+          axisOptions={{
+            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
+            formatXLabel: axes?.x?.formatLabel,
+            formatYLabel: axes?.y?.formatLabel,
+            axisSide: { x: 'bottom', y: 'left' },
+            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
+            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
+          }}
+        >
+          {({ points, chartBounds }) => (
+            <Candlestick
+              openPoints={points[openKey]}
+              highPoints={points[highKey]}
+              lowPoints={points[lowKey]}
+              closePoints={points[closeKey]}
+              chartBounds={chartBounds}
+              candleColors={candleColors}
+              candleWidth={candleWidth}
+              candleRatio={candleRatio}
+              minBodyHeight={minBodyHeight}
+              wickStrokeWidth={wickStrokeWidth}
+              animate={animate ? { type: 'timing', duration: 300 } : undefined}
+            />
+          )}
+        </CartesianChart>
+      ) : (
+        <EmptyChartState />
+      )}
     </View>
   );
 }
