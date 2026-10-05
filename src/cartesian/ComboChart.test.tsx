@@ -12,6 +12,7 @@ const revenuePoints = [{ x: 0, xValue: 'Jan', y: 12, yValue: 12 }];
 const targetPoints = [{ x: 0, xValue: 'Jan', y: 15, yValue: 15 }];
 
 jest.mock('victory-native', () => ({
+  Scatter: () => null,
   CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
     mockCartesianSpy(props);
     return props.children({
