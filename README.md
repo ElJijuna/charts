@@ -1,6 +1,58 @@
 # @real-native/charts
 
-Friendly, customizable charts for React Native, powered by Victory Native.
+Friendly, customizable charts for React Native and web, powered by Victory Native and Skia.
+
+[![CI][badge-ci]][workflow-ci]
+[![Release][badge-release]][workflow-release]
+[![npm][badge-npm]][npm-package]
+[![License: MIT][badge-license]][license]
+[![Branch coverage: 95.67%][badge-coverage]][coverage-tests]
+[![Web chart support: 100% in Chromium][badge-web]][web-tests]
+
+![React Native][badge-rn]
+![Expo][badge-expo]
+![TypeScript][badge-ts]
+![Victory Native][badge-victory]
+![Skia][badge-skia]
+![Reanimated][badge-reanimated]
+![React Native Web][badge-rnweb]
+![Gesture Handler][badge-gestures]
+
+## Web compatibility
+
+**100% of chart types render on web in the tested Chromium setup (17/17).**
+Validated on October 5, 2026 with the production Storybook build and
+[`example/e2e/charts.spec.ts`][web-tests]. Each test checks a visible canvas,
+nonzero dimensions, rendered image output and the absence of page errors.
+
+| Validation scope | Result |
+| --- | --- |
+| Chart types in Chromium | 17/17 passed (100%) |
+| Firefox | Pending validation |
+| Safari | Pending validation |
+| Unit test branch coverage | 95.67% (354/370 branches), 103 passing tests |
+
+The web percentage measures chart type rendering in this setup. Browser-wide compatibility,
+accessibility and every interaction are separate checks tracked in the [roadmap][roadmap].
+Web apps need React Native Web, a `GestureHandlerRootView`, and Skia's CanvasKit WASM loaded
+before rendering charts. The example Storybook demonstrates this setup.
+
+## Chart gallery
+
+Actual screenshots from the web Storybook. Images use GitHub raw URLs so the gallery
+also works when this README is displayed outside the repository, including npm.
+
+| Chart | Chart |
+| --- | --- |
+| **Line**<br>![Line chart preview][chart-line] | **Bar**<br>![Bar chart preview][chart-bar] |
+| **Horizontal Bar**<br>![Horizontal Bar chart preview][chart-horizontal-bar] | **Horizontal Stacked Bar**<br>![Horizontal Stacked Bar chart preview][chart-horizontal-stacked-bar] |
+| **Stacked Bar**<br>![Stacked Bar chart preview][chart-stacked-bar] | **Area**<br>![Area chart preview][chart-area] |
+| **Stacked Area**<br>![Stacked Area chart preview][chart-stacked-area] | **Area Range**<br>![Area Range chart preview][chart-area-range] |
+| **Scatter**<br>![Scatter chart preview][chart-scatter] | **Bubble**<br>![Bubble chart preview][chart-bubble] |
+| **Sparkline**<br>![Sparkline chart preview][chart-sparkline] | **Histogram**<br>![Histogram chart preview][chart-histogram] |
+| **Lollipop**<br>![Lollipop chart preview][chart-lollipop] | **Candlestick**<br>![Candlestick chart preview][chart-candlestick] |
+| **Combo**<br>![Combo chart preview][chart-combo] | **Pie**<br>![Pie chart preview][chart-pie] |
+| **Gauge**<br>![Gauge chart preview][chart-gauge] | — |
 
 ## Installation
 
@@ -300,3 +352,42 @@ selection when data changes (or remounts the overlay with a data/period key).
 The Rewards stories demonstrate hover, focus, tap and touch drag for evenly spaced
 buckets. Selection on tap/drag release persists; leaving a hover target or cancelling
 a touch clears it.
+
+[workflow-ci]: https://github.com/ElJijuna/charts/actions/workflows/ci.yml
+[workflow-release]: https://github.com/ElJijuna/charts/actions/workflows/release.yml
+[npm-package]: https://www.npmjs.com/package/@real-native/charts
+[license]: https://github.com/ElJijuna/charts/blob/main/LICENSE
+[coverage-tests]: https://github.com/ElJijuna/charts/tree/main/src/cartesian
+[web-tests]: https://github.com/ElJijuna/charts/blob/main/example/e2e/charts.spec.ts
+[roadmap]: https://github.com/ElJijuna/charts/blob/main/ROADMAP.md
+[badge-ci]: https://github.com/ElJijuna/charts/actions/workflows/ci.yml/badge.svg
+[badge-release]: https://github.com/ElJijuna/charts/actions/workflows/release.yml/badge.svg
+[badge-npm]: https://img.shields.io/npm/v/%40real-native%2Fcharts?logo=npm
+[badge-license]: https://img.shields.io/badge/license-MIT-green
+[badge-coverage]: https://img.shields.io/badge/branch_coverage-95.67%25-brightgreen
+[badge-web]: https://img.shields.io/badge/web_charts-100%25_in_Chromium-brightgreen?logo=googlechrome
+[badge-rn]: https://img.shields.io/badge/React_Native-20232A?logo=react&logoColor=61DAFB
+[badge-expo]: https://img.shields.io/badge/Expo-000020?logo=expo&logoColor=white
+[badge-ts]: https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white
+[badge-victory]: https://img.shields.io/badge/Victory_Native-6750A4
+[badge-skia]: https://img.shields.io/badge/Skia-386A20
+[badge-reanimated]: https://img.shields.io/badge/Reanimated-7667FF
+[badge-rnweb]: https://img.shields.io/badge/React_Native_Web-20232A?logo=react&logoColor=61DAFB
+[badge-gestures]: https://img.shields.io/badge/Gesture_Handler-00639B
+[chart-line]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/line.png
+[chart-bar]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/bar.png
+[chart-horizontal-bar]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/horizontal-bar.png
+[chart-horizontal-stacked-bar]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/horizontal-stacked-bar.png
+[chart-stacked-bar]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/stacked-bar.png
+[chart-area]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/area.png
+[chart-stacked-area]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/stacked-area.png
+[chart-area-range]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/area-range.png
+[chart-scatter]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/scatter.png
+[chart-bubble]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/bubble.png
+[chart-sparkline]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/sparkline.png
+[chart-histogram]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/histogram.png
+[chart-lollipop]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/lollipop.png
+[chart-candlestick]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/candlestick.png
+[chart-combo]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/combo.png
+[chart-pie]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/pie.png
+[chart-gauge]: https://raw.githubusercontent.com/ElJijuna/charts/main/docs/images/charts/gauge.png
