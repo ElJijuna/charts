@@ -44,6 +44,8 @@ const numberFormat = new Intl.NumberFormat('es-PE');
 
 export function RewardsStory({ variant }: RewardsStoryProps) {
   const [period, setPeriod] = useState<Period>('week');
+  const [activePoint, setActivePoint] = useState<number | null>(null);
+  const [chartWidth, setChartWidth] = useState(0);
   const { width } = useWindowDimensions();
   const selected = rewards[period];
   const total = selected.values.reduce((sum, value) => sum + value, 0);
@@ -85,7 +87,10 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
             accessibilityRole="button"
             accessibilityState={{ selected: period === key }}
             aria-selected={period === key}
-            onPress={() => setPeriod(key)}
+            onPress={() => {
+              setActivePoint(null);
+              setPeriod(key);
+            }}
             style={({ pressed }) => [
               styles.period,
               period === key && styles.selectedPeriod,
@@ -108,19 +113,82 @@ export function RewardsStory({ variant }: RewardsStoryProps) {
         </Text>
       </View>
 
-      {variant === 'line' ? (
-        <LineChart
-          key={period}
-          {...chartProps}
-          series={[{ key: 'points', color: '#6d28d9', strokeWidth: 2.5 }]}
-        />
-      ) : (
-        <AreaChart
-          key={period}
-          {...chartProps}
-          series={[{ key: 'points', color: '#6d28d9', fillOpacity: 0.2 }]}
-        />
-      )}
+      <View
+        onLayout={({ nativeEvent }) => setChartWidth(nativeEvent.layout.width)}
+        style={styles.chartContainer}
+      >
+        {variant === 'line' ? (
+          <LineChart
+            key={period}
+            {...chartProps}
+            series={[{ key: 'points', color: '#6d28d9', strokeWidth: 2.5 }]}
+          />
+        ) : (
+          <AreaChart
+            key={period}
+            {...chartProps}
+            series={[{ key: 'points', color: '#6d28d9', fillOpacity: 0.2 }]}
+          />
+        )}
+        <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+          {selected.values.map((points, index) => {
+            const step = Math.max(0, chartWidth - 16) / (selected.values.length - 1);
+            const position = 8 + index * step;
+            const left = index === 0 ? 0 : position - step / 2;
+            const right = index === selected.values.length - 1 ? chartWidth : position + step / 2;
+            return (
+              <Pressable
+                key={`${period}-${index}`}
+                accessibilityRole="button"
+                accessibilityLabel={`${selected.labels[index]}: ${numberFormat.format(points)} puntos`}
+                onHoverIn={() => setActivePoint(index)}
+                onHoverOut={() => setActivePoint(null)}
+                onPress={() => setActivePoint(index)}
+                onFocus={() => setActivePoint(index)}
+                onBlur={() => setActivePoint(null)}
+                style={[styles.pointTarget, { left, width: right - left }]}
+                testID={`rewards-point-${index}`}
+              />
+            );
+          })}
+        </View>
+        {activePoint !== null && (
+          <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+            <View
+              style={[
+                styles.guide,
+                {
+                  left:
+                    8 + (activePoint * Math.max(0, chartWidth - 16)) / (selected.values.length - 1),
+                },
+              ]}
+            />
+            <View
+              style={[
+                styles.tooltip,
+                {
+                  left: Math.max(
+                    0,
+                    Math.min(
+                      chartWidth - 100,
+                      8 +
+                        (activePoint * Math.max(0, chartWidth - 16)) /
+                          (selected.values.length - 1) -
+                        50,
+                    ),
+                  ),
+                },
+              ]}
+              testID="rewards-tooltip"
+            >
+              <Text style={styles.tooltipLabel}>{selected.labels[activePoint]}</Text>
+              <Text style={styles.tooltipValue}>
+                {numberFormat.format(selected.values[activePoint] ?? 0)} pts
+              </Text>
+            </View>
+          </View>
+        )}
+      </View>
 
       <View accessible={false} style={styles.labels}>
         {selected.labels.map((label, index) => (
@@ -155,6 +223,20 @@ const styles = StyleSheet.create({
   total: { color: '#111827', fontSize: 32, fontWeight: '700', letterSpacing: -1 },
   unit: { color: '#6b7280', fontSize: 14, fontWeight: '500', letterSpacing: 0 },
   caption: { color: '#6b7280', fontSize: 12 },
+  chartContainer: { position: 'relative' },
+  pointTarget: { position: 'absolute', top: 0, bottom: 0 },
+  guide: { position: 'absolute', top: 0, bottom: 8, width: 1, backgroundColor: '#a78bfa' },
+  tooltip: {
+    position: 'absolute',
+    top: 0,
+    width: 100,
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: '#4c1d95',
+    alignItems: 'center',
+  },
+  tooltipLabel: { color: '#ddd6fe', fontSize: 10 },
+  tooltipValue: { color: '#ffffff', fontSize: 13, fontWeight: '700' },
   labels: {
     flexDirection: 'row',
     justifyContent: 'space-between',

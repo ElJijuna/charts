@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+test.use({ hasTouch: true });
+
 for (const width of [320, 1024]) {
   for (const variant of ['line', 'area']) {
     test(`rewards ${variant} changes periods at ${width}px`, async ({ page }) => {
@@ -22,9 +24,28 @@ for (const width of [320, 1024]) {
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
 
       await expect(total).toHaveText('500 pts');
+      const tooltip = page.getByTestId('rewards-tooltip');
+      await page.getByTestId('rewards-point-0').hover();
+      await expect(tooltip).toHaveText('L40 pts');
+      await page.getByTestId('rewards-point-5').hover();
+      await expect(tooltip).toHaveText('S120 pts');
+      await page.getByTestId('rewards-point-6').hover();
+      await expect(tooltip).toHaveText('D85 pts');
+      const tooltipBounds = await tooltip.boundingBox();
+      expect(tooltipBounds!.x).toBeGreaterThanOrEqual(bounds!.x);
+      expect(tooltipBounds!.x + tooltipBounds!.width).toBeLessThanOrEqual(
+        bounds!.x + bounds!.width,
+      );
+      await total.hover();
+      await expect(tooltip).toHaveCount(0);
+      await page.getByTestId('rewards-point-2').tap();
+      await expect(tooltip).toHaveText('X30 pts');
       const week = await canvas.screenshot();
       await page.getByRole('button', { name: 'Mes', exact: true }).click();
       await expect(total).toHaveText('1,650 pts');
+      await expect(tooltip).toHaveCount(0);
+      await page.getByTestId('rewards-point-3').hover();
+      await expect(tooltip).toHaveText('Sem 4500 pts');
       await expect(page.getByTestId('rewards-caption')).toHaveText('Puntos ganados este mes');
       await expect.poll(async () => (await canvas.screenshot()).equals(week)).toBe(false);
 
