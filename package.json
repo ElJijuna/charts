@@ -1,6 +1,6 @@
 {
   "name": "@real-native/charts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Friendly, customizable charts for React Native powered by Victory Native",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
