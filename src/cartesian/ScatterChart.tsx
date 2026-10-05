@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Scatter } from 'victory-native';
 
 import { resolveSeries } from '../core/resolveSeries';
+import { EmptyChartState } from '../core/EmptyChartState';
+import { prepareCartesianData } from '../core/prepareCartesianData';
 import { resolveChartTheme } from '../theme/resolveTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '../types/data';
 import type { ScatterChartProps } from './types';
@@ -39,44 +41,51 @@ export function ScatterChart<
     [series, theme],
   );
   const yKeys = useMemo(() => resolvedSeries.map(({ key }) => key), [resolvedSeries]);
-  const chartData = useMemo(() => [...data], [data]);
+  const { data: chartData, hasData } = useMemo(
+    () => prepareCartesianData(data, xKey, yKeys),
+    [data, xKey, yKeys],
+  );
 
   return (
     <View
       accessible
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
-      <CartesianChart<TDatum, TXKey, TYKey>
-        data={chartData}
-        xKey={xKey}
-        yKeys={yKeys}
-        padding={padding}
-        axisOptions={{
-          tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
-          formatXLabel: axes?.x?.formatLabel,
-          formatYLabel: axes?.y?.formatLabel,
-          axisSide: { x: 'bottom', y: 'left' },
-          lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
-          labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
-        }}
-      >
-        {({ points }) => (
-          <>
-            {resolvedSeries.map((item) => (
-              <Scatter
-                key={String(item.key)}
-                points={points[item.key]}
-                color={item.color}
-                radius={radius}
-                shape={shape}
-                animate={animate ? { type: 'timing', duration: 300 } : undefined}
-              />
-            ))}
-          </>
-        )}
-      </CartesianChart>
+      {hasData ? (
+        <CartesianChart<TDatum, TXKey, TYKey>
+          data={chartData}
+          xKey={xKey}
+          yKeys={yKeys}
+          padding={padding}
+          axisOptions={{
+            tickCount: { x: axes?.x?.tickCount ?? 5, y: axes?.y?.tickCount ?? 5 },
+            formatXLabel: axes?.x?.formatLabel,
+            formatYLabel: axes?.y?.formatLabel,
+            axisSide: { x: 'bottom', y: 'left' },
+            lineColor: axes?.x?.lineColor ?? axes?.y?.lineColor ?? theme.axisColor,
+            labelColor: axes?.x?.labelColor ?? axes?.y?.labelColor ?? theme.labelColor,
+          }}
+        >
+          {({ points }) => (
+            <>
+              {resolvedSeries.map((item) => (
+                <Scatter
+                  key={String(item.key)}
+                  points={points[item.key]}
+                  color={item.color}
+                  radius={radius}
+                  shape={shape}
+                  animate={animate ? { type: 'timing', duration: 300 } : undefined}
+                />
+              ))}
+            </>
+          )}
+        </CartesianChart>
+      ) : (
+        <EmptyChartState />
+      )}
     </View>
   );
 }
