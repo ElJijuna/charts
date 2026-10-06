@@ -1,3 +1,8 @@
+## <small>1.1.1 (2026-10-06)</small>
+
+* Merge pull request #4 from ElJijuna/bugfix/lollipopChart ([1b9ad61](https://github.com/ElJijuna/charts/commit/1b9ad61)), closes [#4](https://github.com/ElJijuna/charts/issues/4)
+* fix: resolve lollipop chart clipping by implementing band padding and adjusting mount behavior ([210125b](https://github.com/ElJijuna/charts/commit/210125b))
+
 ## 1.1.0 (2026-10-06)
 
 * feat!: enhance accessibility and empty state handling across chart components ([a2ed94e](https://github.com/ElJijuna/charts/commit/a2ed94e))
