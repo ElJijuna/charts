@@ -81,6 +81,7 @@ describe('HorizontalBarChart', () => {
 
     const screen = await render(
       <HorizontalBarChart
+        accessibilityLabel="Horizontal bar chart"
         axes={{
           x: { formatLabel, lineColor: '#111', tickCount: 2 },
           y: { formatLabel, labelColor: '#222', tickCount: 4 },

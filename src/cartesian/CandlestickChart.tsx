@@ -2,7 +2,7 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
 import type { CandlestickChartProps } from '@/cartesian/types';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
@@ -38,7 +38,9 @@ function CandlestickChartComponent<
   wickStrokeWidth = 1,
   animate,
   style,
-  accessibilityLabel = 'Candlestick chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: CandlestickChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
@@ -63,7 +65,7 @@ function CandlestickChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -92,7 +94,7 @@ function CandlestickChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

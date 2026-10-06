@@ -67,6 +67,7 @@ describe('AreaChart', () => {
 
     const screen = await render(
       <AreaChart
+        accessibilityLabel="Area chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },

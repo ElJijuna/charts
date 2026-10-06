@@ -2,7 +2,7 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart } from 'victory-native';
 import type { BarChartProps } from '@/cartesian/types';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { useChartAnimation } from '@/core/useChartAnimation';
@@ -34,7 +34,9 @@ function BarChartComponent<
   cornerRadius = 6,
   animate,
   style,
-  accessibilityLabel = 'Bar chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: BarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
@@ -63,7 +65,7 @@ function BarChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -94,7 +96,7 @@ function BarChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

@@ -38,6 +38,7 @@ describe('BubbleChart', () => {
   it('filters invalid sizes and uses the lower radius for unknown points', async () => {
     const screen = await render(
       <BubbleChart
+        accessibilityLabel="Bubble chart"
         data={[
           { segment: 'A', revenue: 12, customers: 10 },
           { segment: 'B', revenue: 18, customers: Number.NaN },
@@ -99,7 +100,13 @@ describe('BubbleChart', () => {
   it('applies defaults and handles a constant size field', async () => {
     const constantData = data.map((item) => ({ ...item, customers: 10 }));
     const screen = await render(
-      <BubbleChart data={constantData} sizeKey="customers" xKey="segment" yKey="revenue" />,
+      <BubbleChart
+        accessibilityLabel="Bubble chart"
+        data={constantData}
+        sizeKey="customers"
+        xKey="segment"
+        yKey="revenue"
+      />,
     );
 
     expect(screen.getByLabelText('Bubble chart')).toBeTruthy();

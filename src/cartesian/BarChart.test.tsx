@@ -82,6 +82,7 @@ describe('BarChart', () => {
 
     const screen = await render(
       <BarChart
+        accessibilityLabel="Bar chart"
         axes={{
           x: { formatLabel, lineColor: '#111', tickCount: 2 },
           y: { formatLabel, labelColor: '#222', tickCount: 4 },

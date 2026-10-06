@@ -2,7 +2,7 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart, Line } from 'victory-native';
 import type { ComboChartProps } from '@/cartesian/types';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
@@ -38,7 +38,9 @@ function ComboChartComponent<
   connectMissingData = false,
   animate,
   style,
-  accessibilityLabel = 'Combo chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: ComboChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
@@ -78,7 +80,7 @@ function ComboChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -124,7 +126,7 @@ function ComboChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

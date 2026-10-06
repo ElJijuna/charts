@@ -34,6 +34,7 @@ describe('PieChart', () => {
   it('skips nonpositive and invalid slices and handles all-zero data without a canvas', async () => {
     const screen = await render(
       <PieChart
+        accessibilityLabel="Pie chart"
         data={[
           { label: 'Valid', value: 5 },
           { label: 'Zero', value: 0 },
@@ -46,7 +47,13 @@ describe('PieChart', () => {
       expect.objectContaining({ data: [expect.objectContaining({ label: 'Valid', value: 5 })] }),
     );
     mockPolarSpy.mockClear();
-    await screen.rerender(<PieChart data={[{ label: 'Zero', value: 0 }]} />);
+    await screen.rerender(
+      <PieChart
+        accessibilityLabel="Pie chart"
+        emptyLabel="No data"
+        data={[{ label: 'Zero', value: 0 }]}
+      />,
+    );
     expect(screen.getByText('No data')).toBeTruthy();
     expect(mockPolarSpy).not.toHaveBeenCalled();
   });
@@ -54,6 +61,7 @@ describe('PieChart', () => {
   it('preserves proportions when the total of finite weights overflows', async () => {
     await render(
       <PieChart
+        accessibilityLabel="Pie chart"
         data={[
           { label: 'A', value: Number.MAX_VALUE },
           { label: 'B', value: Number.MAX_VALUE },
@@ -109,7 +117,9 @@ describe('PieChart', () => {
   });
 
   it('applies pie and animation defaults', async () => {
-    const screen = await render(<PieChart data={[{ label: 'Product', value: 100 }]} />);
+    const screen = await render(
+      <PieChart accessibilityLabel="Pie chart" data={[{ label: 'Product', value: 100 }]} />,
+    );
 
     expect(screen.getByLabelText('Pie chart')).toBeTruthy();
     expect(mockPieChartSpy).toHaveBeenCalledWith(

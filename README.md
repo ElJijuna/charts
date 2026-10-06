@@ -254,6 +254,7 @@ const data = [
 export function RevenueChart() {
   return (
     <LineChart
+      accessibilityLabel="Monthly revenue"
       data={data}
       xKey="month"
       series={[{ key: 'revenue', label: 'Revenue', color: '#6750a4' }]}
@@ -273,6 +274,7 @@ import { useFont } from '@shopify/react-native-skia';
 const font = useFont(require('./assets/Inter-Regular.ttf'), 12);
 
 <LineChart
+  accessibilityLabel="Monthly revenue"
   data={data}
   xKey="month"
   series={[{ key: 'revenue' }]}
@@ -288,6 +290,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <BarChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -301,6 +304,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <StackedBarChart
+  accessibilityLabel="Revenue by channel"
   data={data}
   xKey="month"
   series={[
@@ -315,6 +319,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <HorizontalBarChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -325,6 +330,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <HorizontalStackedBarChart
+  accessibilityLabel="Revenue by channel"
   data={data}
   xKey="month"
   series={[
@@ -338,6 +344,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <AreaChart
+  accessibilityLabel="Revenue trend"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4', fillOpacity: 0.28 }]}
@@ -350,6 +357,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <StackedAreaChart
+  accessibilityLabel="Revenue composition"
   data={data}
   xKey="month"
   series={[
@@ -364,6 +372,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <AreaRangeChart
+  accessibilityLabel="Revenue forecast"
   data={forecast}
   xKey="month"
   lowerKey="minimum"
@@ -376,6 +385,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <ScatterChart
+  accessibilityLabel="Revenue scatter"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -388,6 +398,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <BubbleChart
+  accessibilityLabel="Revenue by deal size"
   data={segments}
   xKey="name"
   yKey="revenue"
@@ -399,6 +410,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <CandlestickChart
+  accessibilityLabel="Weekly price"
   data={prices}
   xKey="day"
   openKey="open"
@@ -412,6 +424,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <ComboChart
+  accessibilityLabel="Revenue and margin"
   data={data}
   xKey="month"
   barSeries={[{ key: 'revenue' }]}
@@ -423,6 +436,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <SparklineChart
+  accessibilityLabel="Revenue trend"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -433,6 +447,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <HistogramChart
+  accessibilityLabel="Response time distribution"
   values={[12, 18, 18, 21, 24, 24, 24, 30]}
   binCount={6}
 />
@@ -442,6 +457,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <LollipopChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   yKey="revenue"
@@ -453,6 +469,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <PieChart
+  accessibilityLabel="Revenue share"
   data={[
     { label: 'Product', value: 70 },
     { label: 'Services', value: 30 },
@@ -465,6 +482,7 @@ Charts animate data changes by default, except when the system requests reduced 
 
 ```tsx
 <GaugeChart
+  accessibilityLabel="Goal progress"
   value={72}
   max={100}
   innerRadius="70%"
@@ -472,10 +490,30 @@ Charts animate data changes by default, except when the system requests reduced 
 />
 ```
 
+## Labels and empty state
+
+The library ships no user-facing text, so every chart requires an `accessibilityLabel`
+in your app's language. When there is no usable data, the chart shows nothing by default.
+Pass `emptyLabel` to show and announce a message (drawn in the theme's `labelColor`),
+or `renderEmpty` for custom content:
+
+```tsx
+<LineChart
+  accessibilityLabel="Ingresos mensuales"
+  emptyLabel="Sin datos"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+/>
+```
+
+Screen readers then announce `Ingresos mensuales: Sin datos` when the chart is empty.
+
 ## Data edge cases
 
-- Empty datasets, empty series, and datasets without usable values display `No data`
-  inside the existing chart layout. The renderer is not mounted.
+- Empty datasets, empty series, and datasets without usable values render an empty
+  state inside the existing chart layout; the renderer is not mounted. See
+  [Labels and empty state](#labels-and-empty-state) for what it shows.
 - Cartesian X values must be strings or finite numbers. Rows with invalid X values
   are discarded. Invalid Y values (`NaN`, infinity, or nonnumeric values) become
   missing values; they are never converted to zero. `connectMissingData` retains
@@ -484,8 +522,8 @@ Charts animate data changes by default, except when the system requests reduced 
 - A lone valid sample in line, area, and sparkline charts is shown as a marker.
   Single area ranges show their endpoints; stacked areas mark cumulative values.
   Constant series, including zero, retain their values and use Victory's expanded scales.
-- Pie charts ignore nonpositive and nonfinite slice values. An all-zero pie displays
-  `No data`. Gauge continues to clamp values to its valid range.
+- Pie charts ignore nonpositive and nonfinite slice values. An all-zero pie shows
+  the empty state. Gauge continues to clamp values to its valid range.
 - Histograms ignore nonfinite observations and invalid domains. Invalid bin counts
   default to 10; finite counts are clamped to 1–1,000 to bound allocations.
 

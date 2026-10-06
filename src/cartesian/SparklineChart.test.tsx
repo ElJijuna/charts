@@ -60,6 +60,7 @@ describe('SparklineChart', () => {
   it('applies compact geometry, curve, theme, and animation defaults', async () => {
     const screen = await render(
       <SparklineChart
+        accessibilityLabel="Sparkline chart"
         data={[{ month: 'Jan', current: 12 }]}
         series={[{ key: 'current' }]}
         xKey="month"

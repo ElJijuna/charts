@@ -1,4 +1,5 @@
 import type { SkFont } from '@shopify/react-native-skia';
+import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
 import type { ChartThemeOverride } from '@/theme/types';
@@ -34,7 +35,11 @@ export interface LineChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -55,7 +60,11 @@ export interface BarChartProps<
   cornerRadius?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -82,7 +91,11 @@ export interface AreaChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -102,7 +115,11 @@ export interface ScatterChartProps<
   shape?: ScatterShape;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -122,7 +139,11 @@ export interface StackedBarChartProps<
   barWidth?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -141,7 +162,11 @@ export interface StackedAreaChartProps<
   curve?: CurveType;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -173,7 +198,11 @@ export interface CandlestickChartProps<
   wickStrokeWidth?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -208,7 +237,11 @@ export interface AreaRangeChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -232,7 +265,11 @@ export interface ComboChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -251,7 +288,11 @@ export interface SparklineChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -266,7 +307,11 @@ export interface HistogramChartProps {
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -289,7 +334,11 @@ export interface BubbleChartProps<
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -311,6 +360,10 @@ export interface LollipopChartProps<
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }

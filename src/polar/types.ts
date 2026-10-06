@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 import type { ChartThemeOverride } from '@/theme/types';
@@ -17,7 +18,11 @@ export interface PieChartProps {
   circleSweepDegrees?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -33,6 +38,10 @@ export interface GaugeChartProps {
   circleSweepDegrees?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }

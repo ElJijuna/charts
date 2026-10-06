@@ -2,7 +2,7 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AreaRange, CartesianChart, Line } from 'victory-native';
 import type { AreaRangeChartProps } from '@/cartesian/types';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
 import { useChartAnimation } from '@/core/useChartAnimation';
@@ -36,7 +36,9 @@ function AreaRangeChartComponent<
   connectMissingData = false,
   animate,
   style,
-  accessibilityLabel = 'Area range chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: AreaRangeChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
@@ -51,7 +53,7 @@ function AreaRangeChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -93,7 +95,7 @@ function AreaRangeChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

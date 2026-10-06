@@ -40,13 +40,19 @@ describe.each([
   ['Area', AreaChart],
 ] as const)('%s render stability', (_, Chart) => {
   it('skips the renderer for unchanged props and updates immutable data', async () => {
-    const screen = await render(<Chart data={data} xKey="month" series={series} />);
+    const screen = await render(
+      <Chart accessibilityLabel="Chart" data={data} xKey="month" series={series} />,
+    );
     const calls = mockCartesianSpy.mock.calls.length;
-    await screen.rerender(<Chart data={data} xKey="month" series={series} />);
+    await screen.rerender(
+      <Chart accessibilityLabel="Chart" data={data} xKey="month" series={series} />,
+    );
     expect(mockCartesianSpy).toHaveBeenCalledTimes(calls);
 
     const nextData = [{ month: 1, revenue: 99 }];
-    await screen.rerender(<Chart data={nextData} xKey="month" series={series} />);
+    await screen.rerender(
+      <Chart accessibilityLabel="Chart" data={nextData} xKey="month" series={series} />,
+    );
     expect(mockCartesianSpy.mock.calls.at(-1)?.[0].data).toEqual(nextData);
     expect(mockCartesianSpy.mock.calls.length).toBeGreaterThan(calls);
   });
@@ -54,6 +60,7 @@ describe.each([
   it('retains data and configuration when inline config values stay equal', async () => {
     const screen = await render(
       <Chart
+        accessibilityLabel="Chart"
         data={data}
         xKey="month"
         series={series}
@@ -65,6 +72,7 @@ describe.each([
     const animation = mockPathSpy.mock.calls.at(-1)?.[0].animate;
     await screen.rerender(
       <Chart
+        accessibilityLabel="Chart"
         data={data}
         xKey="month"
         series={series}
@@ -82,11 +90,14 @@ describe.each([
   });
 
   it('updates colors, axes and callbacks without re-preparing data', async () => {
-    const screen = await render(<Chart data={data} xKey="month" series={series} />);
+    const screen = await render(
+      <Chart accessibilityLabel="Chart" data={data} xKey="month" series={series} />,
+    );
     const initial = mockCartesianSpy.mock.calls.at(-1)?.[0];
     const formatLabel = (value: unknown) => `${value} pts`;
     await screen.rerender(
       <Chart
+        accessibilityLabel="Chart"
         data={data}
         xKey="month"
         series={series}
