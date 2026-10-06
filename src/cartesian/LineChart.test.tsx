@@ -1,3 +1,4 @@
+import type { SkFont } from '@shopify/react-native-skia';
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
@@ -84,10 +85,12 @@ describe('LineChart', () => {
 
   it('applies defaults and accepts custom axis configuration', async () => {
     const formatLabel = jest.fn((value: unknown) => String(value));
+    const font = { size: 12 } as unknown as SkFont;
 
     const screen = await render(
       <LineChart
         axes={{
+          font,
           x: { formatLabel, tickCount: 3, lineColor: '#111', labelColor: '#222' },
           y: { formatLabel, tickCount: 4 },
         }}
@@ -101,6 +104,7 @@ describe('LineChart', () => {
     expect(mockCartesianSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         axisOptions: expect.objectContaining({
+          font,
           formatXLabel: formatLabel,
           formatYLabel: formatLabel,
           labelColor: '#222',

@@ -263,6 +263,23 @@ export function RevenueChart() {
 }
 ```
 
+Axis tick labels are drawn with Skia, so they only render when you pass a font.
+Load one with `useFont` and give it to `axes.font`; `formatLabel`, `tickCount` and
+`labelColor` take effect once it is set:
+
+```tsx
+import { useFont } from '@shopify/react-native-skia';
+
+const font = useFont(require('./assets/Inter-Regular.ttf'), 12);
+
+<LineChart
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  axes={{ font, y: { formatLabel: (value) => `$${value}` } }}
+/>;
+```
+
 `BarChart` shares the same data, series, axes, theme, and animation configuration:
 
 ```tsx

@@ -1,3 +1,4 @@
+import type { SkFont } from '@shopify/react-native-skia';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
 import type { ChartThemeOverride } from '@/theme/types';
@@ -11,6 +12,8 @@ export interface ChartAxisConfig<TValue = unknown> {
 }
 
 export interface ChartAxesConfig {
+  /** Skia font for tick labels, e.g. from `useFont`. Victory skips labels without one. */
+  font?: SkFont | null;
   x?: ChartAxisConfig;
   y?: ChartAxisConfig;
 }
