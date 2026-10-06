@@ -167,9 +167,12 @@ They block or complicate real usage, so they come before performance work.
   and candles). Marks are drawn once the plot size is known, because the extra layout
   interrupted Victory's mount animation and left bars stuck mid-way. Verified in the web
   Storybook with and without reduced motion.
-- [ ] Bar charts don't start the value axis at zero: the domain follows the data, so in the Bar
-  story the axis starts at 30 and Jan's "previous" value (30) draws as an empty bar. Bars
-  should include zero in their value domain.
+- [x] Bar charts don't start the value axis at zero: the domain followed the data, so a bar at
+  the minimum drew empty and lengths were exaggerated. Fixed: bar, combo, lollipop and
+  histogram value domains include zero, and stacked bar and stacked area domains also cover
+  positive and negative stack totals, which Victory ignored (tall stacks were cut off at the
+  top). Verified in the web Storybook.
+- [ ] Lollipop clips its first and last dots at the plot edges; it does not use band padding.
 - [ ] Regenerate the README gallery images: bar, stacked bar, combo, candlestick, histogram,
   horizontal bar and sparkline still show clipped groups or stray grid lines.
 - [ ] Avoid one `GestureHandlerRootView` per chart: Victory wraps every chart even without

@@ -9,6 +9,7 @@ import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -74,6 +75,10 @@ function StackedAreaChartComponent<
     const upper = maximum + margin;
     return Number.isFinite(lower) && Number.isFinite(upper) ? { y: [lower, upper] } : undefined;
   }, [chartData, yKeys]);
+  const valueDomain = useMemo(
+    () => singleDomain ?? zeroBasedDomain(chartData, yKeys, true),
+    [singleDomain, chartData, yKeys],
+  );
 
   return (
     <View
@@ -88,7 +93,7 @@ function StackedAreaChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
-          domain={singleDomain}
+          domain={valueDomain}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >

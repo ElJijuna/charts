@@ -144,7 +144,10 @@ describe('BarChart', () => {
 
     // 300px for 3 groups: 75px of domain padding spaces points 100px apart, 50px from each edge.
     expect(mockCartesianSpy).toHaveBeenLastCalledWith(
-      expect.objectContaining({ domainPadding: { left: 75, right: 75 } }),
+      expect.objectContaining({
+        domain: { y: [0, 3] },
+        domainPadding: { left: 75, right: 75 },
+      }),
     );
     // The first render, before the plot size is known, draws the grid but no bars.
     expect(mockBarGroupSpy).toHaveBeenCalled();

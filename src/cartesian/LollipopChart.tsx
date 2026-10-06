@@ -7,6 +7,7 @@ import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -49,6 +50,7 @@ function LollipopChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys), [chartData, yKeys]);
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
 
@@ -65,6 +67,7 @@ function LollipopChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
+          domain={valueDomain}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >

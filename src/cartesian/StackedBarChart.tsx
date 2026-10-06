@@ -9,6 +9,7 @@ import { resolveSeries } from '@/core/resolveSeries';
 import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -53,6 +54,7 @@ function StackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys, true), [chartData, yKeys]);
   const band = useBandPadding(chartData.length, 'vertical');
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey);
 
@@ -69,6 +71,7 @@ function StackedBarChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
+          domain={valueDomain}
           domainPadding={band.domainPadding}
           onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
