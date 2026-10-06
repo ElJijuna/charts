@@ -1,3 +1,22 @@
+## 1.1.0 (2026-10-06)
+
+* feat!: enhance accessibility and empty state handling across chart components ([a2ed94e](https://github.com/ElJijuna/charts/commit/a2ed94e))
+* Merge pull request #3 from ElJijuna/feature/pr1-2-updates ([d4211a4](https://github.com/ElJijuna/charts/commit/d4211a4)), closes [#3](https://github.com/ElJijuna/charts/issues/3)
+* fix: implement useBandPadding hook for dynamic domain padding in charts ([f7c3b28](https://github.com/ElJijuna/charts/commit/f7c3b28))
+* fix: remove unnecessary 'libc' entries from package-lock.json ([1bd352f](https://github.com/ElJijuna/charts/commit/1bd352f))
+* chore: update expo version to ~57.0.26 in package.json and package-lock.json ([8fd38be](https://github.com/ElJijuna/charts/commit/8fd38be))
+* feat: add describeSeries function for accessible data descriptions in charts ([5a966b4](https://github.com/ElJijuna/charts/commit/5a966b4))
+* feat: add Jest mocks for chart components and update README with testing instructions ([6cb5254](https://github.com/ElJijuna/charts/commit/6cb5254))
+* feat: add option to hide axes, grid lines, and labels in chart components ([796188f](https://github.com/ElJijuna/charts/commit/796188f))
+* feat: add performance measurement capabilities for large datasets in charts ([a5871c8](https://github.com/ElJijuna/charts/commit/a5871c8))
+* feat: add renderOverlay support for custom chart overlays and update types ([e51dd94](https://github.com/ElJijuna/charts/commit/e51dd94))
+* feat: add Skia font support for axis tick labels in LineChart ([e199184](https://github.com/ElJijuna/charts/commit/e199184))
+* feat: add support for native axis labels in charts ([25c6c3b](https://github.com/ElJijuna/charts/commit/25c6c3b))
+* feat: add Vite support and integrate vite-plugin-rnw for real-native-charts ([0d75662](https://github.com/ElJijuna/charts/commit/0d75662))
+* feat: enhance font handling in charts with fontSource and fontSize options ([b6bcbec](https://github.com/ElJijuna/charts/commit/b6bcbec))
+* feat: implement useChartAnimation hook for consistent chart animation handling ([19a93be](https://github.com/ElJijuna/charts/commit/19a93be))
+* feat: implement zero-based domain for value axes in charts and add tests ([8889e05](https://github.com/ElJijuna/charts/commit/8889e05))
+
 ## <small>1.0.1 (2026-10-05)</small>
 
 * Merge pull request #2 from ElJijuna/feature/updates ([e3de6c7](https://github.com/ElJijuna/charts/commit/e3de6c7)), closes [#2](https://github.com/ElJijuna/charts/issues/2)
