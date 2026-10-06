@@ -249,8 +249,13 @@ They block or complicate real usage, so they come before performance work.
   settle times; `npm run test:perf` runs the matrix against the production Storybook build and
   prints medians. A first full baseline run was stopped before finishing the 50k cases.
 - [ ] **Stories:** a render diagnostics tool separate from the example interface.
-- [ ] **Stories:** tooltip examples with multiple series and nonuniform domains.
-- [ ] **Stories:** configurable loading and empty states (`emptyLabel` / `renderEmpty`).
+- [x] **Stories:** tooltip examples with multiple series and nonuniform domains.
+  **Examples / Multi Series Tooltip** uses actual overlay coordinates for selection
+  zones and markers, shows missing values and clears selection when switching datasets
+  without remounting the chart. Browser interaction validation remains pending.
+- [x] **Stories:** configurable loading and empty states (`emptyLabel` / `renderEmpty`).
+  **Examples / Chart States** includes a text message, a custom empty view, a silent
+  empty state and simulated loading followed by data, with delay controls and replay.
 - [ ] **Stories:** verify dark backgrounds and containers narrower than the tooltip.
 - [ ] **Stories:** review chunk splitting and web build size warnings.
 - [ ] **Maintenance:** integrate web tests into CI once its current checks are resolved.
