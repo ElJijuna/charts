@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
 import type { LineChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
-import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
@@ -28,6 +28,7 @@ function LineChartComponent<
   xKey,
   series,
   axes,
+  renderOverlay,
   theme: themeOverride,
   height = 240,
   padding = 16,
@@ -52,7 +53,7 @@ function LineChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
-  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
 
   return (
     <View

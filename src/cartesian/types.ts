@@ -40,6 +40,24 @@ export type HorizontalChartAxesConfig = Omit<
   'labelMode' | 'labelStyle' | 'labelSpace'
 >;
 
+/** A data point's position, in pixels relative to the chart view. */
+export interface ChartPoint<TXValue = unknown> {
+  /** Position in plotting order; numeric X data is sorted ascending. */
+  index: number;
+  xValue: TXValue;
+  yValue: number | null;
+  /** Horizontal center: the point, or the center of a bar group. */
+  x: number;
+  /** Vertical position of `yValue`, or `null` for a missing value. */
+  y: number | null;
+}
+
+export interface ChartPointsLayout<TDatum extends ChartDatum, TYKey extends keyof TDatum> {
+  points: Record<TYKey, ChartPoint<TDatum[keyof TDatum]>[]>;
+  /** Plot area within the chart view. */
+  chartBounds: { left: number; right: number; top: number; bottom: number };
+}
+
 export interface LineChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
@@ -50,6 +68,8 @@ export interface LineChartProps<
   series: readonly ChartSeries<TDatum, TYKey>[];
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -75,6 +95,8 @@ export interface BarChartProps<
   series: readonly ChartSeries<TDatum, TYKey>[];
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -108,6 +130,8 @@ export interface AreaChartProps<
   series: readonly AreaChartSeries<TDatum, TYKey>[];
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -133,6 +157,8 @@ export interface ScatterChartProps<
   series: readonly ChartSeries<TDatum, TYKey>[];
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -216,6 +242,8 @@ export interface CandlestickChartProps<
   closeKey: TYKey;
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   colors?: CandlestickChartColors;
   height?: number;
@@ -238,7 +266,7 @@ export type HorizontalBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes'> & {
+> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes' | 'renderOverlay'> & {
   axes?: HorizontalChartAxesConfig | false;
 };
 
@@ -261,6 +289,8 @@ export interface AreaRangeChartProps<
   upperKey: TYKey;
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   opacity?: number;
@@ -289,6 +319,8 @@ export interface ComboChartProps<
   lineSeries: readonly ChartSeries<TDatum, TYKey>[];
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -361,6 +393,8 @@ export interface BubbleChartProps<
   sizeKey: TYKey;
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   minRadius?: number;
@@ -388,6 +422,8 @@ export interface LollipopChartProps<
   yKey: TYKey;
   /** Axis configuration, or `false` to hide axes, grid lines and labels. */
   axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   stemWidth?: number;

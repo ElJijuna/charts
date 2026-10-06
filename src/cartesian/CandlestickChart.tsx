@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
 import type { CandlestickChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
-import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
@@ -29,6 +29,7 @@ function CandlestickChartComponent<
   lowKey,
   closeKey,
   axes,
+  renderOverlay,
   theme: themeOverride,
   colors,
   height = 240,
@@ -55,7 +56,7 @@ function CandlestickChartComponent<
     () => prepareCartesianData(data, xKey, yKeys, yKeys),
     [data, xKey, yKeys],
   );
-  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const positive = colors?.positive ?? theme.colors[2] ?? '#386a20';
   const negative = colors?.negative ?? theme.colors[3] ?? '#ba1a1a';
   const neutral = colors?.neutral ?? theme.axisColor;

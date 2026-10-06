@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { ChartAxesConfig } from '@/cartesian/types';
+import type { ChartAxesConfig, ChartPoint, ChartPointsLayout } from '@/cartesian/types';
 import type { ChartTheme } from '@/theme/types';
 import type { ChartDatum } from '@/types/data';
 
@@ -39,40 +39,86 @@ export function sampleIndexTicks(length: number, tickCount: number): number[] {
   return Array.from({ length: tickCount }, (_, i) => Math.round((i * lastIndex) / (tickCount - 1)));
 }
 
-export function useNativeAxisLabels<TDatum extends ChartDatum>(
+// Mirrors Victory's point placement: numeric X data is sorted and placed by value,
+// categories by their index. Positions are relative to the chart view.
+export function computeChartPoints<TDatum extends ChartDatum, TYKey extends keyof TDatum>(
+  data: readonly TDatum[],
+  xKey: keyof TDatum,
+  yKeys: readonly TYKey[],
+  scales: AxisScales,
+): ChartPointsLayout<TDatum, TYKey> {
+  const isNumericalData = data.every((datum) => typeof datum[xKey] === 'number');
+  const rows = isNumericalData
+    ? [...data].sort((a, b) => Number(a[xKey]) - Number(b[xKey]))
+    : [...data];
+  const points = {} as Record<TYKey, ChartPoint<TDatum[keyof TDatum]>[]>;
+  for (const key of yKeys) {
+    points[key] = rows.map((datum, index) => {
+      const xValue = datum[xKey];
+      const value = datum[key];
+      const yValue = typeof value === 'number' && Number.isFinite(value) ? value : null;
+      return {
+        index,
+        xValue,
+        yValue,
+        x: scales.x(isNumericalData ? Number(xValue) : index) ?? 0,
+        y: yValue === null ? null : (scales.y(yValue) ?? null),
+      };
+    });
+  }
+  const [left, right] = [Math.min(...scales.x.range()), Math.max(...scales.x.range())];
+  const [top, bottom] = [Math.min(...scales.y.range()), Math.max(...scales.y.range())];
+  return { points, chartBounds: { left, right, top, bottom } };
+}
+
+export function useChartOverlay<TDatum extends ChartDatum, TYKey extends keyof TDatum>(
   axesProp: ChartAxesConfig | false | undefined,
   theme: ChartTheme,
   padding: number,
   data: readonly TDatum[],
   xKey: keyof TDatum,
+  yKeys: readonly TYKey[] = [],
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode,
 ) {
   const axes = axesProp || undefined;
-  const enabled = axes?.labelMode === 'native';
+  const nativeLabels = axes?.labelMode === 'native';
   const [scales, setScales] = useState<AxisScales | null>(null);
   const onScaleChange = useCallback((x: AxisScale, y: AxisScale) => setScales({ x, y }), []);
   const xSpace = axes?.labelSpace?.x ?? defaultXLabelSpace;
   const ySpace = axes?.labelSpace?.y ?? defaultYLabelSpace;
   const chartPadding = useMemo(
     () =>
-      enabled
+      nativeLabels
         ? { top: padding, right: padding, bottom: padding + xSpace, left: padding + ySpace }
         : padding,
-    [enabled, padding, xSpace, ySpace],
+    [nativeLabels, padding, xSpace, ySpace],
+  );
+  const layout = useMemo(
+    () => (renderOverlay && scales ? computeChartPoints(data, xKey, yKeys, scales) : null),
+    [renderOverlay, scales, data, xKey, yKeys],
   );
 
   return {
     padding: chartPadding,
-    onScaleChange: enabled ? onScaleChange : undefined,
-    overlay:
-      enabled && scales ? (
-        <NativeAxisLabels
-          axes={axes}
-          theme={theme}
-          scales={scales}
-          data={data}
-          xKey={String(xKey)}
-        />
-      ) : null,
+    onScaleChange: nativeLabels || renderOverlay ? onScaleChange : undefined,
+    overlay: scales ? (
+      <>
+        {nativeLabels && axes ? (
+          <NativeAxisLabels
+            axes={axes}
+            theme={theme}
+            scales={scales}
+            data={data}
+            xKey={String(xKey)}
+          />
+        ) : null}
+        {layout && renderOverlay ? (
+          <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+            {renderOverlay(layout)}
+          </View>
+        ) : null}
+      </>
+    ) : null,
   };
 }
 

@@ -34,6 +34,8 @@ export type {
   CandlestickChartProps,
   ChartAxesConfig,
   ChartAxisConfig,
+  ChartPoint,
+  ChartPointsLayout,
   ComboChartProps,
   HistogramChartProps,
   HorizontalBarChartProps,

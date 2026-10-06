@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedBar } from 'victory-native';
 import type { StackedBarChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
-import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { useChartAnimation } from '@/core/useChartAnimation';
@@ -52,7 +52,7 @@ function StackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
-  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey);
 
   return (
     <View

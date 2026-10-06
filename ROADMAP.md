@@ -155,8 +155,13 @@ They block or complicate real usage, so they come before performance work.
   `accessibilityLabel`; it skips unplottable points, sorts numeric X like Victory and adds no
   built-in wording. A helper was chosen over `accessibilityValue`, which is not reliably
   announced on plain views across platforms.
-- [ ] Expose point coordinates: consumers copy the geometry (padding ± width/2) to align
-  custom labels. Add an `onLayoutPoints` callback or a render prop with `points`.
+- [x] Expose point coordinates: consumers copied the geometry (padding ± width/2) to align
+  custom labels. Done: `renderOverlay({ points, chartBounds })` on line, area, bar, scatter,
+  bubble, lollipop, combo, area range and candlestick charts, computed from Victory's scales
+  (verified against drawn points in the web Storybook). Stacked and horizontal charts are not
+  supported yet; bar `x` is the group center, not each bar's.
+- [ ] `BarChart` clips its first and last groups: it sets no `domainPadding`, so the outer
+  groups are centered on the plot edges (visible in the Bar story).
 - [ ] Avoid one `GestureHandlerRootView` per chart: Victory wraps every chart even without
   interaction. Skip it when there is no `chartPressState`, or document the behavior.
 - [ ] Add token-based theming: `theme` only accepts loose colors. Add a `ChartThemeProvider`

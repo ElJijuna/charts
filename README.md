@@ -692,6 +692,36 @@ Internally, axes and theme configuration retain their references when their
 values are unchanged. Theme changes do not re-prepare Cartesian data. Histogram
 bins depend on domain endpoints rather than the domain array reference.
 
+### Custom overlays
+
+`renderOverlay` draws React Native content over the chart, with each point's position, so
+custom labels don't have to copy the chart's padding and layout maths. It receives
+`points` (keyed by series, in plotting order) and `chartBounds`, in pixels relative to the
+chart view:
+
+```tsx
+<LineChart
+  accessibilityLabel="Monthly revenue"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  renderOverlay={({ points }) =>
+    points.revenue.map((point) =>
+      point.y === null ? null : (
+        <Text key={point.index} style={{ position: 'absolute', left: point.x - 20, top: point.y - 20, width: 40, textAlign: 'center' }}>
+          {point.yValue}
+        </Text>
+      ),
+    )
+  }
+/>
+```
+
+Each point has `index`, `xValue`, `yValue`, `x` and `y` (`null` for missing values). In bar
+charts, `x` is the center of the bar group. Overlays are available on line, area, bar,
+scatter, bubble, lollipop, combo, area range and candlestick charts; stacked and horizontal
+charts don't support them yet.
+
 ### Tooltip selection
 
 `useChartPointSelection()` provides `activePoint`, `selectPoint(index)` and
