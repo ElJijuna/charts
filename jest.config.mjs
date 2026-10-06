@@ -4,6 +4,9 @@ import base from 'super-configs/jest/react-native';
 export default {
   ...base,
   verbose: false,
+  // Keep the RN preset's export conditions with Jest 30's matching Node environment.
+  testEnvironment: 'jest-environment-node',
+  testEnvironmentOptions: { customExportConditions: ['require', 'react-native'] },
   moduleNameMapper: {
     ...base.moduleNameMapper,
     '^@/(.*)$': '<rootDir>/src/$1',
