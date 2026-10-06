@@ -583,6 +583,29 @@ Screen readers then announce `Ingresos mensuales: Sin datos` when the chart is e
 
 Explore these cases under **Examples / Edge Cases** in Storybook.
 
+## Testing with Jest
+
+Charts depend on Victory Native, Skia and Reanimated, whose published sources Jest cannot
+load untransformed. Map the library to its Jest stand-ins instead:
+
+```js
+// jest.config.js
+module.exports = {
+  preset: 'react-native',
+  moduleNameMapper: {
+    '^@real-native/charts$': '@real-native/charts/jest',
+  },
+};
+```
+
+Or mock it per test file with
+`jest.mock('@real-native/charts', () => require('@real-native/charts/jest'));`.
+
+Each chart renders an accessible `View` that keeps `accessibilityLabel`, `testID`, `height` and
+`style`, so screens can be queried with `getByLabelText` or `getByTestId`. The stand-ins draw no
+data, so assert on your own props and copy rather than on chart output.
+`useChartPointSelection` and `defaultChartTheme` are the real implementations.
+
 ## Example app
 
 Type checking and declaration builds use TypeScript 7.0.2 through the

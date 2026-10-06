@@ -126,10 +126,12 @@ They block or complicate real usage, so they come before performance work.
   `accessibilityLabel` is now required (breaking, needs a 2.0.0 release), and charts accept
   `emptyLabel` (drawn in the theme's `labelColor`) and `renderEmpty`; without either the
   empty state shows nothing.
-- [ ] Ship a Jest mock: importing the library fails with "Must use import to load ES Module"
+- [x] Ship a Jest mock: importing the library failed with "Must use import to load ES Module"
   because the `react-native` field points to `lib/native` (TS), which imports
-  `victory-native/src`. Publish `@real-native/charts/jest` with stubs that keep
-  `accessibilityLabel` and `testID`.
+  `victory-native/src`. Fixed: `@real-native/charts/jest` exports stand-ins that keep
+  `accessibilityLabel`, `testID`, `height` and `style`, with a parity test against the main
+  entry. Verified in a React Native 0.86 Jest project installing the packed tarball, through
+  both `moduleNameMapper` and `jest.mock`.
 - [x] Simplify the web setup. Vite required aliasing `victory-native` to `src/index.ts`,
   excluding it from pre-bundling, manually pre-bundling `react-reconciler`, `its-fine`,
   `scheduler`, etc., and a Babel plugin that strips `?v=` from file names so Worklets compiles.
