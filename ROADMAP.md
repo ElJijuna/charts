@@ -144,8 +144,11 @@ They block or complicate real usage, so they come before performance work.
 
 ### API improvements
 
-- [ ] Make hiding axes simple: today it needs `axes: { x: { lineColor: 'transparent' } }`.
-  Add `axes={false}` or `showGrid` / `showAxes`.
+- [x] Make hiding axes simple: it needed `axes: { x: { lineColor: 'transparent' } }`.
+  Fixed: `axes={false}` hides axes, grid and labels, and `axes.grid: false` hides only grid
+  lines. Victory draws Y grid lines even without `axisOptions`, so hidden axes pass zero-width
+  transparent lines; this also removed stray grid lines from `SparklineChart`
+  (verified in the web Storybook).
 - [ ] Provide an accessible data description: a generated `accessibilityValue` or a
   `describeSeries(data, format)` helper, instead of building "Monday, 40, Tuesday, 70…" by hand.
 - [ ] Expose point coordinates: consumers copy the geometry (padding ± width/2) to align

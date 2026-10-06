@@ -28,6 +28,8 @@ export interface ChartAxesConfig {
   labelStyle?: StyleProp<TextStyle>;
   /** Space reserved for `native` labels below the plot (`x`, default 20) and left of it (`y`, default 40). */
   labelSpace?: { x?: number; y?: number };
+  /** Set to `false` to hide grid lines while keeping the frame and labels. */
+  grid?: boolean;
   x?: ChartAxisConfig;
   y?: ChartAxisConfig;
 }
@@ -46,7 +48,8 @@ export interface LineChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -70,7 +73,8 @@ export interface BarChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -102,7 +106,8 @@ export interface AreaChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly AreaChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -126,7 +131,8 @@ export interface ScatterChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -150,7 +156,8 @@ export interface StackedBarChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -174,7 +181,8 @@ export interface StackedAreaChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly AreaChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -206,7 +214,8 @@ export interface CandlestickChartProps<
   highKey: TYKey;
   lowKey: TYKey;
   closeKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   colors?: CandlestickChartColors;
   height?: number;
@@ -229,14 +238,16 @@ export type HorizontalBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes'> & { axes?: HorizontalChartAxesConfig };
+> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes'> & {
+  axes?: HorizontalChartAxesConfig | false;
+};
 
 export type HorizontalStackedBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
 > = Omit<StackedBarChartProps<TDatum, TXKey, TYKey>, 'axes'> & {
-  axes?: HorizontalChartAxesConfig;
+  axes?: HorizontalChartAxesConfig | false;
 };
 
 export interface AreaRangeChartProps<
@@ -248,7 +259,8 @@ export interface AreaRangeChartProps<
   xKey: TXKey;
   lowerKey: TYKey;
   upperKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   color?: string;
   opacity?: number;
@@ -275,7 +287,8 @@ export interface ComboChartProps<
   xKey: TXKey;
   barSeries: readonly ChartSeries<TDatum, TYKey>[];
   lineSeries: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -321,7 +334,8 @@ export interface HistogramChartProps {
   values: readonly number[];
   binCount?: number;
   domain?: readonly [number, number];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   color?: string;
   height?: number;
@@ -345,7 +359,8 @@ export interface BubbleChartProps<
   xKey: TXKey;
   yKey: TYKey;
   sizeKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   color?: string;
   minRadius?: number;
@@ -371,7 +386,8 @@ export interface LollipopChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   yKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   color?: string;
   stemWidth?: number;

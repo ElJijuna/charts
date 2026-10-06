@@ -163,4 +163,23 @@ describe('LineChart', () => {
       }),
     );
   });
+
+  it('hides axes, grid and labels when axes is false', async () => {
+    await render(
+      <LineChart
+        accessibilityLabel="Revenue"
+        axes={false}
+        data={[{ month: 1, revenue: 12 }]}
+        series={[{ key: 'revenue' }]}
+        xKey="month"
+      />,
+    );
+
+    expect(mockCartesianSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        axisOptions: expect.objectContaining({ font: null, lineWidth: 0 }),
+        padding: 16,
+      }),
+    );
+  });
 });

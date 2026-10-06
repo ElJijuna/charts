@@ -336,6 +336,13 @@ optional `axes.labelStyle`. Room is reserved below and left of the plot; adjust 
 Native labels are available on vertical cartesian charts. Horizontal bar charts keep
 canvas labels.
 
+Pass `axes={false}` to hide axes, grid lines and labels, or `axes={{ grid: false }}` to drop
+only the grid lines while keeping the frame and labels:
+
+```tsx
+<BarChart accessibilityLabel="Revenue by month" data={data} xKey="month" series={series} axes={false} />
+```
+
 Charts animate data changes by default, except when the system requests reduced motion
 (read with Reanimated's `useReducedMotion`). Passing `animate` explicitly overrides that:
 `animate={false}` always disables it and `animate` always enables it.

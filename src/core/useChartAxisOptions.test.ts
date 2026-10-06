@@ -42,4 +42,24 @@ describe('useChartAxisOptions', () => {
     expect(mockUseFont).toHaveBeenCalledWith(null, 12);
     expect(result.current.font).toBe(explicitFont);
   });
+
+  it('draws no lines or labels and loads no font when axes are hidden', async () => {
+    const { result } = await renderHook(() => useChartAxisOptions(false, defaultChartTheme));
+
+    expect(result.current).toEqual({
+      font: null,
+      lineWidth: 0,
+      lineColor: 'transparent',
+      labelColor: 'transparent',
+    });
+    expect(mockUseFont).toHaveBeenCalledWith(null, 12);
+  });
+
+  it('makes only the grid transparent when grid is disabled', async () => {
+    const { result } = await renderHook(() =>
+      useChartAxisOptions({ grid: false, x: { lineColor: '#111' } }, defaultChartTheme),
+    );
+
+    expect(result.current.lineColor).toEqual({ grid: 'transparent', frame: '#111' });
+  });
 });

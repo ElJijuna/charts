@@ -40,12 +40,13 @@ export function sampleIndexTicks(length: number, tickCount: number): number[] {
 }
 
 export function useNativeAxisLabels<TDatum extends ChartDatum>(
-  axes: ChartAxesConfig | undefined,
+  axesProp: ChartAxesConfig | false | undefined,
   theme: ChartTheme,
   padding: number,
   data: readonly TDatum[],
   xKey: keyof TDatum,
 ) {
+  const axes = axesProp || undefined;
   const enabled = axes?.labelMode === 'native';
   const [scales, setScales] = useState<AxisScales | null>(null);
   const onScaleChange = useCallback((x: AxisScale, y: AxisScale) => setScales({ x, y }), []);

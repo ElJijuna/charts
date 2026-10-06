@@ -7,6 +7,7 @@ import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
 import { useChartAnimation } from '@/core/useChartAnimation';
+import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -39,6 +40,8 @@ function SparklineChartComponent<
 }: SparklineChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
   const animation = useChartAnimation(animate);
+  // Sparklines have no axes; this also suppresses Victory's default grid lines.
+  const axisOptions = useChartAxisOptions(false, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
@@ -62,6 +65,7 @@ function SparklineChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={padding}
+          axisOptions={axisOptions}
         >
           {({ points }) => (
             <>

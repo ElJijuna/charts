@@ -44,7 +44,9 @@ describe('SparklineChart', () => {
     expect(mockCartesianSpy).toHaveBeenCalledWith(
       expect.objectContaining({ padding: 8, yKeys: ['current'] }),
     );
-    expect(mockCartesianSpy.mock.calls[0]?.[0]).not.toHaveProperty('axisOptions');
+    expect(mockCartesianSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ axisOptions: expect.objectContaining({ lineWidth: 0 }) }),
+    );
     expect(mockLineSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         animate: undefined,
@@ -68,7 +70,12 @@ describe('SparklineChart', () => {
     );
 
     expect(screen.getByLabelText('Sparkline chart')).toBeTruthy();
-    expect(mockCartesianSpy).toHaveBeenCalledWith(expect.objectContaining({ padding: 4 }));
+    expect(mockCartesianSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        axisOptions: expect.objectContaining({ lineWidth: 0, font: null }),
+        padding: 4,
+      }),
+    );
     expect(mockLineSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         animate: { duration: 300, type: 'timing' },
