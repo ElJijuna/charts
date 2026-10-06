@@ -65,6 +65,7 @@ describe('HorizontalStackedBarChart', () => {
 
     const screen = await render(
       <HorizontalStackedBarChart
+        accessibilityLabel="Horizontal stacked bar chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },

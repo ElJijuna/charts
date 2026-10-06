@@ -5,6 +5,10 @@
  * @packageDocumentation
  */
 
+export {
+  type DescribeSeriesOptions,
+  describeSeries,
+} from '@/accessibility/describeSeries';
 export { AreaChart } from '@/cartesian/AreaChart';
 export { AreaRangeChart } from '@/cartesian/AreaRangeChart';
 export { BarChart } from '@/cartesian/BarChart';
@@ -30,9 +34,12 @@ export type {
   CandlestickChartProps,
   ChartAxesConfig,
   ChartAxisConfig,
+  ChartPoint,
+  ChartPointsLayout,
   ComboChartProps,
   HistogramChartProps,
   HorizontalBarChartProps,
+  HorizontalChartAxesConfig,
   HorizontalStackedBarChartProps,
   LineChartProps,
   LollipopChartProps,

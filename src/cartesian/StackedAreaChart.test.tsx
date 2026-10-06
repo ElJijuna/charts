@@ -69,6 +69,7 @@ describe('StackedAreaChart', () => {
 
     const screen = await render(
       <StackedAreaChart
+        accessibilityLabel="Stacked area chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },

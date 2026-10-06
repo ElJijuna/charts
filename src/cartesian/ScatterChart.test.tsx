@@ -60,6 +60,7 @@ describe('ScatterChart', () => {
 
     const screen = await render(
       <ScatterChart
+        accessibilityLabel="Scatter chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },

@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const chartIds = [
   'line',
+  'line-native-labels',
   'bar',
   'horizontal-bar',
   'horizontal-stacked-bar',
@@ -53,3 +54,11 @@ for (const chartId of chartIds) {
     expect(pageErrors).toEqual([]);
   });
 }
+
+test('native axis labels render as text next to the plot', async ({ page }) => {
+  await page.goto('/iframe.html?id=charts--line-native-labels&viewMode=story');
+
+  const story = page.getByTestId('chart-story-line-native-labels');
+  await expect(story.getByText('Jan', { exact: true })).toBeVisible();
+  await expect(story.getByText('$100k')).toBeVisible();
+});

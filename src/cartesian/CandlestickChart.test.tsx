@@ -80,6 +80,7 @@ describe('CandlestickChart', () => {
 
     const screen = await render(
       <CandlestickChart
+        accessibilityLabel="Candlestick chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },

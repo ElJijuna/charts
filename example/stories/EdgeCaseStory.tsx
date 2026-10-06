@@ -24,6 +24,8 @@ export function EdgeCaseStory({ kind, scenario }: EdgeCaseStoryProps) {
     animate: false,
     theme: { backgroundColor: 'transparent' },
     testID: 'edge-chart',
+    accessibilityLabel: `${kind} chart`,
+    emptyLabel: 'No data',
   };
   const series = [
     { key: 'y', color: '#6d28d9' },
@@ -54,7 +56,14 @@ export function EdgeCaseStory({ kind, scenario }: EdgeCaseStoryProps) {
       return <Charts.SparklineChart {...props} series={series} />;
     case 'histogram':
       return (
-        <Charts.HistogramChart values={values} height={160} animate={false} testID="edge-chart" />
+        <Charts.HistogramChart
+          values={values}
+          height={160}
+          animate={false}
+          testID="edge-chart"
+          accessibilityLabel={props.accessibilityLabel}
+          emptyLabel={props.emptyLabel}
+        />
       );
     case 'lollipop':
       return <Charts.LollipopChart {...props} yKey="y" />;
@@ -68,6 +77,8 @@ export function EdgeCaseStory({ kind, scenario }: EdgeCaseStoryProps) {
           height={160}
           animate={false}
           testID="edge-chart"
+          accessibilityLabel={props.accessibilityLabel}
+          emptyLabel={props.emptyLabel}
           data={values.map((value, i) => ({ label: String(i), value }))}
         />
       );
@@ -77,6 +88,8 @@ export function EdgeCaseStory({ kind, scenario }: EdgeCaseStoryProps) {
           height={160}
           animate={false}
           testID="edge-chart"
+          accessibilityLabel={props.accessibilityLabel}
+          emptyLabel={props.emptyLabel}
           value={values[0] ?? Number.NaN}
         />
       );

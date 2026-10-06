@@ -19,6 +19,7 @@ describe('HistogramChart', () => {
   it('handles invalid configuration and very large datasets without spread overflow', async () => {
     await render(
       <HistogramChart
+        accessibilityLabel="Histogram chart"
         binCount={Number.NaN}
         domain={[Number.NaN, 10]}
         values={Array.from({ length: 150_000 }, (_, index) => index % 2)}
@@ -64,12 +65,12 @@ describe('HistogramChart', () => {
   });
 
   it('applies defaults and handles a constant distribution', async () => {
-    await render(<HistogramChart values={[5, 5, 5]} />);
+    await render(<HistogramChart accessibilityLabel="Histogram chart" values={[5, 5, 5]} />);
 
     expect(mockBarChartSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         accessibilityLabel: 'Histogram chart',
-        animate: true,
+        animate: undefined,
         data: [{ bin: 5, count: 3 }],
         height: 240,
         padding: 16,
@@ -79,11 +80,21 @@ describe('HistogramChart', () => {
 
   it('handles empty and invalid datasets', async () => {
     const { rerender } = await render(
-      <HistogramChart values={[Number.NaN, Number.POSITIVE_INFINITY]} />,
+      <HistogramChart
+        accessibilityLabel="Histogram chart"
+        values={[Number.NaN, Number.POSITIVE_INFINITY]}
+      />,
     );
     expect(mockBarChartSpy).toHaveBeenLastCalledWith(expect.objectContaining({ data: [] }));
 
-    await rerender(<HistogramChart binCount={0} domain={[10, 0]} values={[0, 5, 10]} />);
+    await rerender(
+      <HistogramChart
+        accessibilityLabel="Histogram chart"
+        binCount={0}
+        domain={[10, 0]}
+        values={[0, 5, 10]}
+      />,
+    );
     expect(mockBarChartSpy).toHaveBeenLastCalledWith(
       expect.objectContaining({ data: [{ bin: 5, count: 3 }] }),
     );
@@ -92,15 +103,35 @@ describe('HistogramChart', () => {
 
 it('preserves bins and series for equivalent domains and updates color separately', async () => {
   const values = [1, 2, 3];
-  const screen = await render(<HistogramChart values={values} domain={[0, 4]} color="red" />);
+  const screen = await render(
+    <HistogramChart
+      accessibilityLabel="Histogram chart"
+      values={values}
+      domain={[0, 4]}
+      color="red"
+    />,
+  );
   const initial = mockBarChartSpy.mock.calls.at(-1)?.[0];
   await screen.rerender(
-    <HistogramChart values={values} domain={[0, 4]} color="red" testID="next" />,
+    <HistogramChart
+      accessibilityLabel="Histogram chart"
+      values={values}
+      domain={[0, 4]}
+      color="red"
+      testID="next"
+    />,
   );
   const next = mockBarChartSpy.mock.calls.at(-1)?.[0];
   expect(next?.data).toBe(initial?.data);
   expect(next?.series).toBe(initial?.series);
-  await screen.rerender(<HistogramChart values={values} domain={[0, 4]} color="blue" />);
+  await screen.rerender(
+    <HistogramChart
+      accessibilityLabel="Histogram chart"
+      values={values}
+      domain={[0, 4]}
+      color="blue"
+    />,
+  );
   const changed = mockBarChartSpy.mock.calls.at(-1)?.[0];
   expect(changed?.data).toBe(initial?.data);
   expect(changed?.series).toEqual([{ key: 'count', color: 'blue' }]);

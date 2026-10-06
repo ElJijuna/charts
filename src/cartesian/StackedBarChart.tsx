@@ -2,11 +2,14 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedBar } from 'victory-native';
 import type { StackedBarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -31,12 +34,15 @@ function StackedBarChartComponent<
   padding = 16,
   innerPadding = 0.25,
   barWidth,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Stacked bar chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: StackedBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -48,11 +54,14 @@ function StackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys, true), [chartData, yKeys]);
+  const band = useBandPadding(chartData.length, 'vertical');
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey);
 
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -61,23 +70,31 @@ function StackedBarChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
+          domain={valueDomain}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <StackedBar
-              points={resolvedSeries.map(({ key }) => points[key])}
-              chartBounds={chartBounds}
-              colors={colors}
-              innerPadding={innerPadding}
-              barWidth={barWidth}
-              animate={animate ? chartAnimation : undefined}
-            />
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <StackedBar
+                points={resolvedSeries.map(({ key }) => points[key])}
+                chartBounds={chartBounds}
+                colors={colors}
+                innerPadding={innerPadding}
+                barWidth={barWidth}
+                barCount={chartData.length}
+                animate={animation}
+              />
+            ) : null
+          }
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

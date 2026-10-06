@@ -2,11 +2,12 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
 import type { LineChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -27,17 +28,21 @@ function LineChartComponent<
   xKey,
   series,
   axes,
+  renderOverlay,
   theme: themeOverride,
   height = 240,
   padding = 16,
   curve = 'natural',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Line chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: LineChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -48,11 +53,12 @@ function LineChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
 
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -61,8 +67,9 @@ function LineChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points }) => (
             <>
@@ -74,7 +81,7 @@ function LineChartComponent<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>
@@ -83,8 +90,9 @@ function LineChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

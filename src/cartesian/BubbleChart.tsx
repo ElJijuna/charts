@@ -2,9 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, type PointsArray, Scatter } from 'victory-native';
 import type { BubbleChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -26,6 +27,7 @@ function BubbleChartComponent<
   yKey,
   sizeKey,
   axes,
+  renderOverlay,
   theme: themeOverride,
   color,
   minRadius = 4,
@@ -33,18 +35,22 @@ function BubbleChartComponent<
   shape = 'circle',
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Bubble chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: BubbleChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
     () => prepareCartesianData(data, xKey, yKeys, [yKey, sizeKey]),
     [data, xKey, yKeys, yKey, sizeKey],
   );
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const radiusForPoint = useMemo(() => {
     const lowerRadius = Math.min(minRadius, maxRadius);
     const upperRadius = Math.max(minRadius, maxRadius);
@@ -75,7 +81,7 @@ function BubbleChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -84,8 +90,9 @@ function BubbleChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points }) => (
             <Scatter
@@ -93,13 +100,14 @@ function BubbleChartComponent<
               color={color ?? theme.colors[0] ?? '#6750a4'}
               radius={radiusForPoint}
               shape={shape}
-              animate={animate ? chartAnimation : undefined}
+              animate={animation}
             />
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

@@ -2,11 +2,14 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart } from 'victory-native';
 import type { BarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -26,18 +29,22 @@ function BarChartComponent<
   xKey,
   series,
   axes,
+  renderOverlay,
   theme: themeOverride,
   height = 240,
   padding = 16,
   groupPadding = 0.25,
   barPadding = 0.1,
   cornerRadius = 6,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Bar chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: BarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -48,6 +55,9 @@ function BarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys), [chartData, yKeys]);
+  const band = useBandPadding(chartData.length, 'vertical');
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
 
   const roundedCorners = useMemo(
     () => ({
@@ -62,7 +72,7 @@ function BarChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -71,30 +81,37 @@ function BarChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
+          domain={valueDomain}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <BarGroup
-              chartBounds={chartBounds}
-              betweenGroupPadding={groupPadding}
-              withinGroupPadding={barPadding}
-              roundedCorners={roundedCorners}
-            >
-              {resolvedSeries.map((item) => (
-                <BarGroup.Bar
-                  key={String(item.key)}
-                  points={points[item.key]}
-                  color={item.color}
-                  animate={animate ? chartAnimation : undefined}
-                />
-              ))}
-            </BarGroup>
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <BarGroup
+                chartBounds={chartBounds}
+                betweenGroupPadding={groupPadding}
+                withinGroupPadding={barPadding}
+                roundedCorners={roundedCorners}
+              >
+                {resolvedSeries.map((item) => (
+                  <BarGroup.Bar
+                    key={String(item.key)}
+                    points={points[item.key]}
+                    color={item.color}
+                    animate={animation}
+                  />
+                ))}
+              </BarGroup>
+            ) : null
+          }
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

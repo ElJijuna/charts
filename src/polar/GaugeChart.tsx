@@ -13,9 +13,11 @@ function GaugeChartComponent({
   innerRadius = '70%',
   startAngle = 180,
   circleSweepDegrees = 180,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Gauge chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: GaugeChartProps): ReactElement {
   const theme = useChartTheme(themeOverride);
@@ -48,6 +50,8 @@ function GaugeChartComponent({
       animate={animate}
       style={style}
       accessibilityLabel={accessibilityLabel}
+      emptyLabel={emptyLabel}
+      renderEmpty={renderEmpty}
       testID={testID}
     />
   );

@@ -15,11 +15,12 @@
         "web": "expo start --web",
         "test:e2e": "npm run storybook:build && playwright test",
         "test:e2e:dev": "playwright test --config playwright.dev.config.ts",
+        "test:perf": "npm run storybook:build && PERF=1 playwright test e2e/performance.spec.ts",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@shopify/react-native-skia": "2.6.2",
-        "expo": "~57.0.22",
+        "expo": "~57.0.26",
         "expo-status-bar": "~57.0.1",
         "react": "19.2.3",
         "react-dom": "19.2.3",

@@ -231,11 +231,44 @@ Start Expo web:
 npx expo start --web
 ```
 
-For Vite, Storybook or another bundler, map `react-native` to `react-native-web`, transform
-Reanimated/Worklets with the Babel plugin matching the installed major version, and serve
-the WASM asset from the public directory. The repository's
-[Storybook configuration][storybook-config] provides a working Vite example, including
-Victory Native transpilation. Consult [Reanimated web support][reanimated-web] for other bundlers.
+#### Vite
+
+`@real-native/charts/vite` configures Vite for React Native Web, Skia, Reanimated and
+Victory Native. Install the web packages next to the chart peers and copy CanvasKit:
+
+```sh
+npm install react-dom react-native-web
+npm install -D vite vite-plugin-rnw
+npx setup-skia-web public
+```
+
+```ts
+// vite.config.ts
+import { realNativeCharts } from '@real-native/charts/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [realNativeCharts()],
+});
+```
+
+The plugin wraps [`vite-plugin-rnw`][vite-plugin-rnw] (`react-native` →
+`react-native-web`, web extensions, `__DEV__` and Flow support) and adds what charts need:
+
+- Victory Native is resolved from its TypeScript source and transformed with the Worklets
+  Babel plugin (`react-native-reanimated/plugin` on Reanimated 3).
+- Vite's `?v=` query is stripped from Babel file names so Worklets can compile dependencies.
+- Skia's `AssetRegistry` import resolves to React Native Web's implementation.
+- Skia and Reanimated's CommonJS dependencies (`react-reconciler`, `its-fine`, `scheduler`,
+  …) are prebundled for development.
+
+It accepts the `vite-plugin-rnw` options; any `babel.plugins` you pass run after the chart
+plugins. Render charts behind `WithSkiaWeb` exactly as in the Expo example above, with the
+entry point mounting `App` through `react-dom/client`.
+
+Storybook's React Native Web framework already includes `vite-plugin-rnw`; the repository's
+[Storybook configuration][storybook-config] shows the equivalent setup there. For other
+bundlers, consult [Reanimated web support][reanimated-web].
 
 The current web validation covers Chromium and all 17 chart types. iOS, Android, Firefox,
 Safari and consumer apps installed from the npm tarball remain separate roadmap checks.
@@ -254,6 +287,7 @@ const data = [
 export function RevenueChart() {
   return (
     <LineChart
+      accessibilityLabel="Monthly revenue"
       data={data}
       xKey="month"
       series={[{ key: 'revenue', label: 'Revenue', color: '#6750a4' }]}
@@ -263,10 +297,61 @@ export function RevenueChart() {
 }
 ```
 
+Axis tick labels are drawn with Skia, so they only render when a font is available.
+Pass a font file as `axes.fontSource` (with an optional `fontSize`, default 12) and the
+chart loads it; `formatLabel`, `tickCount` and `labelColor` take effect once it is set:
+
+```tsx
+<LineChart
+  accessibilityLabel="Monthly revenue"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  axes={{
+    fontSource: require('./assets/Inter-Regular.ttf'),
+    fontSize: 12,
+    y: { formatLabel: (value) => `$${value}` },
+  }}
+/>
+```
+
+To share one loaded font across charts, load it yourself with Skia's `useFont` and pass
+it as `axes.font`; it takes precedence over `fontSource`.
+
+To skip Skia fonts entirely, set `axes.labelMode: 'native'`. Tick labels are then drawn
+as React Native `Text` next to the plot, using the platform's fonts, `labelColor` and an
+optional `axes.labelStyle`. Room is reserved below and left of the plot; adjust it with
+`axes.labelSpace` (`{ x: 20, y: 40 }` by default) if long labels are clipped:
+
+```tsx
+<LineChart
+  accessibilityLabel="Monthly revenue"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  axes={{ labelMode: 'native', labelStyle: { fontFamily: 'Inter' } }}
+/>
+```
+
+Native labels are available on vertical cartesian charts. Horizontal bar charts keep
+canvas labels.
+
+Pass `axes={false}` to hide axes, grid lines and labels, or `axes={{ grid: false }}` to drop
+only the grid lines while keeping the frame and labels:
+
+```tsx
+<BarChart accessibilityLabel="Revenue by month" data={data} xKey="month" series={series} axes={false} />
+```
+
+Charts animate data changes by default, except when the system requests reduced motion
+(read with Reanimated's `useReducedMotion`). Passing `animate` explicitly overrides that:
+`animate={false}` always disables it and `animate` always enables it.
+
 `BarChart` shares the same data, series, axes, theme, and animation configuration:
 
 ```tsx
 <BarChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -280,6 +365,7 @@ export function RevenueChart() {
 
 ```tsx
 <StackedBarChart
+  accessibilityLabel="Revenue by channel"
   data={data}
   xKey="month"
   series={[
@@ -294,6 +380,7 @@ export function RevenueChart() {
 
 ```tsx
 <HorizontalBarChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -304,6 +391,7 @@ export function RevenueChart() {
 
 ```tsx
 <HorizontalStackedBarChart
+  accessibilityLabel="Revenue by channel"
   data={data}
   xKey="month"
   series={[
@@ -317,6 +405,7 @@ export function RevenueChart() {
 
 ```tsx
 <AreaChart
+  accessibilityLabel="Revenue trend"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4', fillOpacity: 0.28 }]}
@@ -329,6 +418,7 @@ export function RevenueChart() {
 
 ```tsx
 <StackedAreaChart
+  accessibilityLabel="Revenue composition"
   data={data}
   xKey="month"
   series={[
@@ -343,6 +433,7 @@ export function RevenueChart() {
 
 ```tsx
 <AreaRangeChart
+  accessibilityLabel="Revenue forecast"
   data={forecast}
   xKey="month"
   lowerKey="minimum"
@@ -355,6 +446,7 @@ export function RevenueChart() {
 
 ```tsx
 <ScatterChart
+  accessibilityLabel="Revenue scatter"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -367,6 +459,7 @@ export function RevenueChart() {
 
 ```tsx
 <BubbleChart
+  accessibilityLabel="Revenue by deal size"
   data={segments}
   xKey="name"
   yKey="revenue"
@@ -378,6 +471,7 @@ export function RevenueChart() {
 
 ```tsx
 <CandlestickChart
+  accessibilityLabel="Weekly price"
   data={prices}
   xKey="day"
   openKey="open"
@@ -391,6 +485,7 @@ export function RevenueChart() {
 
 ```tsx
 <ComboChart
+  accessibilityLabel="Revenue and margin"
   data={data}
   xKey="month"
   barSeries={[{ key: 'revenue' }]}
@@ -402,6 +497,7 @@ export function RevenueChart() {
 
 ```tsx
 <SparklineChart
+  accessibilityLabel="Revenue trend"
   data={data}
   xKey="month"
   series={[{ key: 'revenue', color: '#6750a4' }]}
@@ -412,6 +508,7 @@ export function RevenueChart() {
 
 ```tsx
 <HistogramChart
+  accessibilityLabel="Response time distribution"
   values={[12, 18, 18, 21, 24, 24, 24, 30]}
   binCount={6}
 />
@@ -421,6 +518,7 @@ export function RevenueChart() {
 
 ```tsx
 <LollipopChart
+  accessibilityLabel="Revenue by month"
   data={data}
   xKey="month"
   yKey="revenue"
@@ -432,6 +530,7 @@ export function RevenueChart() {
 
 ```tsx
 <PieChart
+  accessibilityLabel="Revenue share"
   data={[
     { label: 'Product', value: 70 },
     { label: 'Services', value: 30 },
@@ -444,6 +543,7 @@ export function RevenueChart() {
 
 ```tsx
 <GaugeChart
+  accessibilityLabel="Goal progress"
   value={72}
   max={100}
   innerRadius="70%"
@@ -451,10 +551,56 @@ export function RevenueChart() {
 />
 ```
 
+## Labels and empty state
+
+The library ships no user-facing text, so every chart requires an `accessibilityLabel`
+in your app's language. When there is no usable data, the chart shows nothing by default.
+Pass `emptyLabel` to show and announce a message (drawn in the theme's `labelColor`),
+or `renderEmpty` for custom content:
+
+```tsx
+<LineChart
+  accessibilityLabel="Ingresos mensuales"
+  emptyLabel="Sin datos"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+/>
+```
+
+Screen readers then announce `Ingresos mensuales: Sin datos` when the chart is empty.
+
+To let screen reader users hear the data, append `describeSeries` to the label. It lists each
+plottable point using your formatters and separators, with no built-in wording:
+
+```tsx
+import { describeSeries } from '@real-native/charts';
+
+const number = new Intl.NumberFormat('es-ES');
+const description = describeSeries(data, {
+  xKey: 'month',
+  yKey: 'revenue',
+  formatY: (value) => number.format(value),
+});
+
+<LineChart
+  accessibilityLabel={`Ingresos mensuales. ${description}`}
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+/>;
+```
+
+The result reads `Jan, 42, Feb, 58, …`. Points the chart skips (invalid X or Y values) are
+skipped here too, and numeric X values are read in ascending order, as drawn. Call it once
+per series for multi-series charts. Long series produce long announcements, so consider
+summarizing large datasets instead.
+
 ## Data edge cases
 
-- Empty datasets, empty series, and datasets without usable values display `No data`
-  inside the existing chart layout. The renderer is not mounted.
+- Empty datasets, empty series, and datasets without usable values render an empty
+  state inside the existing chart layout; the renderer is not mounted. See
+  [Labels and empty state](#labels-and-empty-state) for what it shows.
 - Cartesian X values must be strings or finite numbers. Rows with invalid X values
   are discarded. Invalid Y values (`NaN`, infinity, or nonnumeric values) become
   missing values; they are never converted to zero. `connectMissingData` retains
@@ -463,12 +609,35 @@ export function RevenueChart() {
 - A lone valid sample in line, area, and sparkline charts is shown as a marker.
   Single area ranges show their endpoints; stacked areas mark cumulative values.
   Constant series, including zero, retain their values and use Victory's expanded scales.
-- Pie charts ignore nonpositive and nonfinite slice values. An all-zero pie displays
-  `No data`. Gauge continues to clamp values to its valid range.
+- Pie charts ignore nonpositive and nonfinite slice values. An all-zero pie shows
+  the empty state. Gauge continues to clamp values to its valid range.
 - Histograms ignore nonfinite observations and invalid domains. Invalid bin counts
   default to 10; finite counts are clamped to 1–1,000 to bound allocations.
 
 Explore these cases under **Examples / Edge Cases** in Storybook.
+
+## Testing with Jest
+
+Charts depend on Victory Native, Skia and Reanimated, whose published sources Jest cannot
+load untransformed. Map the library to its Jest stand-ins instead:
+
+```js
+// jest.config.js
+module.exports = {
+  preset: 'react-native',
+  moduleNameMapper: {
+    '^@real-native/charts$': '@real-native/charts/jest',
+  },
+};
+```
+
+Or mock it per test file with
+`jest.mock('@real-native/charts', () => require('@real-native/charts/jest'));`.
+
+Each chart renders an accessible `View` that keeps `accessibilityLabel`, `testID`, `height` and
+`style`, so screens can be queried with `getByLabelText` or `getByTestId`. The stand-ins draw no
+data, so assert on your own props and copy rather than on chart output.
+`useChartPointSelection` and `defaultChartTheme` are the real implementations.
 
 ## Example app
 
@@ -512,6 +681,28 @@ npm run test:e2e:dev
 
 The browser tests require Chromium (`cd example && npx playwright install chromium`).
 
+### Performance measurements
+
+**Examples / Large Datasets** renders 1,000, 10,000 or 50,000 points for line, area,
+stacked area, scatter, bubble, bar, histogram, sparkline and candlestick charts. The data
+comes from a fixed seed, so every run measures the same input, and animation is off. Each
+story reports:
+
+- **commit**: from the start of React's render until it commits.
+- **settle**: until the main thread is quiet for three frames. This includes Victory's layout
+  pass, its follow-up renders and Skia drawing.
+
+Use **Update data** to measure an update with a new seed. To run every chart and size against
+the production Storybook build:
+
+```sh
+npm run test:perf
+```
+
+Each case mounts three times (`PERF_RUNS` changes this), updates three times per mount, and
+prints medians as `PERF {…}` lines; the raw samples are attached to the Playwright report.
+Timings depend on the machine, so compare runs on the same one.
+
 ### Stable props and updates
 
 Chart components use shallow memoization. Keep `data`, `series`, palette arrays,
@@ -522,6 +713,36 @@ array when its contents change instead of mutating it in place.
 Internally, axes and theme configuration retain their references when their
 values are unchanged. Theme changes do not re-prepare Cartesian data. Histogram
 bins depend on domain endpoints rather than the domain array reference.
+
+### Custom overlays
+
+`renderOverlay` draws React Native content over the chart, with each point's position, so
+custom labels don't have to copy the chart's padding and layout maths. It receives
+`points` (keyed by series, in plotting order) and `chartBounds`, in pixels relative to the
+chart view:
+
+```tsx
+<LineChart
+  accessibilityLabel="Monthly revenue"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  renderOverlay={({ points }) =>
+    points.revenue.map((point) =>
+      point.y === null ? null : (
+        <Text key={point.index} style={{ position: 'absolute', left: point.x - 20, top: point.y - 20, width: 40, textAlign: 'center' }}>
+          {point.yValue}
+        </Text>
+      ),
+    )
+  }
+/>
+```
+
+Each point has `index`, `xValue`, `yValue`, `x` and `y` (`null` for missing values). In bar
+charts, `x` is the center of the bar group. Overlays are available on line, area, bar,
+scatter, bubble, lollipop, combo, area range and candlestick charts; stacked and horizontal
+charts don't support them yet.
 
 ### Tooltip selection
 
@@ -585,4 +806,5 @@ a touch clears it.
 [skia-installation]: https://wcandillon.github.io/react-native-skia/docs/getting-started/installation
 [skia-web]: https://wcandillon.github.io/react-native-skia/docs/getting-started/web
 [storybook-loader]: https://github.com/ElJijuna/charts/blob/main/example/stories/Charts.stories.tsx
+[vite-plugin-rnw]: https://github.com/dannyhw/vite-plugin-rnw
 [storybook-config]: https://github.com/ElJijuna/charts/blob/main/example/.storybook/main.ts

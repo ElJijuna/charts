@@ -68,9 +68,11 @@ function HistogramChartComponent({
   color,
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Histogram chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: HistogramChartProps): ReactElement {
   const domainStart = domain?.[0];
@@ -102,6 +104,8 @@ function HistogramChartComponent({
       animate={animate}
       style={style}
       accessibilityLabel={accessibilityLabel}
+      emptyLabel={emptyLabel}
+      renderEmpty={renderEmpty}
       testID={testID}
     />
   );

@@ -19,6 +19,26 @@
         "default": "./lib/commonjs/index.js"
       }
     },
+    "./vite": {
+      "import": {
+        "types": "./lib/typescript/module/vite.d.ts",
+        "default": "./lib/module/vite.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/vite.d.ts",
+        "default": "./lib/commonjs/vite.js"
+      }
+    },
+    "./jest": {
+      "import": {
+        "types": "./lib/typescript/module/jest.d.ts",
+        "default": "./lib/module/jest.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/jest.d.ts",
+        "default": "./lib/commonjs/jest.js"
+      }
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -54,6 +74,7 @@
     "storybook:preview": "npm --prefix example run storybook:preview --",
     "test:e2e": "npm --prefix example run test:e2e",
     "test:e2e:dev": "npm --prefix example run test:e2e:dev",
+    "test:perf": "npm --prefix example run test:perf",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -86,7 +107,17 @@
     "react-native": ">=0.79.0",
     "react-native-gesture-handler": ">=2.0.0",
     "react-native-reanimated": ">=3.19.1",
-    "victory-native": ">=42.0.0 <43.0.0"
+    "victory-native": ">=42.0.0 <43.0.0",
+    "vite": ">=6.0.0",
+    "vite-plugin-rnw": ">=0.0.12 <0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    },
+    "vite-plugin-rnw": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -122,7 +153,9 @@
     "tsc-alias": "^1.9.7",
     "typedoc": "^0.28.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "victory-native": "^42.0.1"
+    "victory-native": "^42.0.1",
+    "vite": "^7.3.6",
+    "vite-plugin-rnw": "^0.0.12"
   },
   "react-native-builder-bob": {
     "source": "src",

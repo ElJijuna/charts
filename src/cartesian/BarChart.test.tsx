@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react-native';
-import type { ReactNode } from 'react';
+import { useEffect as mockUseEffect, type ReactNode } from 'react';
 
 import { BarChart } from '@/cartesian/BarChart';
 
@@ -8,8 +8,15 @@ const mockBarGroupSpy = jest.fn((_props: unknown) => null);
 const mockCartesianSpy = jest.fn((_props: unknown) => null);
 
 jest.mock('victory-native', () => ({
-  CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
+  CartesianChart: (props: {
+    children: (value: unknown) => ReactNode;
+    onChartBoundsChange?: (bounds: unknown) => void;
+  }) => {
     mockCartesianSpy(props);
+    const { onChartBoundsChange } = props;
+    mockUseEffect(() => {
+      onChartBoundsChange?.({ bottom: 200, left: 0, right: 300, top: 0 });
+    }, [onChartBoundsChange]);
     return props.children({
       chartBounds: { bottom: 200, left: 0, right: 300, top: 0 },
       points: {
@@ -71,7 +78,8 @@ describe('BarChart', () => {
         withinGroupPadding: 0.2,
       }),
     );
-    expect(mockBarSpy).toHaveBeenCalledTimes(2);
+    // One bar per series in each render.
+    expect(mockBarSpy).toHaveBeenCalledTimes(2 * mockBarGroupSpy.mock.calls.length);
     expect(mockBarSpy).toHaveBeenCalledWith(
       expect.objectContaining({ animate: undefined, color: '#123456' }),
     );
@@ -82,6 +90,7 @@ describe('BarChart', () => {
 
     const screen = await render(
       <BarChart
+        accessibilityLabel="Bar chart"
         axes={{
           x: { formatLabel, lineColor: '#111', tickCount: 2 },
           y: { formatLabel, labelColor: '#222', tickCount: 4 },
@@ -117,5 +126,31 @@ describe('BarChart', () => {
         color: '#6750a4',
       }),
     );
+  });
+
+  it('insets the first and last groups by half a band before drawing bars', async () => {
+    await render(
+      <BarChart
+        accessibilityLabel="Revenue"
+        data={[
+          { month: 'Jan', current: 1 },
+          { month: 'Feb', current: 2 },
+          { month: 'Mar', current: 3 },
+        ]}
+        series={[{ key: 'current' }]}
+        xKey="month"
+      />,
+    );
+
+    // 300px for 3 groups: 75px of domain padding spaces points 100px apart, 50px from each edge.
+    expect(mockCartesianSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        domain: { y: [0, 3] },
+        domainPadding: { left: 75, right: 75 },
+      }),
+    );
+    // The first render, before the plot size is known, draws the grid but no bars.
+    expect(mockBarGroupSpy).toHaveBeenCalled();
+    expect(mockBarGroupSpy.mock.calls.length).toBeLessThan(mockCartesianSpy.mock.calls.length);
   });
 });

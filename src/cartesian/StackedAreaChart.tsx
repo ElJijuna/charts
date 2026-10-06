@@ -2,12 +2,14 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedArea } from 'victory-native';
 import type { AreaChartSeries, StackedAreaChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -31,12 +33,15 @@ function StackedAreaChartComponent<
   height = 240,
   padding = 16,
   curve = 'natural',
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Stacked area chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: StackedAreaChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey, AreaChartSeries<TDatum, TYKey>>(series, theme),
@@ -48,6 +53,7 @@ function StackedAreaChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey);
   const singleDomain = useMemo<{ y: [number, number] } | undefined>(() => {
     const [sample] = chartData;
     if (chartData.length !== 1 || !sample) {
@@ -69,11 +75,15 @@ function StackedAreaChartComponent<
     const upper = maximum + margin;
     return Number.isFinite(lower) && Number.isFinite(upper) ? { y: [lower, upper] } : undefined;
   }, [chartData, yKeys]);
+  const valueDomain = useMemo(
+    () => singleDomain ?? zeroBasedDomain(chartData, yKeys, true),
+    [singleDomain, chartData, yKeys],
+  );
 
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -82,9 +92,10 @@ function StackedAreaChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
-          domain={singleDomain}
+          padding={axisLabels.padding}
+          domain={valueDomain}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points, chartBounds, yScale }) => (
             <>
@@ -96,7 +107,7 @@ function StackedAreaChartComponent<
                 areaOptions={({ rowIndex }) => ({
                   opacity: resolvedSeries[rowIndex]?.fillOpacity ?? 0.5,
                 })}
-                animate={animate ? chartAnimation : undefined}
+                animate={animation}
               />
               {chartData.length === 1 &&
                 resolvedSeries.map((item, index) => {
@@ -119,8 +130,9 @@ function StackedAreaChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

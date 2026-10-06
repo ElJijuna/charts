@@ -2,11 +2,12 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
 import type { SparklineChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
+import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -30,12 +31,17 @@ function SparklineChartComponent<
   padding = 4,
   curve = 'monotoneX',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Sparkline chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: SparklineChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
+  // Sparklines have no axes; this also suppresses Victory's default grid lines.
+  const axisOptions = useChartAxisOptions(false, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
@@ -49,7 +55,7 @@ function SparklineChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -59,6 +65,7 @@ function SparklineChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={padding}
+          axisOptions={axisOptions}
         >
           {({ points }) => (
             <>
@@ -70,7 +77,7 @@ function SparklineChartComponent<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>
@@ -79,7 +86,7 @@ function SparklineChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

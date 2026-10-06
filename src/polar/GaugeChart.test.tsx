@@ -47,12 +47,12 @@ describe('GaugeChart', () => {
   });
 
   it('clamps values and applies gauge defaults', async () => {
-    await render(<GaugeChart value={140} />);
+    await render(<GaugeChart accessibilityLabel="Gauge chart" value={140} />);
 
     expect(mockPieChartSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         accessibilityLabel: 'Gauge chart',
-        animate: true,
+        animate: undefined,
         circleSweepDegrees: 180,
         data: [
           { label: 'Value', value: 100, color: '#6750a4' },
@@ -66,7 +66,7 @@ describe('GaugeChart', () => {
   });
 
   it('handles invalid maximums and values safely', async () => {
-    await render(<GaugeChart max={0} value={Number.NaN} />);
+    await render(<GaugeChart accessibilityLabel="Gauge chart" max={0} value={Number.NaN} />);
 
     expect(mockPieChartSpy).toHaveBeenCalledWith(
       expect.objectContaining({

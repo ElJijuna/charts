@@ -2,10 +2,12 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Bar, CartesianChart, Scatter } from 'victory-native';
 import type { LollipopChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
+import { zeroBasedDomain } from '@/core/valueDomain';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -25,6 +27,7 @@ function LollipopChartComponent<
   xKey,
   yKey,
   axes,
+  renderOverlay,
   theme: themeOverride,
   color,
   stemWidth = 3,
@@ -32,25 +35,29 @@ function LollipopChartComponent<
   shape = 'circle',
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Lollipop chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: LollipopChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys), [chartData, yKeys]);
+  const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
-  const animation = animate ? chartAnimation : undefined;
 
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -59,8 +66,10 @@ function LollipopChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
+          domain={valueDomain}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points, chartBounds }) => (
             <>
@@ -82,8 +91,9 @@ function LollipopChartComponent<
           )}
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

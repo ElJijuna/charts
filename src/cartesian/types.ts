@@ -1,4 +1,6 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { DataSourceParam, SkFont } from '@shopify/react-native-skia';
+import type { ReactNode } from 'react';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
 import type { ChartThemeOverride } from '@/theme/types';
 import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '@/types/data';
@@ -11,8 +13,49 @@ export interface ChartAxisConfig<TValue = unknown> {
 }
 
 export interface ChartAxesConfig {
+  /** Skia font for tick labels, e.g. from `useFont`. Victory skips labels without one. */
+  font?: SkFont | null;
+  /** Font file loaded with `useFont` when `font` is not given, e.g. `require('./Inter.ttf')`. */
+  fontSource?: DataSourceParam;
+  /** Size for `fontSource`. Defaults to 12. */
+  fontSize?: number;
+  /**
+   * `canvas` (default) draws tick labels with Skia and needs a font. `native` draws them
+   * as React Native `Text` around the plot instead, so no font is loaded.
+   */
+  labelMode?: 'canvas' | 'native';
+  /** Text style for `native` labels. */
+  labelStyle?: StyleProp<TextStyle>;
+  /** Space reserved for `native` labels below the plot (`x`, default 20) and left of it (`y`, default 40). */
+  labelSpace?: { x?: number; y?: number };
+  /** Set to `false` to hide grid lines while keeping the frame and labels. */
+  grid?: boolean;
   x?: ChartAxisConfig;
   y?: ChartAxisConfig;
+}
+
+// Horizontal charts swap their axes inside Victory; native labels support vertical charts only.
+export type HorizontalChartAxesConfig = Omit<
+  ChartAxesConfig,
+  'labelMode' | 'labelStyle' | 'labelSpace'
+>;
+
+/** A data point's position, in pixels relative to the chart view. */
+export interface ChartPoint<TXValue = unknown> {
+  /** Position in plotting order; numeric X data is sorted ascending. */
+  index: number;
+  xValue: TXValue;
+  yValue: number | null;
+  /** Horizontal center: the point, or the center of a bar group. */
+  x: number;
+  /** Vertical position of `yValue`, or `null` for a missing value. */
+  y: number | null;
+}
+
+export interface ChartPointsLayout<TDatum extends ChartDatum, TYKey extends keyof TDatum> {
+  points: Record<TYKey, ChartPoint<TDatum[keyof TDatum]>[]>;
+  /** Plot area within the chart view. */
+  chartBounds: { left: number; right: number; top: number; bottom: number };
 }
 
 export interface LineChartProps<
@@ -23,7 +66,10 @@ export interface LineChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -31,7 +77,11 @@ export interface LineChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -43,7 +93,10 @@ export interface BarChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -52,7 +105,11 @@ export interface BarChartProps<
   cornerRadius?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -71,7 +128,10 @@ export interface AreaChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly AreaChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -79,7 +139,11 @@ export interface AreaChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -91,7 +155,10 @@ export interface ScatterChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -99,7 +166,11 @@ export interface ScatterChartProps<
   shape?: ScatterShape;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -111,7 +182,8 @@ export interface StackedBarChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -119,7 +191,11 @@ export interface StackedBarChartProps<
   barWidth?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -131,14 +207,19 @@ export interface StackedAreaChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   series: readonly AreaChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
   curve?: CurveType;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -159,7 +240,10 @@ export interface CandlestickChartProps<
   highKey: TYKey;
   lowKey: TYKey;
   closeKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   colors?: CandlestickChartColors;
   height?: number;
@@ -170,7 +254,11 @@ export interface CandlestickChartProps<
   wickStrokeWidth?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -178,13 +266,17 @@ export type HorizontalBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = BarChartProps<TDatum, TXKey, TYKey>;
+> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes' | 'renderOverlay'> & {
+  axes?: HorizontalChartAxesConfig | false;
+};
 
 export type HorizontalStackedBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = StackedBarChartProps<TDatum, TXKey, TYKey>;
+> = Omit<StackedBarChartProps<TDatum, TXKey, TYKey>, 'axes'> & {
+  axes?: HorizontalChartAxesConfig | false;
+};
 
 export interface AreaRangeChartProps<
   TDatum extends ChartDatum,
@@ -195,7 +287,10 @@ export interface AreaRangeChartProps<
   xKey: TXKey;
   lowerKey: TYKey;
   upperKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   opacity?: number;
@@ -205,7 +300,11 @@ export interface AreaRangeChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -218,7 +317,10 @@ export interface ComboChartProps<
   xKey: TXKey;
   barSeries: readonly ChartSeries<TDatum, TYKey>[];
   lineSeries: readonly ChartSeries<TDatum, TYKey>[];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   height?: number;
   padding?: number;
@@ -229,7 +331,11 @@ export interface ComboChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -248,7 +354,11 @@ export interface SparklineChartProps<
   connectMissingData?: boolean;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -256,14 +366,19 @@ export interface HistogramChartProps {
   values: readonly number[];
   binCount?: number;
   domain?: readonly [number, number];
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
   theme?: ChartThemeOverride;
   color?: string;
   height?: number;
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -276,7 +391,10 @@ export interface BubbleChartProps<
   xKey: TXKey;
   yKey: TYKey;
   sizeKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   minRadius?: number;
@@ -286,7 +404,11 @@ export interface BubbleChartProps<
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }
 
@@ -298,7 +420,10 @@ export interface LollipopChartProps<
   data: readonly TDatum[];
   xKey: TXKey;
   yKey: TYKey;
-  axes?: ChartAxesConfig;
+  /** Axis configuration, or `false` to hide axes, grid lines and labels. */
+  axes?: ChartAxesConfig | false;
+  /** Renders React Native content over the chart, positioned with each point's coordinates. */
+  renderOverlay?: (layout: ChartPointsLayout<TDatum, TYKey>) => ReactNode;
   theme?: ChartThemeOverride;
   color?: string;
   stemWidth?: number;
@@ -308,6 +433,10 @@ export interface LollipopChartProps<
   padding?: number;
   animate?: boolean;
   style?: StyleProp<ViewStyle>;
-  accessibilityLabel?: string;
+  accessibilityLabel: string;
+  /** Text shown and announced when there is no data. Nothing is shown when omitted. */
+  emptyLabel?: string;
+  /** Custom empty-state content; takes precedence over `emptyLabel`. */
+  renderEmpty?: () => ReactNode;
   testID?: string;
 }

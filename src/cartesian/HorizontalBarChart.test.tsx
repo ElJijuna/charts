@@ -1,7 +1,9 @@
+import type { SkFont } from '@shopify/react-native-skia';
 import { render } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 
 import { HorizontalBarChart } from '@/cartesian/HorizontalBarChart';
+import type { ChartAxesConfig } from '@/cartesian/types';
 
 const mockBarSpy = jest.fn((_props: unknown) => null);
 const mockBarGroupSpy = jest.fn((_props: unknown) => null);
@@ -81,6 +83,7 @@ describe('HorizontalBarChart', () => {
 
     const screen = await render(
       <HorizontalBarChart
+        accessibilityLabel="Horizontal bar chart"
         axes={{
           x: { formatLabel, lineColor: '#111', tickCount: 2 },
           y: { formatLabel, labelColor: '#222', tickCount: 4 },
@@ -113,6 +116,25 @@ describe('HorizontalBarChart', () => {
         animate: { duration: 300, type: 'timing' },
         color: '#6750a4',
       }),
+    );
+  });
+
+  it('keeps canvas labels when a shared config asks for native labels', async () => {
+    const font = { size: 12 } as unknown as SkFont;
+    const axes: ChartAxesConfig = { labelMode: 'native', font };
+
+    await render(
+      <HorizontalBarChart
+        accessibilityLabel="Revenue"
+        axes={axes}
+        data={[{ month: 'Jan', current: 12 }]}
+        series={[{ key: 'current' }]}
+        xKey="month"
+      />,
+    );
+
+    expect(mockCartesianSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ axisOptions: expect.objectContaining({ font }), padding: 16 }),
     );
   });
 });

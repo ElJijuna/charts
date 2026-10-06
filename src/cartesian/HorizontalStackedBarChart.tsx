@@ -2,10 +2,11 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, HorizontalStackedBar } from 'victory-native';
 import type { HorizontalStackedBarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -31,13 +32,16 @@ function HorizontalStackedBarChartComponent<
   padding = 16,
   innerPadding = 0.25,
   barWidth,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Horizontal stacked bar chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: HorizontalStackedBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
-  const axisOptions = useChartAxisOptions(axes, theme);
+  const animation = useChartAnimation(animate);
+  const axisOptions = useChartAxisOptions(axes, theme, false);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
@@ -48,11 +52,12 @@ function HorizontalStackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'horizontal');
 
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -63,21 +68,26 @@ function HorizontalStackedBarChartComponent<
           yKeys={yKeys}
           orientation="horizontal"
           padding={padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
         >
-          {({ points, chartBounds }) => (
-            <HorizontalStackedBar
-              points={resolvedSeries.map(({ key }) => points[key])}
-              chartBounds={chartBounds}
-              colors={colors}
-              innerPadding={innerPadding}
-              barWidth={barWidth}
-              animate={animate ? chartAnimation : undefined}
-            />
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <HorizontalStackedBar
+                points={resolvedSeries.map(({ key }) => points[key])}
+                chartBounds={chartBounds}
+                colors={colors}
+                innerPadding={innerPadding}
+                barWidth={barWidth}
+                barCount={chartData.length}
+                animate={animation}
+              />
+            ) : null
+          }
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

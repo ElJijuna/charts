@@ -1,16 +1,29 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export function EmptyChartState() {
+interface EmptyChartStateProps {
+  label?: string;
+  color: string;
+  render?: () => ReactNode;
+}
+
+export function EmptyChartState({ label, color, render }: EmptyChartStateProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>No data</Text>
+      {render ? render() : label ? <Text style={[styles.label, { color }]}>{label}</Text> : null}
     </View>
   );
 }
 
-const emptyLabelColor = '#6b7280';
+export function emptyAccessibilityLabel(
+  accessibilityLabel: string,
+  hasData: boolean,
+  emptyLabel: string | undefined,
+) {
+  return hasData || !emptyLabel ? accessibilityLabel : `${accessibilityLabel}: ${emptyLabel}`;
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  label: { color: emptyLabelColor, fontSize: 12 },
+  label: { fontSize: 12 },
 });

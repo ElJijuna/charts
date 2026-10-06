@@ -2,10 +2,11 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, HorizontalBarGroup } from 'victory-native';
 import type { HorizontalBarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
-import { EmptyChartState } from '@/core/EmptyChartState';
+import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -32,13 +33,16 @@ function HorizontalBarChartComponent<
   groupPadding = 0.25,
   barPadding = 0.1,
   cornerRadius = 6,
-  animate = true,
+  animate,
   style,
-  accessibilityLabel = 'Horizontal bar chart',
+  accessibilityLabel,
+  emptyLabel,
+  renderEmpty,
   testID,
 }: HorizontalBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
-  const axisOptions = useChartAxisOptions(axes, theme);
+  const animation = useChartAnimation(animate);
+  const axisOptions = useChartAxisOptions(axes, theme, false);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
@@ -48,6 +52,7 @@ function HorizontalBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'horizontal');
 
   const roundedCorners = useMemo(
     () => ({
@@ -62,7 +67,7 @@ function HorizontalBarChartComponent<
   return (
     <View
       accessible
-      accessibilityLabel={hasData ? accessibilityLabel : `${accessibilityLabel}: No data`}
+      accessibilityLabel={emptyAccessibilityLabel(accessibilityLabel, hasData, emptyLabel)}
       style={[styles.root, { height, backgroundColor: theme.backgroundColor }, style]}
       testID={testID}
     >
@@ -73,28 +78,32 @@ function HorizontalBarChartComponent<
           yKeys={yKeys}
           orientation="horizontal"
           padding={padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
         >
-          {({ points, chartBounds }) => (
-            <HorizontalBarGroup
-              chartBounds={chartBounds}
-              betweenGroupPadding={groupPadding}
-              withinGroupPadding={barPadding}
-              roundedCorners={roundedCorners}
-            >
-              {resolvedSeries.map((item) => (
-                <HorizontalBarGroup.Bar
-                  key={String(item.key)}
-                  points={points[item.key]}
-                  color={item.color}
-                  animate={animate ? chartAnimation : undefined}
-                />
-              ))}
-            </HorizontalBarGroup>
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <HorizontalBarGroup
+                chartBounds={chartBounds}
+                betweenGroupPadding={groupPadding}
+                withinGroupPadding={barPadding}
+                roundedCorners={roundedCorners}
+              >
+                {resolvedSeries.map((item) => (
+                  <HorizontalBarGroup.Bar
+                    key={String(item.key)}
+                    points={points[item.key]}
+                    color={item.color}
+                    animate={animation}
+                  />
+                ))}
+              </HorizontalBarGroup>
+            ) : null
+          }
         </CartesianChart>
       ) : (
-        <EmptyChartState />
+        <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
     </View>
   );

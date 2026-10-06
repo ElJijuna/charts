@@ -76,6 +76,7 @@ describe('LollipopChart', () => {
     const formatLabel = jest.fn((value: unknown) => String(value));
     const screen = await render(
       <LollipopChart
+        accessibilityLabel="Lollipop chart"
         axes={{
           x: { formatLabel, labelColor: '#222', tickCount: 2 },
           y: { formatLabel, lineColor: '#111', tickCount: 4 },
