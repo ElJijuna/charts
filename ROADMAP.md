@@ -51,6 +51,24 @@ verify a library fix.
 
 These web and unit checks do not replace running the app on iOS and Android.
 
+### Dependency update review (2026-10-06)
+
+- Updated Jest to 30.5.2 with matching Babel transformer and Node environment,
+  preserving the React Native preset's export conditions; all 142 tests pass.
+- Updated Vite to 8.3.3, Storybook to 10.6.1, semantic-release to 25.0.9,
+  commitlint to 21.2.3 and the other compatible development dependencies.
+- Typecheck (library and example), lint, formatting, Markdown lint, coverage and
+  library/Storybook builds pass. Branch coverage is 94.26%.
+- Keep Babel 7 while the RN preset depends on Babel 7 plugins. Gesture Handler 3
+  needs a separate Victory compatibility review because its gesture types changed.
+- Keep the example's native dependencies and React versions aligned with Expo 57's
+  bundled versions; Expo itself is updated to 57.0.27.
+- Browser tests could not launch: Chromium is absent and the current Playwright
+  browser installer does not support this host's macOS 12. Run these tests on CI
+  or a supported host before considering web runtime validation complete.
+- npm audit reports 69 affected packages in the root and 34 in the example
+  (previously 93 and 35 respectively); no critical vulnerabilities were reported.
+
 ## Priority 0: finish publication preparation
 
 Versions 1.0.0 and 1.0.1 were published to npm through semantic-release on 2026-10-05.
