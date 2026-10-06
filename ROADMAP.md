@@ -130,11 +130,12 @@ They block or complicate real usage, so they come before performance work.
   because the `react-native` field points to `lib/native` (TS), which imports
   `victory-native/src`. Publish `@real-native/charts/jest` with stubs that keep
   `accessibilityLabel` and `testID`.
-- [ ] Simplify the web setup. Vite currently requires aliasing `victory-native` to
-  `src/index.ts`, excluding it and the charts package from pre-bundling, manually
-  pre-bundling `react-reconciler`, `its-fine`, `scheduler`, etc., and a Babel plugin that
-  strips `?v=` from file names so Worklets compiles. Export a Vite plugin or preset
-  (`@real-native/charts/vite`), or at least document a Vite recipe without Storybook.
+- [x] Simplify the web setup. Vite required aliasing `victory-native` to `src/index.ts`,
+  excluding it from pre-bundling, manually pre-bundling `react-reconciler`, `its-fine`,
+  `scheduler`, etc., and a Babel plugin that strips `?v=` from file names so Worklets compiles.
+  Fixed: `@real-native/charts/vite` exports `realNativeCharts()`, built on `vite-plugin-rnw`
+  (optional peer), and the README documents a Vite recipe without Storybook. Verified with a
+  plain Vite 7 app installing the packed tarball, in `vite` dev and `vite build` + preview.
 - [x] Respect reduced motion: `animate` defaulted to `true` and ignored `useReducedMotion`.
   Fixed: when `animate` is omitted, charts animate only if the system does not request
   reduced motion; an explicit `animate` still wins.

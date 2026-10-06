@@ -231,11 +231,44 @@ Start Expo web:
 npx expo start --web
 ```
 
-For Vite, Storybook or another bundler, map `react-native` to `react-native-web`, transform
-Reanimated/Worklets with the Babel plugin matching the installed major version, and serve
-the WASM asset from the public directory. The repository's
-[Storybook configuration][storybook-config] provides a working Vite example, including
-Victory Native transpilation. Consult [Reanimated web support][reanimated-web] for other bundlers.
+#### Vite
+
+`@real-native/charts/vite` configures Vite for React Native Web, Skia, Reanimated and
+Victory Native. Install the web packages next to the chart peers and copy CanvasKit:
+
+```sh
+npm install react-dom react-native-web
+npm install -D vite vite-plugin-rnw
+npx setup-skia-web public
+```
+
+```ts
+// vite.config.ts
+import { realNativeCharts } from '@real-native/charts/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [realNativeCharts()],
+});
+```
+
+The plugin wraps [`vite-plugin-rnw`][vite-plugin-rnw] (`react-native` →
+`react-native-web`, web extensions, `__DEV__` and Flow support) and adds what charts need:
+
+- Victory Native is resolved from its TypeScript source and transformed with the Worklets
+  Babel plugin (`react-native-reanimated/plugin` on Reanimated 3).
+- Vite's `?v=` query is stripped from Babel file names so Worklets can compile dependencies.
+- Skia's `AssetRegistry` import resolves to React Native Web's implementation.
+- Skia and Reanimated's CommonJS dependencies (`react-reconciler`, `its-fine`, `scheduler`,
+  …) are prebundled for development.
+
+It accepts the `vite-plugin-rnw` options; any `babel.plugins` you pass run after the chart
+plugins. Render charts behind `WithSkiaWeb` exactly as in the Expo example above, with the
+entry point mounting `App` through `react-dom/client`.
+
+Storybook's React Native Web framework already includes `vite-plugin-rnw`; the repository's
+[Storybook configuration][storybook-config] shows the equivalent setup there. For other
+bundlers, consult [Reanimated web support][reanimated-web].
 
 The current web validation covers Chromium and all 17 chart types. iOS, Android, Firefox,
 Safari and consumer apps installed from the npm tarball remain separate roadmap checks.
@@ -665,4 +698,5 @@ a touch clears it.
 [skia-installation]: https://wcandillon.github.io/react-native-skia/docs/getting-started/installation
 [skia-web]: https://wcandillon.github.io/react-native-skia/docs/getting-started/web
 [storybook-loader]: https://github.com/ElJijuna/charts/blob/main/example/stories/Charts.stories.tsx
+[vite-plugin-rnw]: https://github.com/dannyhw/vite-plugin-rnw
 [storybook-config]: https://github.com/ElJijuna/charts/blob/main/example/.storybook/main.ts
