@@ -74,6 +74,7 @@
     "storybook:preview": "npm --prefix example run storybook:preview --",
     "test:e2e": "npm --prefix example run test:e2e",
     "test:e2e:dev": "npm --prefix example run test:e2e:dev",
+    "test:perf": "npm --prefix example run test:perf",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

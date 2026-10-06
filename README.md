@@ -681,6 +681,28 @@ npm run test:e2e:dev
 
 The browser tests require Chromium (`cd example && npx playwright install chromium`).
 
+### Performance measurements
+
+**Examples / Large Datasets** renders 1,000, 10,000 or 50,000 points for line, area,
+stacked area, scatter, bubble, bar, histogram, sparkline and candlestick charts. The data
+comes from a fixed seed, so every run measures the same input, and animation is off. Each
+story reports:
+
+- **commit**: from the start of React's render until it commits.
+- **settle**: until the main thread is quiet for three frames. This includes Victory's layout
+  pass, its follow-up renders and Skia drawing.
+
+Use **Update data** to measure an update with a new seed. To run every chart and size against
+the production Storybook build:
+
+```sh
+npm run test:perf
+```
+
+Each case mounts three times (`PERF_RUNS` changes this), updates three times per mount, and
+prints medians as `PERF {…}` lines; the raw samples are attached to the Playwright report.
+Timings depend on the machine, so compare runs on the same one.
+
 ### Stable props and updates
 
 Chart components use shallow memoization. Keep `data`, `series`, palette arrays,

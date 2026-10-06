@@ -15,6 +15,7 @@
         "web": "expo start --web",
         "test:e2e": "npm run storybook:build && playwright test",
         "test:e2e:dev": "playwright test --config playwright.dev.config.ts",
+        "test:perf": "npm run storybook:build && PERF=1 playwright test e2e/performance.spec.ts",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {

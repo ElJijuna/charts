@@ -218,7 +218,10 @@ They block or complicate real usage, so they come before performance work.
 
 ## Priority 2: Stories and maintenance
 
-- [ ] **Stories:** large dataset examples for repeatable performance measurements.
+- [x] **Stories:** large dataset examples for repeatable performance measurements.
+  **Examples / Large Datasets** (1k/10k/50k seeded points, nine chart types) reports commit and
+  settle times; `npm run test:perf` runs the matrix against the production Storybook build and
+  prints medians. A first full baseline run was stopped before finishing the 50k cases.
 - [ ] **Stories:** a render diagnostics tool separate from the example interface.
 - [ ] **Stories:** tooltip examples with multiple series and nonuniform domains.
 - [ ] **Stories:** configurable loading and empty states (`emptyLabel` / `renderEmpty`).
