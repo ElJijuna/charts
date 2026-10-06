@@ -58,5 +58,6 @@ export const StackedAreaChart = createChartMock('StackedAreaChart');
 export const StackedBarChart = createChartMock('StackedBarChart');
 
 // These have no renderer dependencies, so tests get the real implementations.
+export { describeSeries } from '@/accessibility/describeSeries';
 export { useChartPointSelection } from '@/interaction/useChartPointSelection';
 export { defaultChartTheme } from '@/theme/defaultTheme';

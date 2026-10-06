@@ -570,6 +570,32 @@ or `renderEmpty` for custom content:
 
 Screen readers then announce `Ingresos mensuales: Sin datos` when the chart is empty.
 
+To let screen reader users hear the data, append `describeSeries` to the label. It lists each
+plottable point using your formatters and separators, with no built-in wording:
+
+```tsx
+import { describeSeries } from '@real-native/charts';
+
+const number = new Intl.NumberFormat('es-ES');
+const description = describeSeries(data, {
+  xKey: 'month',
+  yKey: 'revenue',
+  formatY: (value) => number.format(value),
+});
+
+<LineChart
+  accessibilityLabel={`Ingresos mensuales. ${description}`}
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+/>;
+```
+
+The result reads `Jan, 42, Feb, 58, …`. Points the chart skips (invalid X or Y values) are
+skipped here too, and numeric X values are read in ascending order, as drawn. Call it once
+per series for multi-series charts. Long series produce long announcements, so consider
+summarizing large datasets instead.
+
 ## Data edge cases
 
 - Empty datasets, empty series, and datasets without usable values render an empty

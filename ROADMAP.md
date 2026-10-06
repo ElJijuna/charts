@@ -149,8 +149,12 @@ They block or complicate real usage, so they come before performance work.
   lines. Victory draws Y grid lines even without `axisOptions`, so hidden axes pass zero-width
   transparent lines; this also removed stray grid lines from `SparklineChart`
   (verified in the web Storybook).
-- [ ] Provide an accessible data description: a generated `accessibilityValue` or a
+- [x] Provide an accessible data description: a generated `accessibilityValue` or a
   `describeSeries(data, format)` helper, instead of building "Monday, 40, Tuesday, 70…" by hand.
+  Done: `describeSeries(data, { xKey, yKey, formatX, formatY, … })` returns text to append to
+  `accessibilityLabel`; it skips unplottable points, sorts numeric X like Victory and adds no
+  built-in wording. A helper was chosen over `accessibilityValue`, which is not reliably
+  announced on plain views across platforms.
 - [ ] Expose point coordinates: consumers copy the geometry (padding ± width/2) to align
   custom labels. Add an `onLayoutPoints` callback or a render prop with `points`.
 - [ ] Avoid one `GestureHandlerRootView` per chart: Victory wraps every chart even without

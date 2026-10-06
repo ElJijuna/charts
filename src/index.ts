@@ -5,6 +5,10 @@
  * @packageDocumentation
  */
 
+export {
+  type DescribeSeriesOptions,
+  describeSeries,
+} from '@/accessibility/describeSeries';
 export { AreaChart } from '@/cartesian/AreaChart';
 export { AreaRangeChart } from '@/cartesian/AreaRangeChart';
 export { BarChart } from '@/cartesian/BarChart';
