@@ -116,8 +116,9 @@ They block or complicate real usage, so they come before performance work.
   and Victory skips labels without an `SkFont`, so `formatLabel`, `tickCount` and
   `labelColor` had no effect. Fixed: `axes.font` (an `SkFont` from `useFont`) is passed
   through to Victory and documented in the README.
-- [ ] Optionally accept `fontSource` + `fontSize` and load the font internally, or allow
-  rendering axis labels outside the canvas.
+- [x] Optionally accept `fontSource` + `fontSize` and load the font internally:
+  `axes.fontSource` is loaded with `useFont`; an explicit `axes.font` takes precedence.
+- [ ] Optionally allow rendering axis labels outside the canvas.
 - [x] Remove hardcoded English text: `EmptyChartState` showed "No data" with a fixed color,
   and `accessibilityLabel` defaulted to English names such as "Line chart". Fixed:
   `accessibilityLabel` is now required (breaking, needs a 2.0.0 release), and charts accept

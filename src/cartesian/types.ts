@@ -1,4 +1,4 @@
-import type { SkFont } from '@shopify/react-native-skia';
+import type { DataSourceParam, SkFont } from '@shopify/react-native-skia';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
@@ -15,6 +15,10 @@ export interface ChartAxisConfig<TValue = unknown> {
 export interface ChartAxesConfig {
   /** Skia font for tick labels, e.g. from `useFont`. Victory skips labels without one. */
   font?: SkFont | null;
+  /** Font file loaded with `useFont` when `font` is not given, e.g. `require('./Inter.ttf')`. */
+  fontSource?: DataSourceParam;
+  /** Size for `fontSource`. Defaults to 12. */
+  fontSize?: number;
   x?: ChartAxisConfig;
   y?: ChartAxisConfig;
 }
