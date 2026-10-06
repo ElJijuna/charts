@@ -22,6 +22,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export type ChartKind =
   | 'line'
+  | 'line-native-labels'
   | 'bar'
   | 'horizontal-bar'
   | 'horizontal-stacked-bar'
@@ -94,6 +95,22 @@ function renderChart(kind: ChartKind) {
         <LineChart
           accessibilityLabel="Monthly revenue for the current and previous period"
           axes={axes}
+          curve="monotoneX"
+          data={revenue}
+          height={300}
+          series={[
+            { key: 'current', color: colors.primary },
+            { key: 'previous', color: colors.secondary },
+          ]}
+          theme={{ backgroundColor: colors.surface }}
+          xKey="month"
+        />
+      );
+    case 'line-native-labels':
+      return (
+        <LineChart
+          accessibilityLabel="Monthly revenue with native axis labels"
+          axes={{ ...axes, labelMode: 'native' }}
           curve="monotoneX"
           data={revenue}
           height={300}

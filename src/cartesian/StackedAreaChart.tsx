@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedArea } from 'victory-native';
 import type { AreaChartSeries, StackedAreaChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
@@ -51,6 +52,7 @@ function StackedAreaChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
   const singleDomain = useMemo<{ y: [number, number] } | undefined>(() => {
     const [sample] = chartData;
     if (chartData.length !== 1 || !sample) {
@@ -85,9 +87,10 @@ function StackedAreaChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           domain={singleDomain}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points, chartBounds, yScale }) => (
             <>
@@ -124,6 +127,7 @@ function StackedAreaChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

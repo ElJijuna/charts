@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Scatter } from 'victory-native';
 import type { ScatterChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { useChartAnimation } from '@/core/useChartAnimation';
@@ -50,6 +51,7 @@ function ScatterChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
 
   return (
     <View
@@ -63,8 +65,9 @@ function ScatterChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points }) => (
             <>
@@ -84,6 +87,7 @@ function ScatterChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

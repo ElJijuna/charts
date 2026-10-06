@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AreaRange, CartesianChart, Line } from 'victory-native';
 import type { AreaRangeChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
 import { useChartAnimation } from '@/core/useChartAnimation';
@@ -49,6 +50,7 @@ function AreaRangeChartComponent<
     () => prepareCartesianData(data, xKey, yKeys, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
 
   return (
     <View
@@ -62,8 +64,9 @@ function AreaRangeChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points }) => (
             <>
@@ -97,6 +100,7 @@ function AreaRangeChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

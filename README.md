@@ -285,6 +285,28 @@ chart loads it; `formatLabel`, `tickCount` and `labelColor` take effect once it 
 To share one loaded font across charts, load it yourself with Skia's `useFont` and pass
 it as `axes.font`; it takes precedence over `fontSource`.
 
+To skip Skia fonts entirely, set `axes.labelMode: 'native'`. Tick labels are then drawn
+as React Native `Text` next to the plot, using the platform's fonts, `labelColor` and an
+optional `axes.labelStyle`. Room is reserved below and left of the plot; adjust it with
+`axes.labelSpace` (`{ x: 20, y: 40 }` by default) if long labels are clipped:
+
+```tsx
+<LineChart
+  accessibilityLabel="Monthly revenue"
+  data={data}
+  xKey="month"
+  series={[{ key: 'revenue' }]}
+  axes={{ labelMode: 'native', labelStyle: { fontFamily: 'Inter' } }}
+/>
+```
+
+Native labels are available on vertical cartesian charts. Horizontal bar charts keep
+canvas labels.
+
+Charts animate data changes by default, except when the system requests reduced motion
+(read with Reanimated's `useReducedMotion`). Passing `animate` explicitly overrides that:
+`animate={false}` always disables it and `animate` always enables it.
+
 `BarChart` shares the same data, series, axes, theme, and animation configuration:
 
 ```tsx

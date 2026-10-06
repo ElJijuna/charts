@@ -1,6 +1,6 @@
 import type { DataSourceParam, SkFont } from '@shopify/react-native-skia';
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { CurveType, ScatterShape } from 'victory-native';
 import type { ChartThemeOverride } from '@/theme/types';
 import type { ChartDatum, ChartSeries, ChartXKey, ChartYKey } from '@/types/data';
@@ -19,9 +19,24 @@ export interface ChartAxesConfig {
   fontSource?: DataSourceParam;
   /** Size for `fontSource`. Defaults to 12. */
   fontSize?: number;
+  /**
+   * `canvas` (default) draws tick labels with Skia and needs a font. `native` draws them
+   * as React Native `Text` around the plot instead, so no font is loaded.
+   */
+  labelMode?: 'canvas' | 'native';
+  /** Text style for `native` labels. */
+  labelStyle?: StyleProp<TextStyle>;
+  /** Space reserved for `native` labels below the plot (`x`, default 20) and left of it (`y`, default 40). */
+  labelSpace?: { x?: number; y?: number };
   x?: ChartAxisConfig;
   y?: ChartAxisConfig;
 }
+
+// Horizontal charts swap their axes inside Victory; native labels support vertical charts only.
+export type HorizontalChartAxesConfig = Omit<
+  ChartAxesConfig,
+  'labelMode' | 'labelStyle' | 'labelSpace'
+>;
 
 export interface LineChartProps<
   TDatum extends ChartDatum,
@@ -214,13 +229,15 @@ export type HorizontalBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = BarChartProps<TDatum, TXKey, TYKey>;
+> = Omit<BarChartProps<TDatum, TXKey, TYKey>, 'axes'> & { axes?: HorizontalChartAxesConfig };
 
 export type HorizontalStackedBarChartProps<
   TDatum extends ChartDatum,
   TXKey extends ChartXKey<TDatum> = ChartXKey<TDatum>,
   TYKey extends ChartYKey<TDatum> = ChartYKey<TDatum>,
-> = StackedBarChartProps<TDatum, TXKey, TYKey>;
+> = Omit<StackedBarChartProps<TDatum, TXKey, TYKey>, 'axes'> & {
+  axes?: HorizontalChartAxesConfig;
+};
 
 export interface AreaRangeChartProps<
   TDatum extends ChartDatum,

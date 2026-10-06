@@ -118,7 +118,9 @@ They block or complicate real usage, so they come before performance work.
   through to Victory and documented in the README.
 - [x] Optionally accept `fontSource` + `fontSize` and load the font internally:
   `axes.fontSource` is loaded with `useFont`; an explicit `axes.font` takes precedence.
-- [ ] Optionally allow rendering axis labels outside the canvas.
+- [x] Optionally allow rendering axis labels outside the canvas: `axes.labelMode: 'native'`
+  draws tick labels as React Native `Text` aligned with Victory's ticks (verified in the web
+  Storybook). Vertical charts only; horizontal bar charts keep canvas labels.
 - [x] Remove hardcoded English text: `EmptyChartState` showed "No data" with a fixed color,
   and `accessibilityLabel` defaulted to English names such as "Line chart". Fixed:
   `accessibilityLabel` is now required (breaking, needs a 2.0.0 release), and charts accept

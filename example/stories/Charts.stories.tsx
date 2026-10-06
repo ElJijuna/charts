@@ -34,6 +34,7 @@ type Story = StoryObj<typeof meta>;
 const story = (kind: ChartKind): Story => ({ args: { kind } });
 
 export const Line = story('line');
+export const LineNativeLabels = story('line-native-labels');
 export const Bar = story('bar');
 export const HorizontalBar = story('horizontal-bar');
 export const HorizontalStackedBar = story('horizontal-stacked-bar');

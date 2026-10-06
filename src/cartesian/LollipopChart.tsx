@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Bar, CartesianChart, Scatter } from 'victory-native';
 import type { LollipopChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
@@ -47,6 +48,7 @@ function LollipopChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
 
   return (
@@ -61,8 +63,9 @@ function LollipopChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points, chartBounds }) => (
             <>
@@ -86,6 +89,7 @@ function LollipopChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

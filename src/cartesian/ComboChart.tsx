@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart, Line } from 'victory-native';
 import type { ComboChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
@@ -66,6 +67,7 @@ function ComboChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
 
   const roundedCorners = useMemo(
     () => ({
@@ -89,8 +91,9 @@ function ComboChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points, chartBounds }) => (
             <>
@@ -128,6 +131,7 @@ function ComboChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }

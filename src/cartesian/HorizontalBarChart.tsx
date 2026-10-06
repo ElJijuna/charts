@@ -41,7 +41,7 @@ function HorizontalBarChartComponent<
 }: HorizontalBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
   const animation = useChartAnimation(animate);
-  const axisOptions = useChartAxisOptions(axes, theme);
+  const axisOptions = useChartAxisOptions(axes, theme, false);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],

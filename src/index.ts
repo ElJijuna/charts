@@ -33,6 +33,7 @@ export type {
   ComboChartProps,
   HistogramChartProps,
   HorizontalBarChartProps,
+  HorizontalChartAxesConfig,
   HorizontalStackedBarChartProps,
   LineChartProps,
   LollipopChartProps,

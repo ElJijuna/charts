@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { CartesianChart, type PointsArray, Scatter } from 'victory-native';
 import type { BubbleChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
+import { useNativeAxisLabels } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
@@ -48,6 +49,7 @@ function BubbleChartComponent<
     () => prepareCartesianData(data, xKey, yKeys, [yKey, sizeKey]),
     [data, xKey, yKeys, yKey, sizeKey],
   );
+  const axisLabels = useNativeAxisLabels(axes, theme, padding, chartData, xKey);
   const radiusForPoint = useMemo(() => {
     const lowerRadius = Math.min(minRadius, maxRadius);
     const upperRadius = Math.max(minRadius, maxRadius);
@@ -87,8 +89,9 @@ function BubbleChartComponent<
           data={chartData}
           xKey={xKey}
           yKeys={yKeys}
-          padding={padding}
+          padding={axisLabels.padding}
           axisOptions={axisOptions}
+          onScaleChange={axisLabels.onScaleChange}
         >
           {({ points }) => (
             <Scatter
@@ -103,6 +106,7 @@ function BubbleChartComponent<
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
       )}
+      {hasData ? axisLabels.overlay : null}
     </View>
   );
 }
