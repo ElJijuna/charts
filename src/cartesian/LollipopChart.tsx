@@ -5,6 +5,7 @@ import type { LollipopChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { zeroBasedDomain } from '@/core/valueDomain';
@@ -51,6 +52,7 @@ function LollipopChartComponent<
     [data, xKey, yKeys],
   );
   const valueDomain = useMemo(() => zeroBasedDomain(chartData, yKeys), [chartData, yKeys]);
+  const band = useBandPadding(chartData.length, 'vertical');
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
 
@@ -68,27 +70,31 @@ function LollipopChartComponent<
           yKeys={yKeys}
           padding={axisLabels.padding}
           domain={valueDomain}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <>
-              <Bar
-                points={points[yKey]}
-                chartBounds={chartBounds}
-                barWidth={stemWidth}
-                color={resolvedColor}
-                animate={animation}
-              />
-              <Scatter
-                points={points[yKey]}
-                color={resolvedColor}
-                radius={radius}
-                shape={shape}
-                animate={animation}
-              />
-            </>
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <>
+                <Bar
+                  points={points[yKey]}
+                  chartBounds={chartBounds}
+                  barWidth={stemWidth}
+                  color={resolvedColor}
+                  animate={animation}
+                />
+                <Scatter
+                  points={points[yKey]}
+                  color={resolvedColor}
+                  radius={radius}
+                  shape={shape}
+                  animate={animation}
+                />
+              </>
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
