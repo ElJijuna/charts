@@ -59,8 +59,12 @@ These web and unit checks do not replace running the app on iOS and Android.
   commitlint to 21.2.3 and the other compatible development dependencies.
 - Typecheck (library and example), lint, formatting, Markdown lint, coverage and
   library/Storybook builds pass. Branch coverage is 94.26%.
-- Keep Babel 7 while the RN preset depends on Babel 7 plugins. Gesture Handler 3
-  needs a separate Victory compatibility review because its gesture types changed.
+- Keep Babel 7 while the RN preset depends on Babel 7 plugins. Gesture Handler 3.3.0
+  retains legacy builders and detector routing, but Victory 42.0.1 imports the new
+  `PanGesture`/`PinchGesture`/`ComposedGesture` names as if they were legacy types.
+  An isolated TypeScript check confirms `PanGesture['activateAfterLongPress']` fails;
+  `LegacyPanGesture` retains that method. Update Victory's type imports upstream
+  and validate native/Web interaction before claiming Gesture Handler 3 support.
 - Keep the example's native dependencies and React versions aligned with Expo 57's
   bundled versions; Expo itself is updated to 57.0.27.
 - Browser tests could not launch: Chromium is absent and the current Playwright
