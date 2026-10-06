@@ -2,11 +2,11 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
 import type { SparklineChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
 
@@ -30,12 +30,13 @@ function SparklineChartComponent<
   padding = 4,
   curve = 'monotoneX',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Sparkline chart',
   testID,
 }: SparklineChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
     [series, theme],
@@ -70,7 +71,7 @@ function SparklineChartComponent<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>

@@ -2,10 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, HorizontalBarGroup } from 'victory-native';
 import type { HorizontalBarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -32,12 +32,13 @@ function HorizontalBarChartComponent<
   groupPadding = 0.25,
   barPadding = 0.1,
   cornerRadius = 6,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Horizontal bar chart',
   testID,
 }: HorizontalBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -87,7 +88,7 @@ function HorizontalBarChartComponent<
                   key={String(item.key)}
                   points={points[item.key]}
                   color={item.color}
-                  animate={animate ? chartAnimation : undefined}
+                  animate={animation}
                 />
               ))}
             </HorizontalBarGroup>

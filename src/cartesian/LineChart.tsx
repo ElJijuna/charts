@@ -2,11 +2,11 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Line } from 'victory-native';
 import type { LineChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -32,12 +32,13 @@ function LineChartComponent<
   padding = 16,
   curve = 'natural',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Line chart',
   testID,
 }: LineChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -74,7 +75,7 @@ function LineChartComponent<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>

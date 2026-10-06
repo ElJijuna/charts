@@ -2,10 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AreaRange, CartesianChart, Line } from 'victory-native';
 import type { AreaRangeChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -34,12 +34,13 @@ function AreaRangeChartComponent<
   padding = 16,
   curve = 'natural',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Area range chart',
   testID,
 }: AreaRangeChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [lowerKey, upperKey] as TYKey[], [lowerKey, upperKey]);
   const { data: chartData, hasData } = useMemo(
@@ -71,7 +72,7 @@ function AreaRangeChartComponent<
                 opacity={opacity}
                 curveType={curve}
                 connectMissingData={connectMissingData}
-                animate={animate ? chartAnimation : undefined}
+                animate={animation}
               />
               {chartData.length === 1 && (
                 <Line

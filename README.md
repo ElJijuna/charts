@@ -280,6 +280,10 @@ const font = useFont(require('./assets/Inter-Regular.ttf'), 12);
 />;
 ```
 
+Charts animate data changes by default, except when the system requests reduced motion
+(read with Reanimated's `useReducedMotion`). Passing `animate` explicitly overrides that:
+`animate={false}` always disables it and `animate` always enables it.
+
 `BarChart` shares the same data, series, axes, theme, and animation configuration:
 
 ```tsx

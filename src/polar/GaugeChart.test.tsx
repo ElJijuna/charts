@@ -52,7 +52,7 @@ describe('GaugeChart', () => {
     expect(mockPieChartSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         accessibilityLabel: 'Gauge chart',
-        animate: true,
+        animate: undefined,
         circleSweepDegrees: 180,
         data: [
           { label: 'Value', value: 100, color: '#6750a4' },

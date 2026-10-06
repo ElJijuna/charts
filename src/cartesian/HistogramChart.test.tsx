@@ -69,7 +69,7 @@ describe('HistogramChart', () => {
     expect(mockBarChartSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         accessibilityLabel: 'Histogram chart',
-        animate: true,
+        animate: undefined,
         data: [{ bin: 5, count: 3 }],
         height: 240,
         padding: 16,

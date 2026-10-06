@@ -2,10 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedBar } from 'victory-native';
 import type { StackedBarChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -31,12 +31,13 @@ function StackedBarChartComponent<
   padding = 16,
   innerPadding = 0.25,
   barWidth,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Stacked bar chart',
   testID,
 }: StackedBarChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -71,7 +72,7 @@ function StackedBarChartComponent<
               colors={colors}
               innerPadding={innerPadding}
               barWidth={barWidth}
-              animate={animate ? chartAnimation : undefined}
+              animate={animation}
             />
           )}
         </CartesianChart>

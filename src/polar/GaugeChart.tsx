@@ -13,7 +13,7 @@ function GaugeChartComponent({
   innerRadius = '70%',
   startAngle = 180,
   circleSweepDegrees = 180,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Gauge chart',
   testID,

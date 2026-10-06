@@ -1,9 +1,8 @@
 import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Pie, PolarChart } from 'victory-native';
-
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import type { PieChartProps } from '@/polar/types';
 import { useChartTheme } from '@/theme/useChartTheme';
 
@@ -21,12 +20,13 @@ function PieChartComponent({
   innerRadius = 0,
   startAngle = 0,
   circleSweepDegrees = 360,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Pie chart',
   testID,
 }: PieChartProps): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const chartData = useMemo(() => {
     const slices = data
       .map((item, index) => ({
@@ -59,7 +59,7 @@ function PieChartComponent({
             startAngle={startAngle}
             circleSweepDegrees={circleSweepDegrees}
           >
-            {() => <Pie.Slice animate={animate ? chartAnimation : undefined} />}
+            {() => <Pie.Slice animate={animation} />}
           </Pie.Chart>
         </PolarChart>
       ) : (

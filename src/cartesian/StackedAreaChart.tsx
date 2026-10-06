@@ -2,11 +2,11 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, StackedArea } from 'victory-native';
 import type { AreaChartSeries, StackedAreaChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -31,12 +31,13 @@ function StackedAreaChartComponent<
   height = 240,
   padding = 16,
   curve = 'natural',
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Stacked area chart',
   testID,
 }: StackedAreaChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey, AreaChartSeries<TDatum, TYKey>>(series, theme),
@@ -96,7 +97,7 @@ function StackedAreaChartComponent<
                 areaOptions={({ rowIndex }) => ({
                   opacity: resolvedSeries[rowIndex]?.fillOpacity ?? 0.5,
                 })}
-                animate={animate ? chartAnimation : undefined}
+                animate={animation}
               />
               {chartData.length === 1 &&
                 resolvedSeries.map((item, index) => {

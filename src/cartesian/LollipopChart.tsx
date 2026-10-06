@@ -2,9 +2,9 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Bar, CartesianChart, Scatter } from 'victory-native';
 import type { LollipopChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -32,12 +32,13 @@ function LollipopChartComponent<
   shape = 'circle',
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Lollipop chart',
   testID,
 }: LollipopChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
@@ -45,7 +46,6 @@ function LollipopChartComponent<
     [data, xKey, yKeys],
   );
   const resolvedColor = color ?? theme.colors[0] ?? '#6750a4';
-  const animation = animate ? chartAnimation : undefined;
 
   return (
     <View

@@ -2,11 +2,11 @@ import { Fragment, memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarGroup, CartesianChart, Line } from 'victory-native';
 import type { ComboChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -36,12 +36,13 @@ function ComboChartComponent<
   cornerRadius = 6,
   curve = 'natural',
   connectMissingData = false,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Combo chart',
   testID,
 }: ComboChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>([...barSeries, ...lineSeries], theme),
@@ -102,7 +103,7 @@ function ComboChartComponent<
                     key={String(item.key)}
                     points={points[item.key]}
                     color={item.color}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                 ))}
               </BarGroup>
@@ -114,7 +115,7 @@ function ComboChartComponent<
                     strokeWidth={item.strokeWidth}
                     curveType={curve}
                     connectMissingData={connectMissingData}
-                    animate={animate ? chartAnimation : undefined}
+                    animate={animation}
                   />
                   <SinglePointMarker points={points[item.key]} color={item.color} />
                 </Fragment>

@@ -2,10 +2,10 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, Scatter } from 'victory-native';
 import type { ScatterChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -31,12 +31,13 @@ function ScatterChartComponent<
   padding = 16,
   radius = 5,
   shape = 'circle',
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Scatter chart',
   testID,
 }: ScatterChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const resolvedSeries = useMemo(
     () => resolveSeries<TDatum, TYKey>(series, theme),
@@ -72,7 +73,7 @@ function ScatterChartComponent<
                   color={item.color}
                   radius={radius}
                   shape={shape}
-                  animate={animate ? chartAnimation : undefined}
+                  animate={animation}
                 />
               ))}
             </>

@@ -2,9 +2,9 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Candlestick, CartesianChart } from 'victory-native';
 import type { CandlestickChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -36,12 +36,13 @@ function CandlestickChartComponent<
   candleRatio = 0.6,
   minBodyHeight = 1,
   wickStrokeWidth = 1,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Candlestick chart',
   testID,
 }: CandlestickChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(
     () => [openKey, highKey, lowKey, closeKey] as TYKey[],
@@ -86,7 +87,7 @@ function CandlestickChartComponent<
               candleRatio={candleRatio}
               minBodyHeight={minBodyHeight}
               wickStrokeWidth={wickStrokeWidth}
-              animate={animate ? chartAnimation : undefined}
+              animate={animation}
             />
           )}
         </CartesianChart>

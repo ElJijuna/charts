@@ -68,7 +68,7 @@ function HistogramChartComponent({
   color,
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Histogram chart',
   testID,

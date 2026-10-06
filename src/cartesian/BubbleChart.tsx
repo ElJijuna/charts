@@ -2,9 +2,9 @@ import { memo, type ReactElement, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CartesianChart, type PointsArray, Scatter } from 'victory-native';
 import type { BubbleChartProps } from '@/cartesian/types';
-import { chartAnimation } from '@/core/chartAnimation';
 import { EmptyChartState } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
 import type { ChartDatum, ChartXKey, ChartYKey } from '@/types/data';
@@ -33,12 +33,13 @@ function BubbleChartComponent<
   shape = 'circle',
   height = 240,
   padding = 16,
-  animate = true,
+  animate,
   style,
   accessibilityLabel = 'Bubble chart',
   testID,
 }: BubbleChartProps<TDatum, TXKey, TYKey>): ReactElement {
   const theme = useChartTheme(themeOverride);
+  const animation = useChartAnimation(animate);
   const axisOptions = useChartAxisOptions(axes, theme);
   const yKeys = useMemo(() => [yKey], [yKey]);
   const { data: chartData, hasData } = useMemo(
@@ -93,7 +94,7 @@ function BubbleChartComponent<
               color={color ?? theme.colors[0] ?? '#6750a4'}
               radius={radiusForPoint}
               shape={shape}
-              animate={animate ? chartAnimation : undefined}
+              animate={animation}
             />
           )}
         </CartesianChart>
