@@ -250,7 +250,9 @@ They block or complicate real usage, so they come before performance work.
   prints medians. A first full baseline run was stopped before finishing the 50k cases.
 - [ ] **Stories:** a render diagnostics tool separate from the example interface.
 - [ ] **Stories:** tooltip examples with multiple series and nonuniform domains.
-- [ ] **Stories:** configurable loading and empty states (`emptyLabel` / `renderEmpty`).
+- [x] **Stories:** configurable loading and empty states (`emptyLabel` / `renderEmpty`).
+  **Examples / Chart States** includes a text message, a custom empty view, a silent
+  empty state and simulated loading followed by data, with delay controls and replay.
 - [ ] **Stories:** verify dark backgrounds and containers narrower than the tooltip.
 - [ ] **Stories:** review chunk splitting and web build size warnings.
 - [ ] **Maintenance:** integrate web tests into CI once its current checks are resolved.
