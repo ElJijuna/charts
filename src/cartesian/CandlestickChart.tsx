@@ -5,6 +5,7 @@ import type { CandlestickChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
@@ -56,6 +57,7 @@ function CandlestickChartComponent<
     () => prepareCartesianData(data, xKey, yKeys, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'vertical');
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
   const positive = colors?.positive ?? theme.colors[2] ?? '#386a20';
   const negative = colors?.negative ?? theme.colors[3] ?? '#ba1a1a';
@@ -78,24 +80,29 @@ function CandlestickChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <Candlestick
-              openPoints={points[openKey]}
-              highPoints={points[highKey]}
-              lowPoints={points[lowKey]}
-              closePoints={points[closeKey]}
-              chartBounds={chartBounds}
-              candleColors={candleColors}
-              candleWidth={candleWidth}
-              candleRatio={candleRatio}
-              minBodyHeight={minBodyHeight}
-              wickStrokeWidth={wickStrokeWidth}
-              animate={animation}
-            />
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <Candlestick
+                openPoints={points[openKey]}
+                highPoints={points[highKey]}
+                lowPoints={points[lowKey]}
+                closePoints={points[closeKey]}
+                chartBounds={chartBounds}
+                candleColors={candleColors}
+                candleWidth={candleWidth}
+                candleCount={chartData.length}
+                candleRatio={candleRatio}
+                minBodyHeight={minBodyHeight}
+                wickStrokeWidth={wickStrokeWidth}
+                animate={animation}
+              />
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />

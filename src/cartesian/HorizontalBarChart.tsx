@@ -5,6 +5,7 @@ import type { HorizontalBarChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
@@ -51,6 +52,7 @@ function HorizontalBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'horizontal');
 
   const roundedCorners = useMemo(
     () => ({
@@ -76,25 +78,29 @@ function HorizontalBarChartComponent<
           yKeys={yKeys}
           orientation="horizontal"
           padding={padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
         >
-          {({ points, chartBounds }) => (
-            <HorizontalBarGroup
-              chartBounds={chartBounds}
-              betweenGroupPadding={groupPadding}
-              withinGroupPadding={barPadding}
-              roundedCorners={roundedCorners}
-            >
-              {resolvedSeries.map((item) => (
-                <HorizontalBarGroup.Bar
-                  key={String(item.key)}
-                  points={points[item.key]}
-                  color={item.color}
-                  animate={animation}
-                />
-              ))}
-            </HorizontalBarGroup>
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <HorizontalBarGroup
+                chartBounds={chartBounds}
+                betweenGroupPadding={groupPadding}
+                withinGroupPadding={barPadding}
+                roundedCorners={roundedCorners}
+              >
+                {resolvedSeries.map((item) => (
+                  <HorizontalBarGroup.Bar
+                    key={String(item.key)}
+                    points={points[item.key]}
+                    color={item.color}
+                    animate={animation}
+                  />
+                ))}
+              </HorizontalBarGroup>
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />

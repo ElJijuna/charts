@@ -5,6 +5,7 @@ import type { HorizontalStackedBarChartProps } from '@/cartesian/types';
 import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
@@ -51,6 +52,7 @@ function HorizontalStackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'horizontal');
 
   return (
     <View
@@ -66,18 +68,23 @@ function HorizontalStackedBarChartComponent<
           yKeys={yKeys}
           orientation="horizontal"
           padding={padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
         >
-          {({ points, chartBounds }) => (
-            <HorizontalStackedBar
-              points={resolvedSeries.map(({ key }) => points[key])}
-              chartBounds={chartBounds}
-              colors={colors}
-              innerPadding={innerPadding}
-              barWidth={barWidth}
-              animate={animation}
-            />
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <HorizontalStackedBar
+                points={resolvedSeries.map(({ key }) => points[key])}
+                chartBounds={chartBounds}
+                colors={colors}
+                innerPadding={innerPadding}
+                barWidth={barWidth}
+                barCount={chartData.length}
+                animate={animation}
+              />
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />

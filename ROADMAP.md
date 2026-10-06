@@ -160,8 +160,18 @@ They block or complicate real usage, so they come before performance work.
   bubble, lollipop, combo, area range and candlestick charts, computed from Victory's scales
   (verified against drawn points in the web Storybook). Stacked and horizontal charts are not
   supported yet; bar `x` is the group center, not each bar's.
-- [ ] `BarChart` clips its first and last groups: it sets no `domainPadding`, so the outer
-  groups are centered on the plot edges (visible in the Bar story).
+- [x] `BarChart` clips its first and last groups: it set no `domainPadding`, so the outer
+  groups were centered on the plot edges. Fixed for bar, stacked bar, combo, candlestick,
+  histogram and both horizontal bar charts: categories are laid out as bands
+  (`domainPadding = plot / (2 × (count − 1))`, plus `barCount`/`candleCount` for stacked bars
+  and candles). Marks are drawn once the plot size is known, because the extra layout
+  interrupted Victory's mount animation and left bars stuck mid-way. Verified in the web
+  Storybook with and without reduced motion.
+- [ ] Bar charts don't start the value axis at zero: the domain follows the data, so in the Bar
+  story the axis starts at 30 and Jan's "previous" value (30) draws as an empty bar. Bars
+  should include zero in their value domain.
+- [ ] Regenerate the README gallery images: bar, stacked bar, combo, candlestick, histogram,
+  horizontal bar and sparkline still show clipped groups or stray grid lines.
 - [ ] Avoid one `GestureHandlerRootView` per chart: Victory wraps every chart even without
   interaction. Skip it when there is no `chartPressState`, or document the behavior.
 - [ ] Add token-based theming: `theme` only accepts loose colors. Add a `ChartThemeProvider`

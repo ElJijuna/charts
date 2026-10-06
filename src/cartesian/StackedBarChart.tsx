@@ -6,6 +6,7 @@ import { EmptyChartState, emptyAccessibilityLabel } from '@/core/EmptyChartState
 import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
@@ -52,6 +53,7 @@ function StackedBarChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'vertical');
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey);
 
   return (
@@ -67,19 +69,24 @@ function StackedBarChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <StackedBar
-              points={resolvedSeries.map(({ key }) => points[key])}
-              chartBounds={chartBounds}
-              colors={colors}
-              innerPadding={innerPadding}
-              barWidth={barWidth}
-              animate={animation}
-            />
-          )}
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <StackedBar
+                points={resolvedSeries.map(({ key }) => points[key])}
+                chartBounds={chartBounds}
+                colors={colors}
+                innerPadding={innerPadding}
+                barWidth={barWidth}
+                barCount={chartData.length}
+                animate={animation}
+              />
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />

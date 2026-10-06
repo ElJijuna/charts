@@ -7,6 +7,7 @@ import { useChartOverlay } from '@/core/NativeAxisLabels';
 import { prepareCartesianData } from '@/core/prepareCartesianData';
 import { resolveSeries } from '@/core/resolveSeries';
 import { SinglePointMarker } from '@/core/SinglePointMarker';
+import { useBandPadding } from '@/core/useBandPadding';
 import { useChartAnimation } from '@/core/useChartAnimation';
 import { useChartAxisOptions } from '@/core/useChartAxisOptions';
 import { useChartTheme } from '@/theme/useChartTheme';
@@ -68,6 +69,7 @@ function ComboChartComponent<
     () => prepareCartesianData(data, xKey, yKeys),
     [data, xKey, yKeys],
   );
+  const band = useBandPadding(chartData.length, 'vertical');
   const axisLabels = useChartOverlay(axes, theme, padding, chartData, xKey, yKeys, renderOverlay);
 
   const roundedCorners = useMemo(
@@ -93,41 +95,45 @@ function ComboChartComponent<
           xKey={xKey}
           yKeys={yKeys}
           padding={axisLabels.padding}
+          domainPadding={band.domainPadding}
+          onChartBoundsChange={band.onChartBoundsChange}
           axisOptions={axisOptions}
           onScaleChange={axisLabels.onScaleChange}
         >
-          {({ points, chartBounds }) => (
-            <>
-              <BarGroup
-                chartBounds={chartBounds}
-                betweenGroupPadding={groupPadding}
-                withinGroupPadding={barPadding}
-                roundedCorners={roundedCorners}
-              >
-                {resolvedBarSeries.map((item) => (
-                  <BarGroup.Bar
-                    key={String(item.key)}
-                    points={points[item.key]}
-                    color={item.color}
-                    animate={animation}
-                  />
+          {({ points, chartBounds }) =>
+            band.ready ? (
+              <>
+                <BarGroup
+                  chartBounds={chartBounds}
+                  betweenGroupPadding={groupPadding}
+                  withinGroupPadding={barPadding}
+                  roundedCorners={roundedCorners}
+                >
+                  {resolvedBarSeries.map((item) => (
+                    <BarGroup.Bar
+                      key={String(item.key)}
+                      points={points[item.key]}
+                      color={item.color}
+                      animate={animation}
+                    />
+                  ))}
+                </BarGroup>
+                {resolvedLineSeries.map((item) => (
+                  <Fragment key={String(item.key)}>
+                    <Line
+                      points={points[item.key]}
+                      color={item.color}
+                      strokeWidth={item.strokeWidth}
+                      curveType={curve}
+                      connectMissingData={connectMissingData}
+                      animate={animation}
+                    />
+                    <SinglePointMarker points={points[item.key]} color={item.color} />
+                  </Fragment>
                 ))}
-              </BarGroup>
-              {resolvedLineSeries.map((item) => (
-                <Fragment key={String(item.key)}>
-                  <Line
-                    points={points[item.key]}
-                    color={item.color}
-                    strokeWidth={item.strokeWidth}
-                    curveType={curve}
-                    connectMissingData={connectMissingData}
-                    animate={animation}
-                  />
-                  <SinglePointMarker points={points[item.key]} color={item.color} />
-                </Fragment>
-              ))}
-            </>
-          )}
+              </>
+            ) : null
+          }
         </CartesianChart>
       ) : (
         <EmptyChartState label={emptyLabel} color={theme.labelColor} render={renderEmpty} />
