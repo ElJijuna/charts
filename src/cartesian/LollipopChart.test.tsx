@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react-native';
-import type { ReactNode } from 'react';
+import { useEffect as mockUseEffect, type ReactNode } from 'react';
 
 import { LollipopChart } from '@/cartesian/LollipopChart';
 
@@ -11,8 +11,15 @@ const points = [{ x: 0, xValue: 'Jan', y: 12, yValue: 12 }];
 const chartBounds = { bottom: 200, left: 0, right: 300, top: 0 };
 
 jest.mock('victory-native', () => ({
-  CartesianChart: (props: { children: (value: unknown) => ReactNode }) => {
+  CartesianChart: (props: {
+    children: (value: unknown) => ReactNode;
+    onChartBoundsChange?: (bounds: typeof chartBounds) => void;
+  }) => {
     mockCartesianSpy(props);
+    const { onChartBoundsChange } = props;
+    mockUseEffect(() => {
+      onChartBoundsChange?.(chartBounds);
+    }, [onChartBoundsChange]);
     return props.children({ chartBounds, points: { revenue: points } });
   },
   Bar: (props: unknown) => {
@@ -30,6 +37,29 @@ describe('LollipopChart', () => {
     mockBarSpy.mockClear();
     mockScatterSpy.mockClear();
     mockCartesianSpy.mockClear();
+  });
+
+  it('insets the endpoint markers after measuring the plot and waits to animate marks', async () => {
+    await render(
+      <LollipopChart
+        accessibilityLabel="Revenue"
+        data={[
+          { month: 'Jan', revenue: 12 },
+          { month: 'Feb', revenue: 20 },
+          { month: 'Mar', revenue: 8 },
+        ]}
+        xKey="month"
+        yKey="revenue"
+      />,
+    );
+
+    expect(mockCartesianSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ domainPadding: { left: 75, right: 75 } }),
+    );
+    // On a 300px plot, band padding places the endpoints 50px inside either edge.
+    // Marks mount only after measurement so the second layout cannot interrupt animation.
+    expect(mockBarSpy).toHaveBeenCalledTimes(1);
+    expect(mockScatterSpy).toHaveBeenCalledTimes(1);
   });
 
   it('renders customized stems and markers', async () => {

@@ -172,7 +172,8 @@ They block or complicate real usage, so they come before performance work.
   histogram value domains include zero, and stacked bar and stacked area domains also cover
   positive and negative stack totals, which Victory ignored (tall stacks were cut off at the
   top). Verified in the web Storybook.
-- [ ] Lollipop clips its first and last dots at the plot edges; it does not use band padding.
+- [x] Lollipop clips its first and last dots at the plot edges. Fixed: use band padding
+  and wait for the plot bounds before mounting stems and markers, preserving mount animation.
 - [ ] Regenerate the README gallery images: bar, stacked bar, combo, candlestick, histogram,
   horizontal bar and sparkline still show clipped groups or stray grid lines.
 - [ ] Avoid one `GestureHandlerRootView` per chart: Victory wraps every chart even without
